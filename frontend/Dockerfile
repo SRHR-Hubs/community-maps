@@ -3,14 +3,13 @@ FROM node:lts-bullseye-slim AS base
 RUN apt-get update && apt-get install libssl-dev ca-certificates -y
 WORKDIR /app
 
-COPY --chown package.json package-lock.json ./
+COPY package.json package-lock.json ./
 
 FROM base as dev
 ENV NODE_ENV=development
 RUN npm install
 RUN npm cache verify
 
-RUN chown 
 COPY . .
 
 # build stage
