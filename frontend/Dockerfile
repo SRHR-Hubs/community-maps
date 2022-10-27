@@ -5,10 +5,10 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
+# development
 FROM base as dev
 ENV NODE_ENV=development
 RUN npm install
-RUN npm cache verify
 
 COPY . .
 
@@ -29,7 +29,6 @@ FROM base as prod
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/.next /app/.next 
 COPY --from=build /app/public /app/public
-COPY --from=build /app/prisma /app/prisma
 
 EXPOSE 3000
 CMD npm run start

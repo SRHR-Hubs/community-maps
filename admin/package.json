@@ -1,17 +1,30 @@
 {
-  "name": "keystone-app",
-  "version": "1.0.2",
+  "name": "admin",
   "private": true,
+  "version": "0.1.0",
+  "description": "A Strapi application",
   "scripts": {
-    "dev": "keystone dev",
-    "start": "keystone start",
-    "build": "keystone build",
-    "postinstall": "keystone postinstall"
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
   },
+  "devDependencies": {},
   "dependencies": {
-    "@keystone-6/auth": "^5.0.0",
-    "@keystone-6/core": "^3.0.1",
-    "@keystone-6/fields-document": "^5.0.0",
-    "typescript": "^4.8.0"
-  }
+    "@strapi/strapi": "4.4.5",
+    "@strapi/plugin-users-permissions": "4.4.5",
+    "@strapi/plugin-i18n": "4.4.5",
+    "pg": "8.6.0"
+  },
+  "author": {
+    "name": "A Strapi developer"
+  },
+  "strapi": {
+    "uuid": "1b6cda0c-61fc-4963-9516-f0b8d0d71b91"
+  },
+  "engines": {
+    "node": ">=14.19.1 <=18.x.x",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
 }
