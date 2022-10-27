@@ -1,0 +1,20 @@
+# General
+.DS_Store
+
+# Docker
+docker*override*
+
+# Keystone
+**/node_modules
+admin/.keystone/admin
+admin/keystone.db
+
+# npm / general JS stuff
+**/*.log
+**/*debug.log*
+
+# Next
+.next
+
+# other dev stuff
+.env*
