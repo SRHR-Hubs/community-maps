@@ -12,6 +12,7 @@ admin/keystone.db
 # npm / general JS stuff
 **/*.log
 **/*debug.log*
+**/package-lock.json
 
 # Next
 .next

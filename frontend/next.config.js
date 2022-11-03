@@ -2,14 +2,28 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  // webpack: (config, options) => {
-  //   config.watchOptions = {
-  //     poll: 1000,
-  //     aggregateTimeout: 300
-  //   }
+  images: {
+    remotePatterns: [
+      { 
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: `/${process.env.CLOUDINARY_CLOUD_NAME}/**`,
+      }
+    ]
+  },
 
-  //   return config
-  // }
-}
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        child_process: false,
+      }
+      config.externals = {
+        'sharp': 'commonjs sharp',
+      }
+    }
+    return config;
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

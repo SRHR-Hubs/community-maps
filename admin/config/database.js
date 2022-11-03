@@ -9,6 +9,6 @@ module.exports = ({ env }) => ({
       password: env("PGPASSWORD", "root"),
       ssl: env.bool("DATABASE_SSL", false),
     },
-    debug: true,
+    debug: env.bool("DEBUG", false),
   },
 });
