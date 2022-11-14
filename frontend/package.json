@@ -5,16 +5,18 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "next-sitemap --config config/next-sitemap.config.js",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@cloudinary/react": "^1.5.0",
     "@cloudinary/url-gen": "^1.8.6",
     "lqip-modern": "^1.2.0",
     "next": "13.0.0",
+    "next-sitemap": "^3.1.30",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sass": "^1.56.1",
     "sharp": "^0.31.1"
   },
   "overrides": {

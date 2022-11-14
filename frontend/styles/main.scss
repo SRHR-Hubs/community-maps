@@ -1,3 +1,11 @@
+@forward "variables";
+
+// pages
+@forward "pages/home";
+
+// components
+@forward "components/image";
+
 html,
 body {
   padding: 0;

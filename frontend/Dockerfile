@@ -20,7 +20,6 @@ USER node
 RUN npm ci
 
 COPY . .
-RUN npm run db:generate
 RUN npm run build
 
 # prod deploy

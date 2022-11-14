@@ -1,14 +1,20 @@
 import Image from "next/image";
 import { getBlurUrl } from "../lib/cloudinary";
 
-export default ({ url, metadata }) => {
+export default function ImagePage({ url, metadata }) {
   const { originalWidth, originalHeight, dataURIBase64 } = metadata;
+  const width = Math.floor(originalWidth / 4);
+  const height = Math.floor(originalHeight / 4);
+
   return (
-    <div>
+    <div className="image-container" style={{
+      width,
+      height
+    }}>
         <Image 
+            className="image-component"
             src={url}
-            width={originalWidth / 4}
-            height={originalHeight / 4}
+            fill
             placeholder="blur"
             blurDataURL={dataURIBase64}
         />
@@ -17,7 +23,7 @@ export default ({ url, metadata }) => {
 };
 
 export async function getStaticProps() {
-  const publicId = "cld-sample-5";
+  const publicId = `cld-sample-${Math.floor(Math.random() * 4) + 2}`;
   const { url, metadata } = await getBlurUrl(publicId);
 
   return {
