@@ -1,34 +1,10 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Monorepo for SRHR Hubs Toronto's Community Maps project. Documentation will follow below as needed.
 
-## Getting Started
+# /frontend
+## File structure
+In general, prefer maximum specificity by nesting new aditions in as many directories as needed. However, note that we will **not** be using the new Next 13 pages syntax until it becomes fully production-stable. The most important export for each subdirectorydirectory under `/components` or `/pages` should be under `index.js`, with 'companion' or subsidiary components optionally having named files.
+### Adding a Page and styling it
+When adding a page, it is best to create an SCSS file for it under `styles/pages`, keeping homology between it and the actual `pages` directory however possible (replacing, say, wildcard routes with a more reasonable name).
+Then, in `main.scss`, add a `@forward` statement to include it in the final CSS output.
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Follow the same pattern for adding components wherever 
