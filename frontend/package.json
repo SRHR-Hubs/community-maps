@@ -13,11 +13,14 @@
     "@cloudinary/url-gen": "^1.8.6",
     "lqip-modern": "^1.2.0",
     "next": "13.0.0",
+    "next-mdx-remote": "^4.2.0",
     "next-sitemap": "^3.1.30",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "remark-unwrap-images": "^3.0.1",
     "sass": "^1.56.1",
-    "sharp": "^0.31.1"
+    "sharp": "^0.31.1",
+    "unist-util-visit": "^4.1.1"
   },
   "overrides": {
     "sharp": "^0.31.1"
@@ -26,6 +29,8 @@
     "npm": ">=9.1.1"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^13.0.4",
+    "cross-env": "^7.0.3",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.0"
   }

@@ -1,0 +1,26 @@
+header {
+    height: 75px;
+    width: 100%;
+    border: 1px solid white;
+    background: black;
+
+    position: sticky;
+    top: -25%;
+
+    transition: top 0.17s ease;
+
+    &[data-show=true] {
+        top: 0;
+    }
+}
+
+.page {
+    main {
+        padding: 2em 0;
+    }
+}
+
+footer {
+    width: 100%;
+    border: 1px solid white;
+}

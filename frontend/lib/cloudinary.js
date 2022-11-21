@@ -7,6 +7,8 @@ const cloudinary = new Cloudinary({
   },
 });
 
+// TODO: non-cloudinary version?
+
 export async function getBlurUrl(publicId) {
     const url = cloudinary.image(publicId).toURL();
     const res = await fetch(url);

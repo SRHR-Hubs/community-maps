@@ -3,14 +3,12 @@ import NextImage from 'next/image'
 // TODO: proper typing
 
 const Image = ({container, image}) => (
-    <div className="image-container" style={container}>
-        <NextImage 
+    <div className="image-container" {...container}><NextImage 
             className="image-component"
             fill
             placeholder='blur'
             {...image}
-        />
-    </div>
+        /></div>
 ) 
 
 export default Image
