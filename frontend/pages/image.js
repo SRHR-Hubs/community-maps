@@ -1,6 +1,6 @@
 import Image from "../components/image";
 import { getBlurUrl } from "../lib/cloudinary";
-import metadataPlugin from "../lib/image-transform";
+import metadataPlugin from "../lib/mdx-remote/image-transform";
 import unwrapImagesPlugin from "remark-unwrap-images";
 import { serialize } from "next-mdx-remote/serialize";
 import { MDXRemote } from "next-mdx-remote";

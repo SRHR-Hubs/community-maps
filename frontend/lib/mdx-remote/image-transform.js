@@ -1,5 +1,5 @@
 import { visit } from 'unist-util-visit';
-import { getBlurUrl } from './cloudinary';
+// import { getBlurUrl } from '../cloudinary';
 
 /** Almost all of this code was inspired by:
  * https://nikolovlazar.com/blog/generating-blur-for-dynamic-images-nextjs
@@ -23,6 +23,8 @@ async function addMetadata(node){
         const [filename] = node.properties.src.split("/").slice(-1);
         const [publicId] = filename.split(".");
 
+        const { getBlurUrl } = await import('../cloudinary')
+
         const { metadata } = await getBlurUrl(publicId);
         const {originalHeight: height, originalWidth: width, dataURIBase64: blurDataURL} = metadata;
 
@@ -33,6 +35,7 @@ async function addMetadata(node){
             blurDataURL
         }
     }
+    else{console.log('Is NOT cloudinary', node.properties.src, cloud)}
     // TODO: else
 }
 
