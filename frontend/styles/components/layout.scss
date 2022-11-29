@@ -13,6 +13,12 @@ header {
     &[data-show=true] {
         top: 0;
     }
+    @media (prefers-reduced-motion) {
+        & {
+            top: 0;
+            transition: unset;
+        }
+    }
 }
 
 .page {

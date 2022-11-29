@@ -23,6 +23,10 @@ async function addMetadata(node){
         const [filename] = node.properties.src.split("/").slice(-1);
         const [publicId] = filename.split(".");
 
+        // IMPORTANT!
+        // This was the result of a 2-hour debug that made me late for class.
+        // this import MUST be dynamic, or else Next will try to import a server-
+        // only dependency (sharp) into the browser for God knows what reason.
         const { getBlurUrl } = await import('../cloudinary')
 
         const { metadata } = await getBlurUrl(publicId);
@@ -35,7 +39,6 @@ async function addMetadata(node){
             blurDataURL
         }
     }
-    else{console.log('Is NOT cloudinary', node.properties.src, cloud)}
     // TODO: else
 }
 

@@ -1,17 +1,14 @@
 import useAPIFetcher from "../hooks/useAPIFetcher";
-import qs from "qs";
-
-// TODO: remove dependency on qs, or treat it as a util?
+import useQuery from "../hooks/useQuery";
 
 const fetcher = useAPIFetcher();
+const q = useQuery();
 
 export default class BlogService {
   static prefix = "/api/posts";
 
-  async get(endpoint, query) {
-    const url = `${BlogService.prefix}/${endpoint ?? ""}?${qs.stringify(query, {
-      encodeValuesOnly: true,
-    })}`;
+  static async get(endpoint, query) {
+    const url = `${this.prefix}/${endpoint}?${q(query)}`;
     const res = await fetcher(url);
     return await res.json();
   }
@@ -19,7 +16,7 @@ export default class BlogService {
   /**
    * Get a list of all post IDs for static generation.
    */
-  async getAllPostIds() {
+  static async getAllPostIds() {
     const ids = [];
 
     const idQuery = {
@@ -43,11 +40,11 @@ export default class BlogService {
     return ids;
   }
 
-  async getPost(id) {
+  static async getPost(id) {
     const query = {
-        //TODO
+      //TODO
     };
 
-    return await this.get(id, query)
+    return await this.get(id, query);
   }
 }
