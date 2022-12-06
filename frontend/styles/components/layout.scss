@@ -1,11 +1,14 @@
+@use '../variables';
+
 header {
     z-index: 999;
-    height: 75px;
+    height: 75px; // temp
     width: 100%;
     border: 1px solid white;
-    background: black;
+    background: variables.$primary-bg;
 
     position: sticky;
+    left: 0;
     top: -25%;
 
     transition: top 0.17s ease;
@@ -19,6 +22,10 @@ header {
             transition: unset;
         }
     }
+
+    [id^=storybook] & {
+        position: absolute;
+    }
 }
 
 .page {
@@ -29,5 +36,13 @@ header {
 
 footer {
     width: 100%;
+    height: 75px; // temp
     border: 1px solid white;
+    background-color: variables.$primary-bg;
+
+    [id^=storybook] & {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
 }

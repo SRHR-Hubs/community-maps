@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_content_heads",
+  "info": {
+    "displayName": "Head",
+    "icon": "angle-double-right"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "default": "My Page Title"
+    }
+  }
+}

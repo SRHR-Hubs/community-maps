@@ -1,12 +1,4 @@
 import Header from './index'
 
-export default {
-    title: 'Header',
-    component: Header,
-}
-
-export const Story = (props) => <Header {...props}/>
-
-Story.args = {
-    show: true,
-}
+export default { component: Header }
+export const Default = { args: { show: true }}

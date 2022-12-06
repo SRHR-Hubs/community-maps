@@ -1,8 +1,3 @@
 import Footer from './index'
-
-export default {
-    title: 'Footer',
-    component: Footer,
-}
-
-export const Story = (props) => <Footer {...props}/>
+export default { component: Footer }
+export const Default = { }
