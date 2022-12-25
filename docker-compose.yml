@@ -3,40 +3,48 @@ services:
   frontend:
     container_name: app-frontend
     ports:
-      - "3000:3000"
+      - 3000:3000
     user: node
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      target: prod
+      target: dev
     depends_on:
       - db
     networks:
       - bridge-network
+    volumes:
+      - ./frontend:/app
+    env_file: .env.local
+    command: bash -c "npm run dev"
 
-  strapi:
-    container_name: strapi
-    restart: unless-stopped
+  backend:
+    container_name: app-backend
     ports:
-      - '1337:1337'
+      - 8000:8000
     build:
-      context: ./admin
+      context: ./backend
       dockerfile: Dockerfile
     depends_on:
       - db
     networks:
       - bridge-network
+    volumes:
+      - ./backend:/src
+    env_file: .env.local
+    command: python3 manage.py runserver 0.0.0.0:8000
 
   db:
     image: postgres:14-bullseye
     container_name: postgres
     restart: always
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres:/var/lib/postgresql/data
+      - 5432:5432
     networks:
       - bridge-network
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    env_file: .env.local
 
 volumes:
   postgres:

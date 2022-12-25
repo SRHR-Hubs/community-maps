@@ -1,0 +1,22 @@
+services:
+  frontend:
+    env_file: .env.local
+    build:
+      target: dev
+    command: bash -c "npm run dev"
+    volumes:
+      - ./frontend:/app
+  
+  strapi:
+    build:
+      target: dev
+    env_file: .env.local
+    environment:
+      DATABASE_SSL: 0
+      DATABASE_HOST: db
+    command: bash -c "npm run develop"
+    volumes:
+      - ./admin:/app
+
+  db:
+    env_file: .env.local

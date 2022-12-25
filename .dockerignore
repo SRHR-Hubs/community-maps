@@ -1,3 +1,8 @@
 .DS_Store
 frontend/.next
 **/node_modules
+
+backend/.env
+
+.git
+.gitignore

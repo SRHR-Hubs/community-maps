@@ -20,3 +20,7 @@ admin/keystone.db
 
 # other dev stuff
 .env*
+
+# backend
+backend/db*
+backend/**/*.sqlite3
