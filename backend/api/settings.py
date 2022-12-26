@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 from os import environ as env
 
@@ -40,6 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # customs
+    'rest_framework',
+    'cloudinary_storage',
+    'cloudinary',
+    'mdeditor',
+
+    # my apps
+    'blog',
+    'services',
 ]
 
 MIDDLEWARE = [
@@ -82,8 +91,8 @@ DATABASES = {
         "NAME": env['PGDATABASE'],
         "USER": env['PGUSER'],
         "PASSWORD": env['PGPASSWORD'],
-        "HOST": "db",  # set in docker-compose.yml
-        "PORT": 5432,  # default postgres port
+        "HOST": "db", 
+        "PORT": env['PGPORT'],
     }
 }
 
@@ -123,8 +132,33 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Installed apps
+
+## dj3-cloudinary-storage
+MEDIA_URL = '/media/'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': env['CLOUDINARY_CLOUD_NAME'],
+    'API_KEY': env['CLOUDINARY_API_KEY'],
+    'API_SECRET': env['CLOUDINARY_API_SECRET'],
+}
+
+## django-mdeditor
+X_FRAME_OPTIONS = 'SAMEORIGIN' 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+
+# see: https://github.com/pylixm/django-mdeditor#customize-the-toolbar
+MDEDITOR_CONFIGS = {
+    'default':{
+        'language': 'en'  # zh / en / es 
+    }
+    
+}

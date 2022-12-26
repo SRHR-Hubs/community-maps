@@ -4,3 +4,6 @@ djangorestframework==3.14.0
 pytz==2022.7
 sqlparse==0.4.3
 psycopg2-binary==2.9.5
+cloudinary==1.30.0
+dj3-cloudinary-storage==0.0.6
+django-mdeditor==0.1.20
