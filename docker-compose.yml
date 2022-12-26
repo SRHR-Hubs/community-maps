@@ -8,7 +8,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      target: dev
+      target: base
     depends_on:
       - db
     networks:
@@ -24,15 +24,28 @@ services:
       - 8000:8000
     build:
       context: ./backend
-      dockerfile: Dockerfile
-    depends_on:
-      - db
-    networks:
-      - bridge-network
     volumes:
       - ./backend:/src
+    networks:
+      - bridge-network
+    depends_on:
+      - db
     env_file: .env.local
     command: python3 manage.py runserver 0.0.0.0:8000
+
+  meilisearch:
+    container_name: meilisearch
+    restart: always
+    ports:
+      - 7700:7700
+    build:
+      context: ./search
+      dockerfile: Dockerfile
+    volumes:
+      - /meili_data:/meili_data
+    networks:
+      - bridge-network
+    env_file: .env.local
 
   db:
     image: postgres:14-bullseye

@@ -158,7 +158,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 # see: https://github.com/pylixm/django-mdeditor#customize-the-toolbar
 MDEDITOR_CONFIGS = {
     'default':{
-        'language': 'en'  # zh / en / es 
+        'language': 'en'
     }
     
 }
