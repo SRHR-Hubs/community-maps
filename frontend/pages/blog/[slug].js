@@ -19,9 +19,9 @@ const BlogPost = ({ slug, source, meta }) => {
 
 export async function getStaticProps({ params }) {
   const { slug } = params;
-  const { data, meta } = await BlogService.getPost(slug);
+  const data = await BlogService.getPost(slug);
 
-  const { content, ...attributes } = data.attributes;
+  const { content, ...meta } = data;
 
   const source = await serialize(content);
 
@@ -29,10 +29,7 @@ export async function getStaticProps({ params }) {
     props: {
       slug,
       source,
-      meta: {
-        ...meta,
-        ...attributes,
-      },
+      meta,
     },
   };
 }

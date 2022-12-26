@@ -5,7 +5,7 @@ const fetcher = useAPIFetcher();
 const q = useQuery();
 
 export default class BlogService {
-  static prefix = "/api/posts";
+  static prefix = "/api/blog";
 
   static async get(endpoint, query) {
     const url = `${this.prefix}/${endpoint}?${q(query)}`;
@@ -19,21 +19,24 @@ export default class BlogService {
   static async getAllPostIds() {
     const ids = [];
 
+    let page = 1;
+
     const idQuery = {
-      fields: ["id"],
+      fields: "id",
+      page,
     };
 
-    const { data, meta } = await this.get("", idQuery);
+    const { results: data, meta } = await this.get("", idQuery);
 
     ids.push(...data.map((post) => post.id));
 
     // should not run if pageCount is 1
-    for (let page = 1; page < meta.pagination.pageCount; page++) {
+    for (page; page < meta.total_pages; page++) {
       const query = {
         ...idQuery,
-        pagination: { page },
+        page
       };
-      const { data: newData } = await this.get("", query);
+      const { results: newData } = await this.get("", query);
       ids.push(...newData.map((post) => post.id));
     }
 

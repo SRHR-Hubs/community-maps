@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-k04pxc*59+kyfnh(nv^2p0dhp@j1jbf4tv&^ge!oe0%h$$w_+c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'backend']
 
 
 # Application definition
@@ -141,6 +141,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Installed apps
+
+## rest_framework
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'api.core.pagination.CustomPagination',
+    'PAGE_SIZE': 20,
+}
 
 ## dj3-cloudinary-storage
 MEDIA_URL = '/media/'
