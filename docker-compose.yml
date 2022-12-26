@@ -14,18 +14,19 @@ services:
     networks:
       - bridge-network
 
-  strapi:
-    container_name: strapi
-    restart: unless-stopped
+  meilisearch:
+    container_name: meilisearch
+    restart: always
     ports:
-      - '1337:1337'
+      - 7700:7700
     build:
-      context: ./admin
+      context: ./search
       dockerfile: Dockerfile
-    depends_on:
-      - db
+    volumes:
+      - /meili_data:/meili_data
     networks:
       - bridge-network
+    env_file: .env.local
 
   db:
     image: postgres:14-bullseye
