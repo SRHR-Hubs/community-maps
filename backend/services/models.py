@@ -21,9 +21,9 @@ class Service(models.Model):
     description = MDTextField(blank=True)
 
     # complex/formatted content
-    phone_numbers = models.JSONField(default=lambda: schemas.phone_numbers['default'])
-    socials = models.JSONField(default=lambda: schemas.socials['default'])
-    hours = models.JSONField(default=lambda: schemas.hours['default'])
+    phone_numbers = models.JSONField(default=schemas.phone_numbers)
+    socials = models.JSONField(default=schemas.socials)
+    hours = models.JSONField(default=schemas.hours)
     
     # extra, 'floppy' attributes
 
