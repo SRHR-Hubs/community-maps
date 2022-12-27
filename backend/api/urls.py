@@ -3,10 +3,12 @@ from django.urls import path, include
 from rest_framework import routers
 
 import blog.views
+import services.views
 
 router = routers.DefaultRouter()
 for prefix, viewset in [
     ('blog', blog.views.BlogPostViewset),
+    ('services', services.views.ServiceViewset)
 ]:
     router.register(prefix, viewset)
 

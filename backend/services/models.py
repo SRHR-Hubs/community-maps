@@ -1,7 +1,6 @@
 from django.db import models
 from mdeditor.fields import MDTextField
 
-from operator import itemgetter
 from functools import partial
 from . import schemas
 
@@ -26,11 +25,11 @@ class Service(models.Model):
     description = MDTextField(blank=True)
 
     # complex/formatted content
-    phone_numbers = models.JSONField(default=default(schemas.phone_numbers))
-    socials = models.JSONField(default=default(schemas.socials))
-    hours = models.JSONField(default=default(schemas.hours))
+    phone_numbers = models.JSONField(blank=True, default=default(schemas.phone_numbers))
+    socials = models.JSONField(blank=True, default=default(schemas.socials))
+    hours = models.JSONField(blank=True, default=default(schemas.hours))
     
     # extra, 'floppy' attributes
-
+    
     # private
-    _contact = models.CharField(max_length=255)
+    _contact = models.CharField(max_length=255, blank=True)
