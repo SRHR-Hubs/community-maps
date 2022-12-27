@@ -1,16 +1,16 @@
-phone_numbers = {
+def phone_numbers(): return {
     'default': {
         'primary': None
     }
 }
 
-socials = {
+def socials(): return {
     'default': {
         'twitter': None
     }
 }
 
-hours = {
+def hours(): return {
     'default': {
         key: None for key in [
             'Sunday', 'Monday', 
@@ -21,7 +21,7 @@ hours = {
     }
 }
 
-extra = {
+def extra(): return {
     'default': {
         'primary': None
     }
