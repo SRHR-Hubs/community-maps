@@ -24,6 +24,7 @@ services:
       - 8000:8000
     build:
       context: ./backend
+      dockerfile: Dockerfile
     volumes:
       - ./backend:/src
     networks:
