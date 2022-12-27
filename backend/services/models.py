@@ -1,7 +1,12 @@
 from django.db import models
 from mdeditor.fields import MDTextField
 
+from operator import itemgetter
+from functools import partial
 from . import schemas
+
+def default(schema):
+    return partial(dict, schema['default'])
 
 # Create your models here.
 class Service(models.Model):
@@ -21,9 +26,9 @@ class Service(models.Model):
     description = MDTextField(blank=True)
 
     # complex/formatted content
-    phone_numbers = models.JSONField(default=schemas.phone_numbers)
-    socials = models.JSONField(default=schemas.socials)
-    hours = models.JSONField(default=schemas.hours)
+    phone_numbers = models.JSONField(default=default(schemas.phone_numbers))
+    socials = models.JSONField(default=default(schemas.socials))
+    hours = models.JSONField(default=default(schemas.hours))
     
     # extra, 'floppy' attributes
 
