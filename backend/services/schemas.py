@@ -26,3 +26,13 @@ extra = {
         'primary': None
     }
 }
+
+blank_service = {
+    'published': False,
+    'name': 'DELETED_SERVICE',
+    'slug': 'DO_NOT_PUBLISH__DELETED_SERVICE',
+}
+
+facet_tag = {
+    'default': {}
+}

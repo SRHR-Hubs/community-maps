@@ -8,7 +8,8 @@ import services.views
 router = routers.DefaultRouter()
 for prefix, viewset in [
     ('blog', blog.views.BlogPostViewset),
-    ('services', services.views.ServiceViewset)
+    ('services', services.views.ServiceViewset),
+    ('facets', services.views.FacetViewset),
 ]:
     router.register(prefix, viewset)
 
