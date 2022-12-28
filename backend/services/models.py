@@ -1,4 +1,3 @@
-from tabnanny import verbose
 from django.db import models
 from mdeditor.fields import MDTextField
 
@@ -9,7 +8,12 @@ from . import schemas
 def default(schema):
     return partial(dict, schema['default'])
 
-# Create your models here.
+
+def load_schema(schema):
+    return {
+        **dict(schema.items()),
+        'default': default(schema),
+    }
 
 
 class Service(models.Model):
@@ -32,9 +36,11 @@ class Service(models.Model):
 
     # complex/formatted content
     phone_numbers = models.JSONField(
-        blank=True, default=default(schemas.phone_numbers))
-    socials = models.JSONField(blank=True, default=default(schemas.socials))
-    hours = models.JSONField(blank=True, default=default(schemas.hours))
+        blank=True, **load_schema(schemas.phone_numbers))
+    socials = models.JSONField(
+        blank=True, **load_schema(schemas.socials))
+    hours = models.JSONField(
+        blank=True, **load_schema(schemas.hours))
 
     # extra, 'floppy' attributes
 
@@ -57,8 +63,6 @@ class Service(models.Model):
     class Meta:
         ordering = ('id',)
 
-        
-
 
 class Facet(models.Model):
     translation_id = models.CharField(max_length=31, unique=True)
@@ -77,7 +81,7 @@ class FacetTag(models.Model):
         Service, on_delete=models.SET(Service.sentinel))
     facet = models.ForeignKey(Facet, on_delete=models.CASCADE)
     value = models.CharField(max_length=31)
-    extra = models.JSONField(blank=True, default=default(schemas.facet_tag))
+    extra = models.JSONField(blank=True, default=default(schemas.extra))
 
     class Meta:
         ordering = ('id',)
