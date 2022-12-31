@@ -1,8 +1,8 @@
-import json
 from django.contrib import admin
 from django.forms import widgets
 from django.utils import timezone
 from django.db import models as m
+from django.template.loader import render_to_string
 from . import models
 
 from flat_json_widget.widgets import FlatJsonWidget
@@ -28,6 +28,8 @@ class FacetTagInline(admin.StackedInline):
         # m.JSONField: {'widget': FlatJsonWidget},
         m.JSONField: {'widget': widgets.TextInput},
     }
+
+
 @admin.register(models.Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'updated_at', 'published',)
@@ -62,6 +64,23 @@ class ServiceAdmin(admin.ModelAdmin):
 @admin.register(models.Facet)
 class FacetAdmin(admin.ModelAdmin):
     search_fields = ('translation_id',)
+    readonly_fields = ('distribution',)
+
+    def get_readonly_fields(self, request, obj):
+        # don't show distribution on create
+        # (prevents crash)
+        if obj:
+            return ('distribution',)
+        return ()
+
+    @admin.display(description="Value distribution")
+    def distribution(self, obj):
+        qs = models.FacetTag.objects.filter(facet=obj)
+        result = qs.annotate(value_count=m.Count('facet__translation_id'))\
+            .values_list('value', 'value_count')
+
+        src = dict(result.all())
+        return render_to_string("as_table.html", {'src': src})
 
     # formfield_overrides = {
     #     m.JSONField: {'widget': FlatJsonWidget},

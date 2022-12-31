@@ -10,7 +10,7 @@ services:
       dockerfile: Dockerfile
       target: base
     depends_on:
-      - db
+      - backend
     networks:
       - bridge-network
     volumes:

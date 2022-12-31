@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     'cloudinary',
     'mdeditor',
     'flat_json_widget',
+    'meilisearch',
 
     # my apps
     'blog',
     'services',
+    'search',
 ]
 
 MIDDLEWARE = [
@@ -147,6 +149,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.core.pagination.CustomPagination',
     'PAGE_SIZE': 20,
+}
+
+## meilisearch
+MEILISEARCH = {
+    'HOST': env['MEILISEARCH_HOST'],
+    'KEY': env.get('MEILISEARCH_KEY', SECRET_KEY)
 }
 
 ## dj3-cloudinary-storage

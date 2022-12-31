@@ -2,6 +2,7 @@ from django.db import models
 from mdeditor.fields import MDTextField
 
 from functools import partial
+from search import searchable_fields
 from . import schemas
 
 
@@ -52,6 +53,23 @@ class Service(models.Model):
         through='FacetTag',
         through_fields=('service', 'facet'),
     )
+
+    def to_document(self):
+        formatted_tags = [{
+            'id': tag.id,
+            tag.facet.translation_id: tag.value
+        } for tag in self.facettag_set.all()]
+
+        fields = {
+            field: getattr(self, field)
+            for field in searchable_fields
+        }
+
+        return {
+            'id': self.id,
+            **fields,
+            'tags': formatted_tags
+        }
 
     def __str__(self):
         return f'<Service: {self.name[:10]}>'
