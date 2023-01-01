@@ -26,7 +26,7 @@ class Service(models.Model):
     # critical functionality for frontend
     # TODO: slug is not unique
     name = models.CharField(max_length=100)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     address = models.CharField(
         max_length=255, blank=True, null=True, default=None)
     # TODO: geodata

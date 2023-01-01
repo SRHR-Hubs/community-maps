@@ -60,6 +60,16 @@ class ServiceAdmin(admin.ModelAdmin):
     def unpublish_selected(self, request, queryset):
         queryset.update(published=False)
 
+    def response_change(self, request, obj):
+        # update search index after save.
+        # post_save and signals don't work, see:
+        # https://igorsobreira.com/2011/02/12/change-object-after-saving-all-inlines-in-django-admin.html
+
+        from search import client
+        client.index('services').update_documents([obj.to_document()])
+
+        return super().response_change(request, obj)
+
 
 @admin.register(models.Facet)
 class FacetAdmin(admin.ModelAdmin):
@@ -76,7 +86,9 @@ class FacetAdmin(admin.ModelAdmin):
     @admin.display(description="Value distribution")
     def distribution(self, obj):
         qs = models.FacetTag.objects.filter(facet=obj)
-        result = qs.annotate(value_count=m.Count('facet__translation_id'))\
+
+        result = qs.values('value')\
+            .annotate(value_count=m.Count('value'))\
             .values_list('value', 'value_count')
 
         src = dict(result.all())

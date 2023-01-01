@@ -42,14 +42,14 @@ INSTALLED_APPS = [
 
     # customs
     'rest_framework',
+    'django_ufilter',
     'cloudinary_storage',
     'cloudinary',
     'mdeditor',
     'flat_json_widget',
-    'meilisearch',
 
     # my apps
-    'blog',
+    'pages',
     'services',
     'search',
 ]
@@ -149,6 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.core.pagination.CustomPagination',
     'PAGE_SIZE': 20,
+    'DEFAULT_FILTER_BACKENDS': ['django_ufilter.integrations.drf.DRFFilterBackend']
 }
 
 ## meilisearch

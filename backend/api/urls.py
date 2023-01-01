@@ -2,12 +2,13 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-import blog.views
+import pages.views
 import services.views
 
 router = routers.DefaultRouter()
 for prefix, viewset in [
-    ('blog', blog.views.BlogPostViewset),
+    ('blog', pages.views.BlogPostViewset),
+    ('pages', pages.views.PageViewset),
     ('services', services.views.ServiceViewset),
     ('facets', services.views.FacetViewset),
 ]:
