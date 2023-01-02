@@ -10,6 +10,7 @@ from search import client, searchable_fields
 class ServiceViewset(vs.ModelViewSet):
     queryset = models.Service.objects.all()
     serializer_class = serializers.ServiceSerializer
+    filter_fields = '__all__'
 
     @action(methods=['get'], detail=False)
     def documents(self, request):
@@ -38,3 +39,4 @@ class ServiceViewset(vs.ModelViewSet):
 class FacetViewset(vs.ModelViewSet):
     queryset = models.Facet.objects.all()
     serializer_class = serializers.FacetSerializer
+    filter_fields = '__all__'

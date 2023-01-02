@@ -13,3 +13,4 @@ class BlogPostViewset(vs.ModelViewSet):
 class PageViewset(vs.ModelViewSet):
     queryset = models.Page.objects.all()
     serializer_class = serializers.PageSerializer
+    filter_fields = '__all__'

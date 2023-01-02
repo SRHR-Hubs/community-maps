@@ -28,7 +28,7 @@ class PageBase(models.Model):
 
 class BlogPost(PageBase):
     def __str__(self):
-        return f'{self.title}'
+        return f'/{self.title}'
 
 class Page(PageBase):
     def __str__(self):
