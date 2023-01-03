@@ -20,15 +20,16 @@ def load_schema(schema):
 class Service(models.Model):
     # administrative fields
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
     published = models.BooleanField(default=False)
 
     # critical functionality for frontend
     # TODO: slug is not unique
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
-    address = models.CharField(
-        max_length=255, blank=True, null=True, default=None)
+    address = models.TextField(blank=True, null=True, default=None)
+    website = models.CharField(max_length=255, blank=True)
+    email = models.EmailField(blank=True)
     # TODO: geodata
 
     # text content
@@ -44,6 +45,7 @@ class Service(models.Model):
         blank=True, **load_schema(schemas.hours))
 
     # extra, 'floppy' attributes
+    extra = models.JSONField(blank=True, default=default(schemas.extra))
 
     # private
     _contact = models.CharField(max_length=255, blank=True)
@@ -96,9 +98,10 @@ class Facet(models.Model):
 class FacetTag(models.Model):
     # TODO: do these on_delete behaviours make sense?
     service = models.ForeignKey(
-        Service, on_delete=models.SET(Service.sentinel))
+        Service, on_delete=models.CASCADE)
+        # Service, on_delete=models.SET(Service.sentinel))
     facet = models.ForeignKey(Facet, on_delete=models.CASCADE)
-    value = models.CharField(max_length=31)
+    value = models.TextField()
     extra = models.JSONField(blank=True, default=default(schemas.extra))
 
     class Meta:

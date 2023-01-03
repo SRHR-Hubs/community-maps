@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # customs
+    'django_extensions',
     'rest_framework',
     'django_ufilter',
     'cloudinary_storage',
@@ -178,3 +179,9 @@ MDEDITOR_CONFIGS = {
     }
     
 }
+
+## django shell
+NOTEBOOK_ARGUMENTS = [
+    '--allow-root',
+    '--no-browser'
+]
