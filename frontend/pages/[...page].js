@@ -1,5 +1,5 @@
 import PageLayout from "../components/layout/page";
-import useAPIFetcher from "../hooks/useAPIFetcher";
+import fetch from "../hooks/fetch";
 import useQuery from "../hooks/useQuery";
 import { Markdown, serialize } from "../lib/mdx-remote";
 
@@ -19,7 +19,6 @@ const GenericPage = ({ sections }) => {
 
 export async function getStaticProps({ params }) {
   const { page = [] } = params;
-  const fetcher = useAPIFetcher();
   const q = useQuery();
 
   const url = `/api/pages/?${q({

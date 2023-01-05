@@ -6,19 +6,19 @@ const BlogHome = ({ posts }) => {
   return (
     <PageLayout id="blog">
       <h1>Blog home</h1>
-      {posts.map((id) => (
-        <li><Link href={`/blog/${id}`}>Post {id}</Link></li>
+      {posts.map(({slug, title}) => (
+        <li><Link href={`/blog/${slug}`}>{title}</Link></li>
       ))}
     </PageLayout>
   );
 };
 
 export async function getStaticProps() {
-  const postIds = await BlogService.getAllPostIds();
-
+  const posts = await BlogService.getAllPosts({ fields: ['slug', 'title']});
+  
   return {
     props: {
-      posts: postIds,
+      posts,
     },
   };
 }

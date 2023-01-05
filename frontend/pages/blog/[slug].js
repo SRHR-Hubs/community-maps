@@ -2,42 +2,38 @@ import PageLayout from "../../components/layout/page";
 import { Markdown, serialize } from "../../lib/mdx-remote";
 import BlogService from "../../services/BlogService";
 
-const BlogPost = ({ slug, source, meta }) => {
+const BlogPost = ({ title, description, image, content }) => {
   return (
-    <PageLayout id={`blog-post-${slug}`}>
-      <Markdown {...source} />
-      <ul>
-        {Array.from(Object.entries(meta)).map(([k, v]) => (
-          <li>
-            <b>{k}</b>: {v}
-          </li>
-        ))}
-      </ul>
+    <PageLayout>
+      <h1>{title}</h1>
+      <p>{description}</p>
+      <Markdown {...content} />
     </PageLayout>
   );
 };
 
 export async function getStaticProps({ params }) {
   const { slug } = params;
-  const data = await BlogService.getPost(slug);
 
-  const { content, ...meta } = data;
+  const fields = ["slug", "title", "description", "image", "content"];
 
-  const source = await serialize(content);
+  const post = await BlogService.getPostBySlug(slug, {
+    fields,
+  });
+
+  post.content = await serialize(post.content);
 
   return {
     props: {
-      slug,
-      source,
-      meta,
+      ...post,
     },
   };
 }
 
 export async function getStaticPaths() {
-  const ids = await BlogService.getAllPostIds();
+  const posts = await BlogService.getAllPosts({ fields: ["slug"] });
 
-  const paths = ids.map(String).map((slug) => ({
+  const paths = posts.map(({ slug }) => ({
     params: { slug },
   }));
 

@@ -1,53 +1,49 @@
-import useAPIFetcher from "../hooks/useAPIFetcher";
-import useQuery from "../hooks/useQuery";
-
-const fetcher = useAPIFetcher();
-const q = useQuery();
-
+import fetcher from "../hooks/fetch";
 export default class BlogService {
   static prefix = "/api/blog";
 
-  static async get(endpoint, query) {
-    const url = `${this.prefix}/${endpoint}?${q(query)}`;
-    const res = await fetcher(url);
-    return await res.json();
+  static async get(endpoint, args) {
+    const url = `${this.prefix}/${endpoint}`;
+    return fetcher(url, args);
   }
 
   /**
    * Get a list of all post IDs for static generation.
    */
-  static async getAllPostIds() {
-    const ids = [];
+  static async getAllPosts(params) {
+    const { fields = ["slug"] } = params ?? {};
 
-    let page = 1;
+    const result = [];
 
-    const idQuery = {
-      fields: "id",
-      page,
+    const query = {
+      fields,
     };
 
-    const { results: data, meta } = await this.get("", idQuery);
+    let next = null;
 
-    ids.push(...data.map((post) => post.id));
+    do {
+      const { results, meta } = await this.get("", { query });
+      result.push(...results);
+      next = meta.next;
+    } while (next !== null);
 
-    // should not run if pageCount is 1
-    for (page; page < meta.total_pages; page++) {
-      const query = {
-        ...idQuery,
-        page
-      };
-      const { results: newData } = await this.get("", query);
-      ids.push(...newData.map((post) => post.id));
-    }
-
-    return ids;
+    return result;
   }
 
-  static async getPost(id) {
+  static async getPostBySlug(slug, options) {
     const query = {
-      //TODO
+      slug,
+      ...options,
     };
 
-    return await this.get(id, query);
+    const { results, meta } = await this.get("", { query });
+
+    if (meta?.count !== 1) {
+      throw Error("Getting blog post by slug failed.");
+    }
+
+    const [post] = results;
+
+    return post;
   }
 }
