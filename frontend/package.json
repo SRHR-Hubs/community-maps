@@ -23,6 +23,7 @@
     "remark-unwrap-images": "^3.0.1",
     "sass": "^1.56.1",
     "sharp": "^0.31.2",
+    "spectre.css": "^0.5.9",
     "unist-util-visit": "^4.1.1"
   },
   "overrides": {

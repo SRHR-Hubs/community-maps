@@ -1,11 +1,12 @@
 @use '../variables';
+@use '../colors';
 
 header {
     z-index: 999;
     height: 75px; // temp
     width: 100%;
     border: 1px solid white;
-    background: variables.$primary-bg;
+    background: colors.$teal-400;
 
     position: sticky;
     left: 0;
@@ -38,7 +39,7 @@ footer {
     width: 100%;
     height: 75px; // temp
     border: 1px solid white;
-    background-color: variables.$primary-bg;
+    background: colors.$teal-400;
 
     [id^=storybook] & {
         position: absolute;
