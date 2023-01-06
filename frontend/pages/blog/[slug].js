@@ -5,9 +5,11 @@ import BlogService from "../../services/BlogService";
 const BlogPost = ({ title, description, image, content }) => {
   return (
     <PageLayout>
-      <h1>{title}</h1>
-      <p>{description}</p>
-      <Markdown {...content} />
+      <article>
+        <h1>{title}</h1>
+        <p>{description}</p>
+        <Markdown {...content} />
+      </article>
     </PageLayout>
   );
 };

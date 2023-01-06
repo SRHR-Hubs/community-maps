@@ -25,9 +25,9 @@ const PageLayout = ({
   const scrollDirection = useScrollDirection();
 
   return (
-    <div className="page" {...props}>
+    <div className="page off-canvas" {...props}>
       {renderHeader && <Header show={showHeader && scrollDirection === UP} />}
-      <main>{children}</main>
+      <main className="container grid-lg">{children}</main>
       {renderFooter && <Footer show={showFooter} />}
     </div>
   );
