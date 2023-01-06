@@ -33,7 +33,7 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const posts = await BlogService.getAllPosts({ fields: ["slug"] });
+  const posts = await BlogService.getAllPosts();
 
   const paths = posts.map(({ slug }) => ({
     params: { slug },

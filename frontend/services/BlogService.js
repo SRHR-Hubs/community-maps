@@ -10,7 +10,9 @@ export default class BlogService {
   /**
    * Get a list of all post IDs for static generation.
    */
-  static async getAllPosts({ fields = ["slug"] }) {
+  static async getAllPosts(params = {}) {
+    const { fields = ["slug"] } = params;
+
     const result = [];
 
     const query = {
