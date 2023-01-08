@@ -28,7 +28,8 @@ SECRET_KEY_FALLBACKS = [env.get('INSECURE_LOCAL_KEY', ''),]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.get('DJANGO_ENV') == "development"
 
-ALLOWED_HOSTS = ['localhost', 'backend']
+ALLOWED_HOSTS = ['localhost', 'backend', 'community-maps-django.fly.dev',]
+CSRF_TRUSTED_ORIGINS = ['community-maps-django.fly.dev',]
 
 
 # Application definition
