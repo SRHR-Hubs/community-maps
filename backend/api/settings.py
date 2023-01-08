@@ -22,10 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k04pxc*59+kyfnh(nv^2p0dhp@j1jbf4tv&^ge!oe0%h$$w_+c'
+SECRET_KEY = env.get('SECRET_KEY', 'django-insecure-k04pxc*59+kyfnh(nv^2p0dhp@j1jbf4tv&^ge!oe0%h$$w_+c') 
+SECRET_KEY_FALLBACKS = [env.get('INSECURE_LOCAL_KEY', ''),]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.get('DJANGO_ENV') == "development"
 
 ALLOWED_HOSTS = ['localhost', 'backend']
 
@@ -64,6 +65,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'api.urls'
 

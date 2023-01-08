@@ -12,3 +12,6 @@ drf-flex-fields==1.0.0
 django-ufilter==0.4.0
 django-flat-json-widget==0.2.0
 meilisearch==0.23.0
+
+# production
+gunicorn==v20.1.0
