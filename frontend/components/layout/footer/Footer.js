@@ -1,4 +1,4 @@
-import logo from "../../../public/logo.svg";
+import Logo from "../../../public/logo.svg";
 import NextImage from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -13,7 +13,7 @@ const Footer = (props) => {
       <div className="container">
         <div className="columns border-top">
             <div className="column col-4 hide-md">
-              <NextImage className="logo" src={logo} />
+              <Logo className="logo"/>
             </div>
             <div className="column col-md-12">
               <ul className="links">

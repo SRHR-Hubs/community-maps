@@ -90,3 +90,13 @@ footer a {
     color: inherit !important;
   }
 }
+
+header, footer {
+  color: colors.$white;
+  a:visited {
+    color: inherit !important;
+  }
+  svg {
+    fill: colors.$white;
+  }
+}
