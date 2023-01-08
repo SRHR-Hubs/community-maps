@@ -15,6 +15,11 @@ const nextConfig = {
     ],
   },
 
+  i18n: {
+    locales: ['en-CA'],
+    defaultLocale: 'en-CA',
+  },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // config.resolve.fallback = {

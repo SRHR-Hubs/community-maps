@@ -30,14 +30,17 @@ header {
     justify-content: space-around;
     a {
       padding: 0 1em;
+
+    &:hover, &:focus {
+        svg {
+          fill: colors.$red-400;
+        }
+      }
     }
     svg {
       width: 2em;
       @media not (prefers-reduced-motion) {
         transition: fill 0.1s linear;
-      }
-      &:hover {
-        fill: colors.$red-400;
       }
     }
   }
@@ -97,7 +100,7 @@ header,
 footer {
   color: colors.$white;
 
-  a:visited, a:hover {
+  a:visited {
     color: inherit !important;
   }
   svg {

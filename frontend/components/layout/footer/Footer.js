@@ -8,7 +8,7 @@ const Footer = (props) => {
   const year = useMemo(() => date.getFullYear(), [date]);
 
   return (
-    <footer>
+    <footer role="contentinfo">
       <div className="container">
         <div className="columns border-top">
           <div className="column col-4 hide-md">
@@ -46,7 +46,7 @@ const Footer = (props) => {
               </li>
             </ul>
           </div>
-          <div className="column col-md-12">&copy; SRHR Hubs {year}</div>
+          <div className="column col-md-12">&copy; SRHR Hubs {year}.</div>
         </div>
       </div>
     </footer>

@@ -1,5 +1,6 @@
 import isProduction from "../hooks/isProduction";
 import isServer from "../hooks/isServer";
+import { DefaultSEO as SEO } from "../lib/seo";
 import "../styles/main.scss";
 
 // inject development dependencies
@@ -11,7 +12,12 @@ if (!isServer() && !isProduction()) {
 }
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <SEO />
+      <Component {...pageProps} />
+    </>
+  );
 }
 
 export default MyApp;
