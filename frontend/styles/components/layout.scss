@@ -31,6 +31,15 @@ header {
     a {
       padding: 0 1em;
     }
+    svg {
+      width: 2em;
+      @media not (prefers-reduced-motion) {
+        transition: fill 0.1s linear;
+      }
+      &:hover {
+        fill: colors.$red-400;
+      }
+    }
   }
 
   @media (prefers-reduced-motion) {
@@ -84,16 +93,11 @@ footer {
   }
 }
 
-header a,
-footer a {
-  &:visited {
-    color: inherit !important;
-  }
-}
-
-header, footer {
+header,
+footer {
   color: colors.$white;
-  a:visited {
+
+  a:visited, a:hover {
     color: inherit !important;
   }
   svg {

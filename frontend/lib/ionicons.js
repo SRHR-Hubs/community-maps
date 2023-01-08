@@ -3,8 +3,22 @@
 this pack, but React/Next isn't very happy with that right now.
 */
 
-// import Twitter from 'ionicons/dist/ionicons/svg/logo-twitter.svg'
+import dynamic from "next/dynamic";
 
-// export {
-//     Twitter,
-// }
+// const GetIcon = (icon) => {
+//   const path = `ionicons/dist/ionicons/svg/${icon}.svg`;
+//   console.log(path)
+//   return dynamic(() => import("" + path), {
+//     ssr: false,
+//     loading: () => <p>loading</p>,
+//   });
+// };
+
+const getIcon = (icon) =>
+  dynamic(() => import(`ionicons/dist/ionicons/svg/${icon}.svg`), {
+    ssr: false,
+  });
+
+export default getIcon;
+export const Twitter = getIcon("logo-twitter");
+export const Instagram = getIcon("logo-instagram");

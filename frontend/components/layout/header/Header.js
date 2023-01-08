@@ -1,8 +1,9 @@
 import Logo from "../../../public/logo.svg";
-import NextImage from "next/image";
 import Link from "next/link";
-// import { Twitter } from "../../../lib/ionicons";
-import Twitter from 'ionicons/dist/ionicons/svg/logo-twitter.svg'
+import { Twitter, Instagram } from "../../../lib/ionicons";
+import config from "../../../config/next-seo.config";
+
+const { twitter: twitterInfo, instagram: instagramInfo } = config;
 
 const Header = ({ show, ...props }) => (
   <header data-show={show}>
@@ -27,9 +28,13 @@ const Header = ({ show, ...props }) => (
           <Link href="/blog">Blog</Link>
           <Link href="/contact">Contact</Link>
         </section>
-        <section className="navbar-section column col-2 btns">
-        {/* <NextImage src={Twitter} width={50}/> */}
-        <Twitter width={50}/>
+        <section className="navbar-section column col-2 links">
+          <Link href={twitterInfo.site}>
+            <Twitter />
+          </Link>
+          <Link href="#">
+            <Instagram />
+          </Link>
         </section>
       </div>
     </div>

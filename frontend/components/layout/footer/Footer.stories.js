@@ -1,3 +1,3 @@
-import Footer from './index'
+import Footer from './Footer'
 export default { component: Footer }
 export const Default = { }
