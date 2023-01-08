@@ -1,7 +1,7 @@
 import NextHead from "next/head";
 import useScrollDirection, {UP} from "../../../hooks/useScrollDirection";
-import Footer from "../footer";
-import Header from "../header";
+import Footer from "../footer/Footer";
+import Header from "../header/Header";
 
 /** Important notes for this file:
  * - Currently, page components merely *compose* this component,

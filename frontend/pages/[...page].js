@@ -1,4 +1,4 @@
-import PageLayout from "../components/layout/page";
+import PageLayout from "../components/layout/page/PageLayout";
 import { Markdown, serialize } from "../lib/mdx-remote";
 import PageService from "../services/PageService";
 
