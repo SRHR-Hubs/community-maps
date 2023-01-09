@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
-from os import environ as env
+from os import getenv
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,14 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.get('SECRET_KEY', 'django-insecure-k04pxc*59+kyfnh(nv^2p0dhp@j1jbf4tv&^ge!oe0%h$$w_+c') 
-SECRET_KEY_FALLBACKS = [env.get('INSECURE_LOCAL_KEY', ''),]
+SECRET_KEY = getenv('SECRET_KEY', 'django-insecure-k04pxc*59+kyfnh(nv^2p0dhp@j1jbf4tv&^ge!oe0%h$$w_+c') 
+SECRET_KEY_FALLBACKS = [getenv('INSECURE_LOCAL_KEY', ''),]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.get('DJANGO_ENV') == "development"
+DEBUG = getenv('DEBUG', '0') != '0' or getenv('DJANGO_ENV') == "development"
 
-ALLOWED_HOSTS = ['localhost', 'backend', 'community-maps-django.fly.dev',]
-CSRF_TRUSTED_ORIGINS = ['community-maps-django.fly.dev',]
+ALLOWED_HOSTS = getenv('ALLOWED_HOSTS', '').split(' ')
+CSRF_TRUSTED_ORIGINS = getenv('CSRF_TRUSTED_ORIGINS', '').split(' ')
 
 
 # Application definition
@@ -94,15 +95,13 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+print(getenv('DATABASE_URL'))
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env['PGDATABASE'],
-        "USER": env['PGUSER'],
-        "PASSWORD": env['PGPASSWORD'],
-        "HOST": "db", 
-        "PORT": env['PGPORT'],
-    }
+    "default": dj_database_url.parse(
+        getenv('DATABASE_URL'),
+        conn_max_age=6000,
+    ),
 }
 
 
@@ -160,17 +159,17 @@ REST_FRAMEWORK = {
 
 ## meilisearch
 MEILISEARCH = {
-    'HOST': env['MEILISEARCH_HOST'],
-    'KEY': env.get('MEILISEARCH_KEY', SECRET_KEY)
+    'HOST': getenv('MEILISEARCH_HOST'),
+    'KEY': getenv('MEILISEARCH_KEY', SECRET_KEY)
 }
 
 ## dj3-cloudinary-storage
 MEDIA_URL = '/media/'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': env['CLOUDINARY_CLOUD_NAME'],
-    'API_KEY': env['CLOUDINARY_API_KEY'],
-    'API_SECRET': env['CLOUDINARY_API_SECRET'],
+    'CLOUD_NAME': getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': getenv('CLOUDINARY_API_SECRET'),
 }
 
 ## django-mdeditor
