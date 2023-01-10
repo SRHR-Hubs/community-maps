@@ -28,7 +28,9 @@ services:
     volumes:
       - ./backend:/src
     networks:
-      - bridge-network
+      - brid2023-01-09T22:21:20.649 app[3e9d6560] yyz [info] return request("post", url, data=data, json=json, **kwargs)
+
+ge-network
     depends_on:
       - db
     env_file: .env.local

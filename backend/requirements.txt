@@ -17,3 +17,4 @@ meilisearch==0.23.0
 gunicorn==v20.1.0
 python-dotenv==0.21.0
 dj-database-url==1.2.0
+whitenoise==6.3.0
