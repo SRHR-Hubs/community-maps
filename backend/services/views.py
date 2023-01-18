@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from . import models, serializers
 
-from search import client, searchable_fields
+# from search import client, searchable_fields
 
 
 class ServiceViewset(vs.ModelViewSet):
@@ -28,8 +28,8 @@ class ServiceViewset(vs.ModelViewSet):
             for obj in self.queryset
         ]
 
-        response = client.index('services').add_documents(
-            documents, primary_key='id')
+        response = None #client.index('services').add_documents(
+            #documents, primary_key='id')
 
         return Response({
             'result': response

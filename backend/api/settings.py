@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
-from os import environ as env
+from os import getenv
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +23,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k04pxc*59+kyfnh(nv^2p0dhp@j1jbf4tv&^ge!oe0%h$$w_+c'
+SECRET_KEY = getenv(
+    'SECRET_KEY', 'django-insecure-k04pxc*59+kyfnh(nv^2p0dhp@j1jbf4tv&^ge!oe0%h$$w_+c')
+SECRET_KEY_FALLBACKS = [getenv('INSECURE_LOCAL_KEY', ''),]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = getenv('DEBUG', '0') != '0' or getenv('DJANGO_ENV') == "development"
 
-ALLOWED_HOSTS = ['localhost', 'backend']
+ALLOWED_HOSTS = getenv('ALLOWED_HOSTS', '').split(' ')
+CSRF_TRUSTED_ORIGINS = getenv('CSRF_TRUSTED_ORIGINS', '').split(' ')
 
 
 # Application definition
@@ -38,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
 
     # customs
@@ -57,6 +62,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -64,6 +70,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'api.urls'
 
@@ -90,14 +99,10 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env['PGDATABASE'],
-        "USER": env['PGUSER'],
-        "PASSWORD": env['PGPASSWORD'],
-        "HOST": "db", 
-        "PORT": env['PGPORT'],
-    }
+    "default": dj_database_url.parse(
+        getenv('DATABASE_URL'),
+        conn_max_age=6000,
+    ),
 }
 
 
@@ -135,7 +140,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'data/staticfiles'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'data/mediafiles'
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
@@ -146,41 +157,40 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Installed apps
 
-## rest_framework
+# rest_framework
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.core.pagination.CustomPagination',
     'PAGE_SIZE': 20,
     'DEFAULT_FILTER_BACKENDS': ['django_ufilter.integrations.drf.DRFFilterBackend']
 }
 
-## meilisearch
+# meilisearch
 MEILISEARCH = {
-    'HOST': env['MEILISEARCH_HOST'],
-    'KEY': env.get('MEILISEARCH_KEY', SECRET_KEY)
+    'HOST': getenv('MEILISEARCH_HOST'),
+    'KEY': getenv('MEILISEARCH_KEY', SECRET_KEY)
 }
 
-## dj3-cloudinary-storage
-MEDIA_URL = '/media/'
+# dj3-cloudinary-storage
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': env['CLOUDINARY_CLOUD_NAME'],
-    'API_KEY': env['CLOUDINARY_API_KEY'],
-    'API_SECRET': env['CLOUDINARY_API_SECRET'],
+    'CLOUD_NAME': getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': getenv('CLOUDINARY_API_SECRET'),
 }
 
-## django-mdeditor
-X_FRAME_OPTIONS = 'SAMEORIGIN' 
+# django-mdeditor
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 # see: https://github.com/pylixm/django-mdeditor#customize-the-toolbar
 MDEDITOR_CONFIGS = {
-    'default':{
+    'default': {
         'language': 'en'
     }
-    
+
 }
 
-## django shell
+# django shell
 NOTEBOOK_ARGUMENTS = [
     '--allow-root',
     '--no-browser'
