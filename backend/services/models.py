@@ -16,6 +16,12 @@ def load_schema(schema):
         'default': default(schema),
     }
 
+class Location(models.Model):
+    service = models.OneToOneField('Service', on_delete=models.CASCADE, related_name='location')
+    address = models.TextField()
+    latitude = models.FloatField(null=True)
+    longitude = models.FloatField(null=True)
+
 
 class Service(models.Model):
     # administrative fields
@@ -27,7 +33,8 @@ class Service(models.Model):
     # TODO: slug is not unique
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
-    address = models.TextField(blank=True, null=True, default=None)
+    is_virtual = models.BooleanField(default=True)
+
     website = models.CharField(max_length=255, blank=True)
     email = models.EmailField(blank=True)
     # TODO: geodata
@@ -79,7 +86,6 @@ class Service(models.Model):
     @classmethod
     def sentinel(cls):
         return cls.objects.get_or_create(**schemas.blank_service)
-
     class Meta:
         ordering = ('id',)
 

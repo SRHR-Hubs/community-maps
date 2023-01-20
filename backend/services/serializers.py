@@ -21,11 +21,16 @@ class TagSerializer(Base):
         model = models.FacetTag
         fields = ('id', 'facet_id', 'facet', 'value', 'extra')
 
+class LocationSerializer(Base):
+    class Meta:
+        model = models.Location
+        exclude = ('id', 'service')
 
 class ServiceSerializer(Base):
 
     # 2 hours lost here. Gotta understand reverse relations better.
     tags = TagSerializer(many=True, read_only=True, source='facettag_set')
+    location = LocationSerializer(many=False, read_only=True)
 
     class Meta:
         model = models.Service

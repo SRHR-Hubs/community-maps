@@ -7,7 +7,6 @@ from . import models
 
 from flat_json_widget.widgets import FlatJsonWidget
 
-
 class FacetTagInline(admin.StackedInline):
     # TODO: custom template
     # to accommodate with weird rendering
@@ -29,11 +28,11 @@ class FacetTagInline(admin.StackedInline):
         m.JSONField: {'widget': widgets.TextInput},
     }
 
-
 @admin.register(models.Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'updated_at', 'published',)
     list_display_links = ('id', 'name',)
+    list_per_page = 10
 
     actions = ('publish_selected', 'unpublish_selected',)
 
