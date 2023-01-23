@@ -41,7 +41,7 @@ class Service(models.Model, GeoItem):
     # TODO: slug is not unique
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
-    is_virtual = models.BooleanField(default=True)
+    is_virtual = models.BooleanField(default=True, verbose_name="virtual?")
 
     website = models.CharField(max_length=255, blank=True)
     email = models.EmailField(blank=True)

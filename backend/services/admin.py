@@ -54,7 +54,7 @@ class ServiceAdmin(GeoModelAdmin):
         ('extra',),
     )
 
-    list_display = ('id', 'name', 'updated_at', 'published',)
+    list_display = ('id', 'name', 'updated_at', 'is_virtual', 'published',)
     list_display_links = ('id', 'name',)
     list_per_page = 10
 
