@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+from django.utils import html
 from django_admin_geomap import GeoItem
 from mdeditor.fields import MDTextField
 
@@ -17,11 +19,16 @@ def load_schema(schema):
         'default': default(schema),
     }
 
+
 class Location(models.Model):
-    service = models.OneToOneField('Service', on_delete=models.CASCADE, related_name='location')
+    service = models.OneToOneField(
+        'Service', on_delete=models.CASCADE, related_name='location')
     address = models.TextField()
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
+
+    def __str__(self):
+        return f'<Location for {self.service.name}>'
 
 
 class Service(models.Model, GeoItem):
@@ -85,6 +92,9 @@ class Service(models.Model, GeoItem):
         return self.name
         # return f'<Service: {self.name[:10]}>'
 
+
+    """Django Admin Geomap required properties"""
+
     @property
     def geomap_longitude(self):
         try:
@@ -99,9 +109,28 @@ class Service(models.Model, GeoItem):
         except:
             return ''
 
+    @property
+    def geomap_popup_view(self):
+        ret = "<strong>{}</strong>".format(str(self))
+
+        if self.location and self.location.address:
+            # Was struggling a bit to get addresses included without
+            # breaking codegen, this will do
+            addr = self.location.address.splitlines()[0]
+            ret += f"<br>{addr}"
+        
+        return ret
+
+    @property
+    def geomap_popup_edit(self):
+        url = reverse(
+            f'admin:{self._meta.app_label}_{self._meta.model_name}_change', args=[self.pk])
+        return f'<a href=\'{url}\'>{self.geomap_popup_view}</a>'
+
     @classmethod
     def sentinel(cls):
         return cls.objects.get_or_create(**schemas.blank_service)
+
     class Meta:
         ordering = ('id',)
 
@@ -121,7 +150,7 @@ class FacetTag(models.Model):
     # TODO: do these on_delete behaviours make sense?
     service = models.ForeignKey(
         Service, on_delete=models.CASCADE)
-        # Service, on_delete=models.SET(Service.sentinel))
+    # Service, on_delete=models.SET(Service.sentinel))
     facet = models.ForeignKey(Facet, on_delete=models.CASCADE)
     value = models.TextField()
     extra = models.JSONField(blank=True, default=default(schemas.extra))

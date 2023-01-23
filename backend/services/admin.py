@@ -8,6 +8,7 @@ from . import models
 from flat_json_widget.widgets import FlatJsonWidget
 from django_admin_geomap import ModelAdmin as GeoModelAdmin
 
+
 class FacetTagInline(admin.StackedInline):
     # TODO: custom template
     # to accommodate with weird rendering
@@ -24,20 +25,45 @@ class FacetTagInline(admin.StackedInline):
             ('extra',)
         )}),
     )
+
+    classes = ('collapse',)
+
     formfield_overrides = {
         # m.JSONField: {'widget': FlatJsonWidget},
         m.JSONField: {'widget': widgets.TextInput},
     }
 
+
+class LocationInline(admin.StackedInline):
+    # TODO: possible to add button to attempt to auto_calculate lat/long?
+    model = models.Location
+
+
 @admin.register(models.Service)
 class ServiceAdmin(GeoModelAdmin):
+    fields = (
+        ('published',),
+        ('name', 'slug',),
+        ('website', 'email',),
+        ('blurb',),
+        ('is_virtual',),
+        ('description',),
+        ('phone_numbers',),
+        ('socials',),
+        ('hours',),
+        ('extra',),
+    )
+
     list_display = ('id', 'name', 'updated_at', 'published',)
     list_display_links = ('id', 'name',)
     list_per_page = 10
 
     actions = ('publish_selected', 'unpublish_selected',)
 
-    inlines = (FacetTagInline,)
+    inlines = (LocationInline, FacetTagInline,)
+
+    geomap_field_longitude = "location__longitude"
+    geomap_field_latitude = "location__latitude"
 
     prepopulated_fields = {
         "slug": ("name",),
@@ -85,6 +111,11 @@ class FacetAdmin(admin.ModelAdmin):
 
     @admin.display(description="Value distribution")
     def distribution(self, obj):
+        # TODO: I would love to have a list of all
+        # services with each key-value pair.
+        # suitable Subquery:
+        # Service.objects.filter(facettag__facet__translation_id="<>", facettag__value__eq="<>")
+
         qs = models.FacetTag.objects.filter(facet=obj)
 
         result = qs.values('value')\
