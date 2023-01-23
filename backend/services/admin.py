@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from . import models
 
 from flat_json_widget.widgets import FlatJsonWidget
+from django_admin_geomap import ModelAdmin as GeoModelAdmin
 
 class FacetTagInline(admin.StackedInline):
     # TODO: custom template
@@ -29,7 +30,7 @@ class FacetTagInline(admin.StackedInline):
     }
 
 @admin.register(models.Service)
-class ServiceAdmin(admin.ModelAdmin):
+class ServiceAdmin(GeoModelAdmin):
     list_display = ('id', 'name', 'updated_at', 'published',)
     list_display_links = ('id', 'name',)
     list_per_page = 10

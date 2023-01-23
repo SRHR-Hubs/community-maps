@@ -1,4 +1,5 @@
 from django.db import models
+from django_admin_geomap import GeoItem
 from mdeditor.fields import MDTextField
 
 from functools import partial
@@ -23,7 +24,7 @@ class Location(models.Model):
     longitude = models.FloatField(null=True)
 
 
-class Service(models.Model):
+class Service(models.Model, GeoItem):
     # administrative fields
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
@@ -81,7 +82,22 @@ class Service(models.Model):
         }
 
     def __str__(self):
-        return f'<Service: {self.name[:10]}>'
+        return self.name
+        # return f'<Service: {self.name[:10]}>'
+
+    @property
+    def geomap_longitude(self):
+        try:
+            return str(self.location.longitude or '')
+        except:
+            return ''
+
+    @property
+    def geomap_latitude(self):
+        try:
+            return str(self.location.latitude or '')
+        except:
+            return ''
 
     @classmethod
     def sentinel(cls):

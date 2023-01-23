@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'mdeditor',
     'flat_json_widget',
+    'django_admin_geomap',
 
     # my apps
     'pages',
