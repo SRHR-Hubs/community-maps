@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from . import models
 
 from flat_json_widget.widgets import FlatJsonWidget
+from django_admin_geomap import ModelAdmin as GeoModelAdmin
 
 
 class FacetTagInline(admin.StackedInline):
@@ -24,20 +25,45 @@ class FacetTagInline(admin.StackedInline):
             ('extra',)
         )}),
     )
+
+    classes = ('collapse',)
+
     formfield_overrides = {
         # m.JSONField: {'widget': FlatJsonWidget},
         m.JSONField: {'widget': widgets.TextInput},
     }
 
 
+class LocationInline(admin.StackedInline):
+    # TODO: possible to add button to attempt to auto_calculate lat/long?
+    model = models.Location
+
+
 @admin.register(models.Service)
-class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'updated_at', 'published',)
+class ServiceAdmin(GeoModelAdmin):
+    fields = (
+        ('published',),
+        ('name', 'slug',),
+        ('website', 'email',),
+        ('blurb',),
+        ('is_virtual',),
+        ('description',),
+        ('phone_numbers',),
+        ('socials',),
+        ('hours',),
+        ('extra',),
+    )
+
+    list_display = ('id', 'name', 'updated_at', 'is_virtual', 'published',)
     list_display_links = ('id', 'name',)
+    list_per_page = 10
 
     actions = ('publish_selected', 'unpublish_selected',)
 
-    inlines = (FacetTagInline,)
+    inlines = (LocationInline, FacetTagInline,)
+
+    geomap_field_longitude = "location__longitude"
+    geomap_field_latitude = "location__latitude"
 
     prepopulated_fields = {
         "slug": ("name",),
@@ -65,8 +91,8 @@ class ServiceAdmin(admin.ModelAdmin):
         # post_save and signals don't work, see:
         # https://igorsobreira.com/2011/02/12/change-object-after-saving-all-inlines-in-django-admin.html
 
-        from search import client
-        client.index('services').update_documents([obj.to_document()])
+        # from search import client
+        # client.index('services').update_documents([obj.to_document()])
 
         return super().response_change(request, obj)
 
@@ -85,6 +111,11 @@ class FacetAdmin(admin.ModelAdmin):
 
     @admin.display(description="Value distribution")
     def distribution(self, obj):
+        # TODO: I would love to have a list of all
+        # services with each key-value pair.
+        # suitable Subquery:
+        # Service.objects.filter(facettag__facet__translation_id="<>", facettag__value__eq="<>")
+
         qs = models.FacetTag.objects.filter(facet=obj)
 
         result = qs.values('value')\
