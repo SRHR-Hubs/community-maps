@@ -5,8 +5,13 @@ from . import models
 
 Base = FlexFieldsModelSerializer
 
+class SectionSerializer(Base):
+    class Meta:
+        model = models.Section
+        exclude = ('id', 'object_id', 'content_type')
 
 class PageBaseSerializer(serializers.Serializer):
+    content = SectionSerializer(many=True)
     pass
 
     # any common functionality will go here

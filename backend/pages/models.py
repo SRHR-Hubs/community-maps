@@ -2,7 +2,26 @@ from django.db import models
 from mdeditor.fields import MDTextField
 from django.contrib.auth import get_user_model
 
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+
 User = get_user_model()
+
+
+class Section(models.Model):
+    section_id = models.CharField(max_length=200)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    # TODO: could be extended to include language and whatnot
+
+    text = MDTextField()
+
+    class Meta:
+        indexes = (
+            models.Index(fields=['content_type', 'object_id']),
+        )
 
 
 class PageBase(models.Model):
@@ -16,19 +35,22 @@ class PageBase(models.Model):
     # opengraph metadata
     # TODO see more
     title = models.CharField(max_length=31)
-    slug = models.CharField(unique=True, max_length=255) # not slug to allow for spaces
+    # not slug to allow for spaces
+    slug = models.CharField(unique=True, max_length=255)
     description = models.CharField(max_length=255)
     image = models.URLField(blank=True)
 
     # content, powered by mdx
-    content = MDTextField(blank=True)
+    content = GenericRelation(Section)
 
     class Meta:
         abstract = True
 
+
 class BlogPost(PageBase):
     def __str__(self):
         return f'/{self.title}'
+
 
 class Page(PageBase):
     def __str__(self):

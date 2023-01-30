@@ -1,8 +1,11 @@
 from django.contrib import admin
+from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils import timezone
 from . import models
 
-
+class SectionInline(GenericStackedInline):
+    model = models.Section
+    extra = 1
 class PageAdminBase(admin.ModelAdmin):
 
     list_display = ('slug', 'created_by', 'created_at',
@@ -11,6 +14,8 @@ class PageAdminBase(admin.ModelAdmin):
 
     actions = ('publish_selected', 'unpublish_selected',)
 
+    inlines = (SectionInline,)
+
     # TODO:
     # it will have to be the admin's
     # responsibility to ensure this is
@@ -18,6 +23,7 @@ class PageAdminBase(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
+
 
     def get_changeform_initial_data(self, request):
         return {
