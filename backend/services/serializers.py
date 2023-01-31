@@ -5,18 +5,29 @@ from . import models
 
 Base = FlexFieldsModelSerializer
 
-class FacetTranslationSerializer(Base):
-    def to_representation(self, instance):
-        return {
-            instance.language: instance.value
-        }
-    class Meta:
-        model = models.FacetTranslation
+
 class FacetSerializer(Base):
-    translations = FacetTranslationSerializer(many=True)
+    translations = serializers.SerializerMethodField()
+
+    def get_translations(self, obj):
+        requested_languages = [
+            lang.removeprefix('translations.')
+            for lang in self.context['request'].query_params.getlist('fields')
+            if lang.startswith('translations.')
+        ]
+        if requested_languages:
+            qs = obj.translations.filter(language__in=requested_languages)
+        else:
+            qs = obj.translations.all()
+
+        return {
+            trans.language: trans.value
+            for trans in qs
+        }
+
     class Meta:
         model = models.Facet
-        fields = '__all__'
+        exclude = ('_description',)
 
 
 class TagSerializer(Base):
@@ -28,10 +39,12 @@ class TagSerializer(Base):
         model = models.FacetTag
         fields = ('id', 'facet_id', 'facet', 'value', 'extra')
 
+
 class LocationSerializer(Base):
     class Meta:
         model = models.Location
         exclude = ('id', 'service')
+
 
 class ServiceSerializer(Base):
 

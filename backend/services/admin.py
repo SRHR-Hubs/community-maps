@@ -61,10 +61,12 @@ class ServiceAdmin(GeoModelAdmin):
 
     actions = ('publish_selected', 'unpublish_selected',)
 
-    inlines = (LocationInline, FacetTagInline,)
+    inlineps = (LocationInline, FacetTagInline,)
 
     geomap_field_longitude = "location__longitude"
     geomap_field_latitude = "location__latitude"
+
+    search_fields = ('name',)
 
     prepopulated_fields = {
         "slug": ("name",),
