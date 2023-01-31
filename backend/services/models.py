@@ -5,6 +5,8 @@ from django_admin_geomap import GeoItem
 from mdeditor.fields import MDTextField
 
 from functools import partial
+from api.models import GenericTranslation
+from django.contrib.contenttypes.fields import GenericRelation
 from search import searchable_fields
 from . import schemas
 
@@ -135,9 +137,14 @@ class Service(models.Model, GeoItem):
         ordering = ('id',)
 
 
+class FacetTranslation(GenericTranslation):
+    value = models.CharField(max_length=32)
+
 class Facet(models.Model):
     translation_id = models.CharField(max_length=31, unique=True)
     _description = models.CharField(max_length=255, blank=True)
+
+    translations = GenericRelation(FacetTranslation, related_query_name="facet")
 
     def __str__(self):
         return f'{self.translation_id}'

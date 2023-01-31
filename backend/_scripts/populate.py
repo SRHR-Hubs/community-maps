@@ -94,10 +94,13 @@ def run():
                   # params['extra'] = extra
 
                 # let's do this thing
-                service, _service_updated = models.Service.objects.update_or_create(
-                    id=params['id'],
-                    defaults=params)
-                service.extra = extra
+                # service, _service_updated = models.Service.objects.update_or_create(
+                #     id=params['id'],
+                #     defaults=params)
+                # service.extra = extra
+                service = models.Service.objects.get(
+                    id=params['id']
+                )
 
                 for facet_name, value in tags:
                     facet, _facet_created = models.Facet.objects.get_or_create(

@@ -1,21 +1,15 @@
 from django.db import models
 from mdeditor.fields import MDTextField
 from django.contrib.auth import get_user_model
+from api.models import GenericTranslation
 
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 
 User = get_user_model()
 
 
-class Section(models.Model):
-    section_id = models.CharField(max_length=200)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-
+class Section(GenericTranslation):
     # TODO: could be extended to include language and whatnot
-
     text = MDTextField()
 
     class Meta:

@@ -5,8 +5,15 @@ from . import models
 
 Base = FlexFieldsModelSerializer
 
-
+class FacetTranslationSerializer(Base):
+    def to_representation(self, instance):
+        return {
+            instance.language: instance.value
+        }
+    class Meta:
+        model = models.FacetTranslation
 class FacetSerializer(Base):
+    translations = FacetTranslationSerializer(many=True)
     class Meta:
         model = models.Facet
         fields = '__all__'

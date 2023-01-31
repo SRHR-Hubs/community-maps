@@ -3,6 +3,7 @@ from django.forms import widgets
 from django.utils import timezone
 from django.db import models as m
 from django.template.loader import render_to_string
+from django.contrib.contenttypes.admin import GenericTabularInline
 from . import models
 
 from flat_json_widget.widgets import FlatJsonWidget
@@ -96,11 +97,18 @@ class ServiceAdmin(GeoModelAdmin):
 
         return super().response_change(request, obj)
 
+class FacetTranslationInline(GenericTabularInline):
+    model = models.FacetTranslation
+    extra = 1
+
+    fields = ('language', 'value')
 
 @admin.register(models.Facet)
 class FacetAdmin(admin.ModelAdmin):
     search_fields = ('translation_id',)
     readonly_fields = ('distribution',)
+
+    inlines = (FacetTranslationInline,)
 
     def get_readonly_fields(self, request, obj):
         # don't show distribution on create
