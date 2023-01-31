@@ -7,8 +7,13 @@ from django.contrib.contenttypes.admin import GenericTabularInline
 from . import models
 
 from flat_json_widget.widgets import FlatJsonWidget
+from jsoneditor.forms import JSONEditor
 from django_admin_geomap import ModelAdmin as GeoModelAdmin
 
+#TODO move and get to work lol
+class CustomJSONEditor(JSONEditor):
+    class Media:
+        css = {"all": ("templates/json_editor.css",)}
 
 class FacetTagInline(admin.StackedInline):
     # TODO: custom template
@@ -30,8 +35,8 @@ class FacetTagInline(admin.StackedInline):
     classes = ('collapse',)
 
     formfield_overrides = {
-        # m.JSONField: {'widget': FlatJsonWidget},
-        m.JSONField: {'widget': widgets.TextInput},
+        m.JSONField: {'widget': CustomJSONEditor},
+        # m.JSONField: {'widget': widgets.TextInput},
     }
 
 
@@ -61,7 +66,7 @@ class ServiceAdmin(GeoModelAdmin):
 
     actions = ('publish_selected', 'unpublish_selected',)
 
-    inlineps = (LocationInline, FacetTagInline,)
+    inlines = (LocationInline, FacetTagInline,)
 
     geomap_field_longitude = "location__longitude"
     geomap_field_latitude = "location__latitude"
