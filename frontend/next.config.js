@@ -15,16 +15,34 @@ const nextConfig = {
     ],
   },
 
+  i18n: {
+    locales: ['en-CA'],
+    defaultLocale: 'en-CA',
+  },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // config.resolve.fallback = {
       //   ...config.resolve.fallback,
       //   child_process: false,
       // };
+
       config.externals = {
         sharp: "sharp",
       };
     }
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            dimensions: false,
+          },
+        },
+      ],
+    });
+
     return config;
   },
 };

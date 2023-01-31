@@ -1,48 +1,109 @@
-@use '../variables';
+@use "../variables";
+@use "../colors";
 
 header {
-    z-index: 999;
-    height: 75px; // temp
-    width: 100%;
-    border: 1px solid white;
-    background: variables.$primary-bg;
+  z-index: 999;
+  width: 100%;
+  border: 1px solid white;
+  background: colors.$teal-400;
 
-    position: sticky;
-    left: 0;
-    top: -25%;
+  padding: 1em 0;
 
-    transition: top 0.17s ease;
+  position: sticky;
+  left: 0;
+  top: -25%;
 
-    &[data-show=true] {
-        top: 0;
-    }
-    @media (prefers-reduced-motion) {
-        & {
-            top: 0;
-            transition: unset;
+  transition: top 0.17s ease;
+
+  &[data-show="true"] {
+    top: 0;
+  }
+
+  .logo {
+    height: 6em;
+    width: auto;
+  }
+
+  .links {
+    display: flex;
+    margin-top: auto;
+    justify-content: space-around;
+    a {
+      padding: 0 1em;
+
+    &:hover, &:focus {
+        svg {
+          fill: colors.$red-400;
         }
+      }
     }
+    svg {
+      width: 2em;
+      @media not (prefers-reduced-motion) {
+        transition: fill 0.1s linear;
+      }
+    }
+  }
 
-    [id^=storybook] & {
-        position: absolute;
+  @media (prefers-reduced-motion) {
+    & {
+      top: 0;
+      transition: unset;
     }
+  }
+
+  [id^="storybook"] & {
+    position: absolute;
+  }
 }
 
 .page {
-    main {
-        padding: 2em 0;
-    }
+  main {
+    padding: 2em 0;
+  }
 }
 
 footer {
-    width: 100%;
-    height: 75px; // temp
-    border: 1px solid white;
-    background-color: variables.$primary-bg;
+  width: 100%;
+  border: 1px solid white;
+  background: colors.$teal-400;
+  padding: 3em 0;
 
-    [id^=storybook] & {
-        position: absolute;
-        bottom: 0;
-        left: 0;
+  .border-top {
+    border-top: 1px solid colors.$white;
+    margin: 2em;
+    align-items: center;
+    .column {
+      height: 100%;
     }
+  }
+
+  .logo {
+    height: 10em;
+    width: auto;
+    margin: 0;
+  }
+
+  ul.links {
+    list-style: none;
+    margin: unset;
+  }
+
+  [id^="storybook"] & {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+header,
+footer {
+  color: colors.$white;
+
+  a:visited {
+    color: inherit !important;
+  }
+  svg {
+    fill: colors.$white;
+  }
 }

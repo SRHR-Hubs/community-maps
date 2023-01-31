@@ -1,72 +1,44 @@
-import PageLayout from "../components/layout/page";
-import useAPIFetcher from "../hooks/useAPIFetcher";
-import useQuery from "../hooks/useQuery";
+import PageLayout from "../components/layout/page/PageLayout";
 import { Markdown, serialize } from "../lib/mdx-remote";
+import PageService from "../services/PageService";
 
-const GenericPage = ({ sections }) => {
+const GenericPage = ({ slug, title, description, content }) => {
   // TODO head
-  sections = JSON.parse(sections);
   return (
     <PageLayout>
-      {Object.entries(sections).map(([sectionId, source]) => (
-        <section id={sectionId} key={sectionId}>
-          <Markdown {...source} />
-        </section>
-      ))}
+      <h1>{title}</h1>
+      <Markdown {...content}/>
     </PageLayout>
   );
 };
 
 export async function getStaticProps({ params }) {
-  const { page = [] } = params;
-  const fetcher = useAPIFetcher();
-  const q = useQuery();
+  const { page: tokens } = params;
+  const slug = tokens.join("/");
+  const fields = ["slug", "title", "description", "content"];
 
-  const url = `/api/pages/?${q({
-    filters: {
-      url: {
-        $eq: "/" + page.join("/"),
-      },
-    },
-    populate: ["head", "sections"],
-  })}`;
+  const page = await PageService.getPageBySlug(slug, {
+    fields,
+  });
 
-  const { data } = await (await fetcher(url)).json();
-
-  const [{ attributes }] = data;
-
-  const sections = await Promise.all(
-    attributes.sections.map(async ({ sectionId, content }) => [
-      sectionId,
-      await serialize(content),
-    ])
-  );
+  page.content = await serialize(page.content);
 
   return {
     props: {
-      sections: JSON.stringify(Object.fromEntries(sections)),
+      ...page,
     },
   };
 }
 
 export async function getStaticPaths() {
-  const fetcher = useAPIFetcher();
-  const q = useQuery();
+  const pages = await PageService.getAllPages();
 
-  const url = `/api/pages?${q({
-    fields: ["url"],
-  })}`;
+  const paths = pages.map(({ slug }) => {
+    const page = slug.split("/");
+    return { params: { page } };
+  });
 
-  const { data } = await (await fetcher(url)).json();
-
-  const paths = data.map(({ attributes: { url } }) => ({
-    params: { page: url === "/" ? [] : url.substring(1).split("/") },
-  }));
-
-  return {
-    paths,
-    fallback: false,
-  };
+  return { paths, fallback: false };
 }
 
 export default GenericPage;
