@@ -5,7 +5,11 @@ from . import models
 
 class SectionInline(GenericStackedInline):
     model = models.PageSection
-    extra = 1
+    
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj.content.count():
+            return 0
+        return 1
 class PageAdminBase(admin.ModelAdmin):
 
     list_display = ('slug', 'created_by', 'created_at',

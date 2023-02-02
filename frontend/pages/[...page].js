@@ -33,8 +33,8 @@ export async function getStaticProps({ params }) {
   });
 
   page.content = await Promise.all(
-    page.content.map(async ({ translation_id, text }) => [
-      translation_id,
+    page.content.map(async ({ section_id, text }) => [
+      section_id,
       await serialize(text),
     ])
   );

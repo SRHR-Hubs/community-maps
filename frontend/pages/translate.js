@@ -5,8 +5,7 @@ import i18next from "../lib/i18next";
 
 const TranslationTest = () => {
   const { t } = useTranslation();
-
-  return <PageLayout>{t("test_1")}</PageLayout>;
+  return <PageLayout>{t("very.deeply.nested.key")}</PageLayout>;
 };
 
 export const getStaticProps = async ({ locale }) => ({

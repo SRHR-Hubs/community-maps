@@ -7,79 +7,21 @@ export default {
     defaultLocale: "en",
     locales: ["en"],
   },
+  load: "languageOnly",
   ns: ["common"],
+  fallbackLng: 'en',
 
   saveMissing: !isProduction(),
+  reloadOnPrerender: !isProduction(),
+  keySeparator: '.',
 
   use: [HTTPBackend],
 
   backend: {
     crossDomain: true,
-    loadPath: process.env.API_HOST + "/api/i18n/?language={{lng}}",
+    loadPath: process.env.API_HOST + "/api/i18n/{{lng}}/",
     addPath: process.env.API_HOST + "/api/i18n/",
-    request: async (options, url, payload, callback) => {
-      throw new Error();
-    },
   },
 
   serializeConfig: false,
 };
-
-// import i18n from "i18next";
-// import { initReactI18next } from "react-i18next";
-
-// import Backend from "i18next-http-backend";
-// import LanguageDetector from "i18next-browser-languagedetector";
-// import fetcher from "../hooks/fetch";
-// import isProduction from "../hooks/isProduction";
-// // don't want to use this?
-// // have a look at the Quick start guide
-// // for passing in lng and translations on init
-
-// i18n
-//   // load translation using http -> see /public/locales (i.e. https://github.com/i18next/react-i18next/tree/master/example/react/public/locales)
-//   // learn more: https://github.com/i18next/i18next-http-backend
-//   // want your translations to be loaded from a professional CDN? => https://github.com/locize/react-tutorial#step-2---use-the-locize-cdn
-//   .use(Backend)
-//   // detect user language
-//   // learn more: https://github.com/i18next/i18next-browser-languageDetector
-//   // .use(LanguageDetector)
-//   // pass the i18n instance to react-i18next.
-//   .use(initReactI18next)
-//   // init i18next
-//   // for all options read: https://www.i18next.com/overview/configuration-options
-//   .init({
-//     supportedLngs: ["en"],
-//     fallbackLng: "en",
-//     preload: ["en"],
-//     load: "languageOnly",
-//     saveMissing: true,
-//     debug: !isProduction(),
-//     ns: ["default"],
-//     defaultNS: "default",
-
-//     interpolation: {
-//       escapeValue: false, // not needed for react as it escapes by default
-//     },
-
-//     react: {
-//       useSuspense: false,
-//     },
-
-//     backend: {
-//       crossDomain: true,
-//       loadPath: "/api/i18n/?language={{lng}}", //&translation_id__startswith={{ns}}',
-//       addPath: "/api/i18n/",
-//       allowedAddorUpdateHosts: [process.env.API_HOST],
-//       request: async (options, url, payload, callback) => {
-//         // if (typeof window !== undefined) {
-//         //   console.log("client bad");
-//         //   return callback({ status: 201 });
-//         // }
-//         const { results } = await fetcher(process.env.API_HOST + url);
-//         return callback({ status: 200, data: results });
-//       },
-//     },
-//   });
-
-// export default i18n;
