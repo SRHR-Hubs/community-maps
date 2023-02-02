@@ -1,72 +1,61 @@
-import PageLayout from "../components/layout/page";
-import useAPIFetcher from "../hooks/useAPIFetcher";
-import useQuery from "../hooks/useQuery";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import PageLayout from "../components/layout/page/PageLayout";
+import i18next from "../lib/i18next";
 import { Markdown, serialize } from "../lib/mdx-remote";
+import { SEO } from "../lib/seo";
+import PageService from "../services/PageService";
 
-const GenericPage = ({ sections }) => {
-  // TODO head
-  sections = JSON.parse(sections);
+
+
+const GenericPage = ({ slug, title, description, content }) => {
   return (
-    <PageLayout>
-      {Object.entries(sections).map(([sectionId, source]) => (
-        <section id={sectionId} key={sectionId}>
-          <Markdown {...source} />
-        </section>
-      ))}
-    </PageLayout>
+    <>
+      <SEO title={title} description={description} />
+      <PageLayout>
+        <h1>{title}</h1>
+        {content.map(([section_id, text]) => (
+          <section id={section_id} key={section_id}>
+            <Markdown {...text} />
+          </section>
+        ))}
+      </PageLayout>
+    </>
   );
 };
 
-export async function getStaticProps({ params }) {
-  const { page = [] } = params;
-  const fetcher = useAPIFetcher();
-  const q = useQuery();
+export async function getStaticProps({ params, locale }) {
+  const { page: tokens } = params;
+  const slug = tokens.join("/");
+  const fields = ["slug", "title", "description", "content", "updated_at"];
 
-  const url = `/api/pages/?${q({
-    filters: {
-      url: {
-        $eq: "/" + page.join("/"),
-      },
-    },
-    populate: ["head", "sections"],
-  })}`;
+  const page = await PageService.getPageBySlug(slug, {
+    fields,
+  });
 
-  const { data } = await (await fetcher(url)).json();
-
-  const [{ attributes }] = data;
-
-  const sections = await Promise.all(
-    attributes.sections.map(async ({ sectionId, content }) => [
-      sectionId,
-      await serialize(content),
+  page.content = await Promise.all(
+    page.content.map(async ({ section_id, text }) => [
+      section_id,
+      await serialize(text),
     ])
   );
 
   return {
     props: {
-      sections: JSON.stringify(Object.fromEntries(sections)),
+      ...page,
+      ...(await serverSideTranslations(locale, ["common"], i18next)),
     },
   };
 }
 
 export async function getStaticPaths() {
-  const fetcher = useAPIFetcher();
-  const q = useQuery();
+  const pages = await PageService.getAllPages();
 
-  const url = `/api/pages?${q({
-    fields: ["url"],
-  })}`;
+  const paths = pages.map(({ slug }) => {
+    const page = slug.split("/");
+    return { params: { page } };
+  });
 
-  const { data } = await (await fetcher(url)).json();
-
-  const paths = data.map(({ attributes: { url } }) => ({
-    params: { page: url === "/" ? [] : url.substring(1).split("/") },
-  }));
-
-  return {
-    paths,
-    fallback: false,
-  };
+  return { paths, fallback: false };
 }
 
 export default GenericPage;

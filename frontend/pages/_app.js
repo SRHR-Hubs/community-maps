@@ -1,6 +1,9 @@
 import isProduction from "../hooks/isProduction";
 import isServer from "../hooks/isServer";
+import { DefaultSEO as SEO } from "../lib/seo";
+import { appWithTranslation as withTranslation } from "next-i18next";
 import "../styles/main.scss";
+import i18n from "../lib/i18next";
 
 // inject development dependencies
 if (!isServer() && !isProduction()) {
@@ -11,7 +14,12 @@ if (!isServer() && !isProduction()) {
 }
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <SEO />
+      <Component {...pageProps} />
+    </>
+  );
 }
 
-export default MyApp;
+export default withTranslation(MyApp, i18n);

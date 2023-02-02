@@ -1,7 +1,7 @@
 import NextHead from "next/head";
 import useScrollDirection, {UP} from "../../../hooks/useScrollDirection";
-import Footer from "../footer";
-import Header from "../header";
+import Footer from "../footer/Footer";
+import Header from "../header/Header";
 
 /** Important notes for this file:
  * - Currently, page components merely *compose* this component,
@@ -25,9 +25,9 @@ const PageLayout = ({
   const scrollDirection = useScrollDirection();
 
   return (
-    <div className="page" {...props}>
+    <div className="page off-canvas" {...props}>
       {renderHeader && <Header show={showHeader && scrollDirection === UP} />}
-      <main>{children}</main>
+      <main className="container grid-lg" role="main">{children}</main>
       {renderFooter && <Footer show={showFooter} />}
     </div>
   );

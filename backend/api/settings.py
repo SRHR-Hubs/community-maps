@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'cloudinary',
     'mdeditor',
     'flat_json_widget',
+    'jsoneditor',
+    'django_admin_geomap',
 
     # my apps
     'pages',
@@ -101,7 +103,7 @@ WSGI_APPLICATION = 'api.wsgi.application'
 DATABASES = {
     "default": dj_database_url.parse(
         getenv('DATABASE_URL'),
-        conn_max_age=6000,
+        conn_max_age=0,
     ),
 }
 

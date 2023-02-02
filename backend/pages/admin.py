@@ -1,8 +1,15 @@
 from django.contrib import admin
+from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils import timezone
 from . import models
 
-
+class SectionInline(GenericStackedInline):
+    model = models.PageSection
+    
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj.content.count():
+            return 0
+        return 1
 class PageAdminBase(admin.ModelAdmin):
 
     list_display = ('slug', 'created_by', 'created_at',
@@ -11,6 +18,8 @@ class PageAdminBase(admin.ModelAdmin):
 
     actions = ('publish_selected', 'unpublish_selected',)
 
+    inlines = (SectionInline,)
+
     # TODO:
     # it will have to be the admin's
     # responsibility to ensure this is
@@ -18,6 +27,7 @@ class PageAdminBase(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
+
 
     def get_changeform_initial_data(self, request):
         return {
@@ -42,3 +52,9 @@ class BlogPostAdmin(PageAdminBase):
 @admin.register(models.Page)
 class PageAdmin(PageAdminBase):
     pass
+
+@admin.register(models.I18nSection)
+class I18nAdmin(admin.ModelAdmin):
+    list_display = ('translation_id', 'language', 'text')
+
+    search_fields = ('translation_id', 'text')

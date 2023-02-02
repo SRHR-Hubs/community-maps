@@ -1,18 +1,15 @@
 import fetcher from "../hooks/fetch";
-export default class BlogService {
-  static prefix = "/api/blog";
+
+export default class PageService {
+  static prefix = "/api/pages";
 
   static async get(endpoint, args) {
     const url = `${this.prefix}/${endpoint}`;
     return fetcher(url, args);
   }
 
-  /**
-   * Get a list of all post IDs for static generation.
-   */
-  static async getAllPosts(params = {}) {
+  static async getAllPages(params = {}) {
     const { fields = ["slug"] } = params;
-
     const result = [];
 
     const query = {
@@ -30,17 +27,17 @@ export default class BlogService {
     return result;
   }
 
-  static async getPostBySlug(slug, options) {
+  static async getPageBySlug(slug, options) {
     const query = {
       ...options,
     };
 
-    const post = await this.get(slug, { query });
+    const page  = await this.get(slug, { query });
 
-    if (!post) {
-      throw Error("Getting blog post by slug failed.");
+    if (!page) {
+      throw Error(`Getting page with slug ${slug} failed.`);
     }
 
-    return post;
+    return page;
   }
 }

@@ -5,7 +5,6 @@ from api.settings import REST_FRAMEWORK as settings
 
 class CustomPagination(pagination.PageNumberPagination):
     page_size_query_param = 'size'
-    max_page_size = settings['PAGE_SIZE']
 
     def get_paginated_response(self, data):
         return Response({

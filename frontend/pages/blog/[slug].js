@@ -1,43 +1,57 @@
-import PageLayout from "../../components/layout/page";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import PageLayout from "../../components/layout/page/PageLayout";
+import i18next from "../../lib/i18next";
 import { Markdown, serialize } from "../../lib/mdx-remote";
+import { SEO } from "../../lib/seo";
 import BlogService from "../../services/BlogService";
 
-const BlogPost = ({ slug, source, meta }) => {
+const BlogPost = ({ title, description, image, content }) => {
   return (
-    <PageLayout id={`blog-post-${slug}`}>
-      <Markdown {...source} />
-      <ul>
-        {Array.from(Object.entries(meta)).map(([k, v]) => (
-          <li>
-            <b>{k}</b>: {v}
-          </li>
-        ))}
-      </ul>
-    </PageLayout>
+    <>
+      <SEO title={title} description={description} />
+      <PageLayout>
+        <article>
+          <h1>{title}</h1>
+          <p>{description}</p>
+          {content.map(([section_id, text]) => (
+            <section id={section_id} key={section_id}>
+              <Markdown {...text} />
+            </section>
+          ))}
+        </article>
+      </PageLayout>
+    </>
   );
 };
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ params, locale }) {
   const { slug } = params;
-  const data = await BlogService.getPost(slug);
 
-  const { content, ...meta } = data;
+  const fields = ["slug", "title", "description", "image", "content"];
 
-  const source = await serialize(content);
+  const post = await BlogService.getPostBySlug(slug, {
+    fields,
+  });
+
+  post.content = await Promise.all(
+    post.content.map(async ({ section_id, text }) => [
+      section_id,
+      await serialize(text),
+    ])
+  );
 
   return {
     props: {
-      slug,
-      source,
-      meta,
+      ...post,
+      ...(await serverSideTranslations(locale, ["common"], i18next)),
     },
   };
 }
 
 export async function getStaticPaths() {
-  const ids = await BlogService.getAllPostIds();
+  const posts = await BlogService.getAllPosts();
 
-  const paths = ids.map(String).map((slug) => ({
+  const paths = posts.map(({ slug }) => ({
     params: { slug },
   }));
 
