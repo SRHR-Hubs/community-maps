@@ -4,7 +4,7 @@ from django.utils import timezone
 from . import models
 
 class SectionInline(GenericStackedInline):
-    model = models.Section
+    model = models.PageSection
     extra = 1
 class PageAdminBase(admin.ModelAdmin):
 

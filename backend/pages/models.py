@@ -8,14 +8,14 @@ from django.contrib.contenttypes.fields import GenericRelation
 User = get_user_model()
 
 
-class Section(GenericTranslation):
+class I18nSection(models.Model):
+    translation_id = GenericTranslation.translation_id
+    language = GenericTranslation.language
+    text = models.TextField()
+
+class PageSection(GenericTranslation):
     # TODO: could be extended to include language and whatnot
     text = MDTextField()
-
-    class Meta:
-        indexes = (
-            models.Index(fields=['content_type', 'object_id']),
-        )
 
 
 class PageBase(models.Model):
@@ -35,7 +35,7 @@ class PageBase(models.Model):
     image = models.URLField(blank=True)
 
     # content, powered by mdx
-    content = GenericRelation(Section)
+    content = GenericRelation(PageSection)
 
     class Meta:
         abstract = True

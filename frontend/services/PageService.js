@@ -29,17 +29,15 @@ export default class PageService {
 
   static async getPageBySlug(slug, options) {
     const query = {
-      slug,
       ...options,
     };
 
-    const { results, meta } = await this.get("", { query });
+    const page  = await this.get(slug, { query });
 
-    if (meta?.count !== 1) {
+    if (!page) {
       throw Error(`Getting page with slug ${slug} failed.`);
     }
 
-    const [page] = results;
     return page;
   }
 }

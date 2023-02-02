@@ -9,6 +9,7 @@ router = routers.DefaultRouter()
 for prefix, viewset in [
     ('blog', pages.views.BlogPostViewset),
     ('pages', pages.views.PageViewset),
+    ('i18n', pages.views.I18nSectionViewset),
     ('services', services.views.ServiceViewset),
     ('facets', services.views.FacetViewset),
 ]:

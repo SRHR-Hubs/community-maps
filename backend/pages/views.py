@@ -16,3 +16,10 @@ class PageViewset(vs.ModelViewSet):
     serializer_class = serializers.PageSerializer
     lookup_field = 'slug'
     filter_fields = '__all__'
+
+
+class I18nSectionViewset(vs.ModelViewSet):
+    queryset = models.I18nSection.objects.all()
+    serializer_class = serializers.I18nSectionSerializer
+    lookup_field = 'translation_id'
+    filter_fields = '__all__'
