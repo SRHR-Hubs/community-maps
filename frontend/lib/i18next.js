@@ -53,7 +53,7 @@ export default {
       lngs.map((language) => {
         const body = {
           language,
-          translation_id: key,
+          translation_id: key.includes('.') ? key : `common.${key}`,
           text: fallbackValue,
         };
         return fetcher("/api/i18n/", {

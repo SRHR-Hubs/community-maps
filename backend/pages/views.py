@@ -1,8 +1,6 @@
 import rest_framework.viewsets as vs
-from rest_framework.decorators import action
 from rest_framework.response import Response
 from collections import defaultdict
-from functools import reduce as _reduce
 
 
 from . import models, serializers

@@ -2,6 +2,11 @@ import PageLayout from "../components/layout/page/PageLayout";
 import { Markdown, serialize } from "../lib/mdx-remote";
 import { SEO } from "../lib/seo";
 import PageService from "../services/PageService";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+import i18next from "../lib/i18next";
+
+
 
 const GenericPage = ({ slug, title, description, content }) => {
   // TODO: this works but do it server-side
@@ -23,7 +28,7 @@ const GenericPage = ({ slug, title, description, content }) => {
   );
 };
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ params, locale }) {
   const { page: tokens } = params;
   const slug = tokens.join("/");
   const fields = ["slug", "title", "description", "content", "updated_at"];
@@ -42,6 +47,7 @@ export async function getStaticProps({ params }) {
   return {
     props: {
       ...page,
+      ...(await serverSideTranslations(locale, ["common"], i18next)),
     },
   };
 }

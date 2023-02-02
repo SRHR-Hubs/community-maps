@@ -1,6 +1,7 @@
 import Image from "../../components/image";
 import { MDXRemote } from "next-mdx-remote";
 import { serialize as mdxSerialize } from "next-mdx-remote/serialize";
+import { Trans } from 'next-i18next'
 
 import metadataPlugin from "./image-transform";
 import unwrapImagesPlugin from "remark-unwrap-images";
@@ -25,10 +26,11 @@ export function transformImgProps({ src, alt, title, width, height, blurDataURL 
 export const components = {
   img: (props) => {
     return <Image {...transformImgProps(props)} />},
+  Trans,
 };
 
 export const Markdown = (source) => (
-  <MDXRemote {...source} components={components}/>
+  <MDXRemote {...source} components={components} />
 )
 
 const mdxOptions = {
