@@ -103,7 +103,7 @@ WSGI_APPLICATION = 'api.wsgi.application'
 DATABASES = {
     "default": dj_database_url.parse(
         getenv('DATABASE_URL'),
-        conn_max_age=6000,
+        conn_max_age=0,
     ),
 }
 
