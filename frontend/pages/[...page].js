@@ -1,18 +1,13 @@
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import PageLayout from "../components/layout/page/PageLayout";
+import i18next from "../lib/i18next";
 import { Markdown, serialize } from "../lib/mdx-remote";
 import { SEO } from "../lib/seo";
 import PageService from "../services/PageService";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-
-import i18next from "../lib/i18next";
 
 
 
 const GenericPage = ({ slug, title, description, content }) => {
-  // TODO: this works but do it server-side
-  // const scope = {
-  //   updated_at: new Date(updated_at).toLocaleString(),
-  // }
   return (
     <>
       <SEO title={title} description={description} />
@@ -20,7 +15,7 @@ const GenericPage = ({ slug, title, description, content }) => {
         <h1>{title}</h1>
         {content.map(([section_id, text]) => (
           <section id={section_id} key={section_id}>
-            <Markdown {...text} /*scope={scope}*/ />
+            <Markdown {...text} />
           </section>
         ))}
       </PageLayout>

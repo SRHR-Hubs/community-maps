@@ -32,17 +32,14 @@ export default class BlogService {
 
   static async getPostBySlug(slug, options) {
     const query = {
-      slug,
       ...options,
     };
 
-    const { results, meta } = await this.get("", { query });
+    const post = await this.get(slug, { query });
 
-    if (meta?.count !== 1) {
+    if (!post) {
       throw Error("Getting blog post by slug failed.");
     }
-
-    const [post] = results;
 
     return post;
   }
