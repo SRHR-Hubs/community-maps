@@ -9,10 +9,12 @@ User = get_user_model()
 
 
 class I18nSection(models.Model):
-    translation_id = models.CharField(max_length=200)
+    translation_id = models.CharField(max_length=200, unique=True)
     language = models.CharField(max_length=12, default="en")
     text = models.TextField()
-
+    
+    def __str__(self):
+        return f'{{{self.translation_id}}}'
 class PageSection(GenericTranslation):
     # TODO: could be extended to include language and whatnot
     text = MDTextField()

@@ -3,9 +3,13 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import PageLayout from "../components/layout/page/PageLayout";
 import i18next from "../lib/i18next";
 
+import { Trans } from "next-i18next";
+
 const TranslationTest = () => {
   const { t } = useTranslation();
-  return <PageLayout>{t("very.deeply.nested.key")}</PageLayout>;
+  return (<PageLayout>
+    <Trans i18nKey={'extremely.one.more.level.epic'}>This is freakin' epic</Trans>
+  </PageLayout>);
 };
 
 export const getStaticProps = async ({ locale }) => ({

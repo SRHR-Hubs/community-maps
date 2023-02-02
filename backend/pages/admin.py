@@ -55,4 +55,6 @@ class PageAdmin(PageAdminBase):
 
 @admin.register(models.I18nSection)
 class I18nAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('translation_id', 'language', 'text')
+
+    search_fields = ('translation_id', 'text')

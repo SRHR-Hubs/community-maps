@@ -2,6 +2,7 @@ import Logo from "../../../public/logo.svg";
 import Link from "next/link";
 import { Twitter, Instagram } from "../../../lib/ionicons";
 import config from "../../../config/next-seo.config";
+import { Trans } from "next-i18next";
 
 const { twitter: twitterInfo, instagram: instagramInfo } = config;
 
@@ -43,7 +44,7 @@ const Header = ({ show, ...props }) => (
           >
             <Instagram />
           </Link>
-          <button className="btn btn-primary">Use the map</button>
+          <button className="btn btn-primary"><Trans i18nKey={'layout.header.use-the-map'}>Use the map</Trans></button>
         </section>
         <div className="col-1 dummy"></div>
       </div>
