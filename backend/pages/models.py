@@ -9,8 +9,8 @@ User = get_user_model()
 
 
 class I18nSection(models.Model):
-    translation_id = GenericTranslation.translation_id
-    language = GenericTranslation.language
+    translation_id = models.CharField(max_length=200)
+    language = models.CharField(max_length=12, default="en")
     text = models.TextField()
 
 class PageSection(GenericTranslation):

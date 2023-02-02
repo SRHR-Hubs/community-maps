@@ -20,7 +20,7 @@ class PageSectionSerializer(SectionSerializer):
         exclude = (*SectionSerializer.Meta.exclude, 'translation_id')
 
 
-class I18nSectionSerializer(serializers.Serializer):
+class I18nSectionSerializer(Base):
     class Meta:
         model = models.I18nSection
         fields = '__all__'

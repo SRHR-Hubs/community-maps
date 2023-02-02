@@ -48,3 +48,7 @@ class BlogPostAdmin(PageAdminBase):
 @admin.register(models.Page)
 class PageAdmin(PageAdminBase):
     pass
+
+@admin.register(models.I18nSection)
+class I18nAdmin(admin.ModelAdmin):
+    pass
