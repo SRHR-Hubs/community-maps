@@ -1,8 +1,6 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import PageLayout from "../components/layout/page/PageLayout";
-import i18next from "../lib/i18next";
-
 import { Trans } from "next-i18next";
+import useServerI18n from "../hooks/useServerI18n";
 
 const TranslationTest = () => {
   return (
@@ -16,7 +14,7 @@ const TranslationTest = () => {
 
 export const getStaticProps = async ({ locale }) => ({
   props: {
-    ...(await serverSideTranslations(locale, ["common"], i18next)),
+    ...(await useServerI18n(locale)),
   },
 });
 

@@ -2,7 +2,7 @@ import isProduction from "../hooks/isProduction";
 import isServer from "../hooks/isServer";
 import HTTPBackend from "i18next-http-backend";
 import fetcher from "../hooks/fetch";
-import i18n from './i18n/i18n.config.json'
+import i18n from '../config/i18n.config.json'
 
 export default {
   debug: !isProduction(),

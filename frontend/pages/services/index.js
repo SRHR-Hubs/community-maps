@@ -2,6 +2,8 @@ import PageLayout from "../../components/layout/page/PageLayout";
 import ServiceService from "../../services/ServiceService";
 import Link from "next/link";
 import PaginationMenu from "../../components/pagination/menu/PaginationMenu";
+import useServerI18n from "../../hooks/useServerI18n";
+
 
 const ServicesHome = ({ services, page, totalPages }) => {
   page = parseInt(page);
@@ -25,7 +27,7 @@ const ServicesHome = ({ services, page, totalPages }) => {
   );
 };
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query, locale }) {
   const { page = 1 } = query;
   const { results: services, meta } = await ServiceService.getPage(page, {
     fields: ["slug", "name"],
@@ -39,6 +41,7 @@ export async function getServerSideProps({ query }) {
       page,
       services,
       totalPages,
+      ...(await useServerI18n(locale))
     },
   };
 }

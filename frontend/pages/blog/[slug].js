@@ -1,6 +1,5 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import PageLayout from "../../components/layout/page/PageLayout";
-import i18next from "../../lib/i18next";
+import useServerI18n from "../../hooks/useServerI18n";
 import { Markdown, serialize } from "../../lib/mdx-remote";
 import { SEO } from "../../lib/seo";
 import BlogService from "../../services/BlogService";
@@ -13,7 +12,7 @@ const BlogPost = ({ title, description, image, content }) => {
         <article>
           <h1>{title}</h1>
           <p>{description}</p>
-          <Markdown {...content}/>
+          <Markdown {...content} />
           {/* {content.map(([section_id, text]) => (
             <section id={section_id} key={section_id}>
               <Markdown {...text} />
@@ -34,7 +33,7 @@ export async function getStaticProps({ params, locale }) {
     fields,
   });
 
-  post.content = await serialize(post.content)
+  post.content = await serialize(post.content);
 
   // post.content = await Promise.all(
   //   post.content.map(async ({ section_id, text }) => [
@@ -46,7 +45,7 @@ export async function getStaticProps({ params, locale }) {
   return {
     props: {
       ...post,
-      ...(await serverSideTranslations(locale, ["common"], i18next)),
+      ...(await useServerI18n(locale)),
     },
   };
 }
