@@ -1,17 +1,18 @@
 from django.contrib import admin
-from django.contrib.contenttypes.admin import GenericStackedInline
+from nonrelated_inlines.admin import NonrelatedStackedInline
 from django.utils import timezone
 from . import models
 
-class SectionInline(GenericStackedInline):
-    model = models.PageSection
-    
-    def get_extra(self, request, obj=None, **kwargs):
-        if obj.content.count():
-            return 0
-        return 1
-class PageAdminBase(admin.ModelAdmin):
+class SectionInline(NonrelatedStackedInline):
+    model = models.I18nSection
+    extra = 0
 
+    def get_form_queryset(self, obj):
+        return self.model.objects.filter(translation_id__contains=obj.slug)
+
+    def save_new_instance(self, parent, instance):
+        instance.save()
+class PageAdminBase(admin.ModelAdmin):
     list_display = ('slug', 'created_by', 'created_at',
                     'updated_at', 'published',)
     list_display_links = ('slug',)

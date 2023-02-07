@@ -37,7 +37,11 @@ class PageBase(models.Model):
     image = models.URLField(blank=True)
 
     # content, powered by mdx
-    content = GenericRelation(PageSection)
+    # content = GenericRelation(PageSection)
+    @property
+    def content(self):
+        prefix = f'pages.{self.slug}'
+        return I18nSection.objects.filter(translation_id__startswith=prefix)
 
     class Meta:
         abstract = True
