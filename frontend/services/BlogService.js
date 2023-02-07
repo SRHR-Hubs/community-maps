@@ -17,6 +17,7 @@ export default class BlogService {
 
     const query = {
       fields,
+      ...params,
     };
 
     let next = null;

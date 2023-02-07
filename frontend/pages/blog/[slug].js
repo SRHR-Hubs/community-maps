@@ -13,11 +13,12 @@ const BlogPost = ({ title, description, image, content }) => {
         <article>
           <h1>{title}</h1>
           <p>{description}</p>
-          {content.map(([section_id, text]) => (
+          <Markdown {...content}/>
+          {/* {content.map(([section_id, text]) => (
             <section id={section_id} key={section_id}>
               <Markdown {...text} />
             </section>
-          ))}
+          ))} */}
         </article>
       </PageLayout>
     </>
@@ -33,12 +34,14 @@ export async function getStaticProps({ params, locale }) {
     fields,
   });
 
-  post.content = await Promise.all(
-    post.content.map(async ({ section_id, text }) => [
-      section_id,
-      await serialize(text),
-    ])
-  );
+  post.content = await serialize(post.content)
+
+  // post.content = await Promise.all(
+  //   post.content.map(async ({ section_id, text }) => [
+  //     section_id,
+  //     await serialize(text),
+  //   ])
+  // );
 
   return {
     props: {
@@ -49,7 +52,7 @@ export async function getStaticProps({ params, locale }) {
 }
 
 export async function getStaticPaths() {
-  const posts = await BlogService.getAllPosts();
+  const posts = await BlogService.getAllPosts({ published: true });
 
   const paths = posts.map(({ slug }) => ({
     params: { slug },

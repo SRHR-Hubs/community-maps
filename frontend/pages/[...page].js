@@ -46,7 +46,7 @@ export async function getStaticProps({ params, locale }) {
 }
 
 export async function getStaticPaths() {
-  const pages = await PageService.getAllPages();
+  const pages = await PageService.getAllPages({ published: true });
 
   const paths = pages.map(({ slug }) => {
     const page = slug.split("/");

@@ -3,6 +3,8 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });
 
+const i18n = require("./lib/i18n/i18n.config.json");
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -15,10 +17,7 @@ const nextConfig = {
     ],
   },
 
-  i18n: {
-    locales: ['en-CA'],
-    defaultLocale: 'en-CA',
-  },
+  i18n,
 
   webpack: (config, { isServer }) => {
     if (!isServer) {

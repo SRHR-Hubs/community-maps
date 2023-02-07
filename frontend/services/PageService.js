@@ -14,6 +14,7 @@ export default class PageService {
 
     const query = {
       fields,
+      ...params,
     };
 
     let next = null;

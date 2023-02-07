@@ -26,7 +26,7 @@ const PageLayout = ({
   return (
     <div className="page off-canvas" {...props}>
       {renderHeader && <Header show={showHeader && scrollDirection === UP} />}
-      <main className="container grid-lg" role="main" id="main">{children}</main>
+      <main className="container grid-lg" role="main" id="content">{children}</main>
       {renderFooter && <Footer show={showFooter} />}
     </div>
   );

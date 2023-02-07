@@ -5,6 +5,7 @@ from django.db import models as m
 from mdeditor.widgets import MDEditorWidget
 from . import models
 
+# Thank you <3 https://bhomnick.net/django-admin-inlines-for-non-related-models/
 class SectionInline(NonrelatedStackedInline):
     model = models.I18nSection
     extra = 0

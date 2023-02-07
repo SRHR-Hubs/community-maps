@@ -2,24 +2,20 @@ import isProduction from "../hooks/isProduction";
 import isServer from "../hooks/isServer";
 import HTTPBackend from "i18next-http-backend";
 import fetcher from "../hooks/fetch";
+import i18n from './i18n/i18n.config.json'
 
 export default {
   debug: !isProduction(),
-  i18n: {
-    defaultLocale: "en",
-    locales: ["en", "en-CA"],
-    fallbackLng: {
-      default: ["en"],
-      "en-CA": ["en"],
-    },
-  },
+  i18n,
   load: "languageOnly",
   preload: ['en'],
   ns: ["common"],
+  defaultNS: 'common',
   fallbackNS: 'common',
   fallbackLng: "en",
 
   reloadOnPrerender: !isProduction(),
+  initImmediate: false,
 
   use: [HTTPBackend],
 
@@ -43,7 +39,7 @@ export default {
   ) => {
     if (!isServer()) {
       // Don't try to handle missing keys from the client
-      console.warn("From client");
+      // console.warn("From client");
       return;
     }
     if (updateMissing) {
