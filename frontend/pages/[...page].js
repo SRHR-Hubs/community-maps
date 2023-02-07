@@ -5,12 +5,10 @@ import { Markdown, serialize } from "../lib/mdx-remote";
 import { SEO } from "../lib/seo";
 import PageService from "../services/PageService";
 
-
-
 const GenericPage = ({ slug, title, description, content }) => {
   return (
     <>
-      <SEO title={title} description={description} />
+      <SEO title={title} description={description} canonical={slug}/>
       <PageLayout>
         <h1>{title}</h1>
         {content.map(([section_id, text]) => (
@@ -33,7 +31,7 @@ export async function getStaticProps({ params, locale }) {
   });
 
   page.content = await Promise.all(
-    page.content.map(async ({ section_id, text }) => [
+    Object.entries(page.content).map(async ([section_id, text]) => [
       section_id,
       await serialize(text),
     ])

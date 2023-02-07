@@ -34,6 +34,7 @@ const Header = ({ show, ...props }) => (
             href={twitterInfo.site}
             className="tooltip tooltip-bottom"
             data-tooltip={twitterInfo.handle}
+            aria-label="Follow SRHR Hubs on Twitter"
           >
             <Twitter />
           </Link>
@@ -41,6 +42,7 @@ const Header = ({ show, ...props }) => (
             href={instagramInfo.site}
             className="tooltip tooltip-bottom"
             data-tooltip={instagramInfo.handle}
+            aria-label="Follow SRHR Hubs on Instagram"
           >
             <Instagram />
           </Link>

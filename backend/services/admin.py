@@ -3,17 +3,21 @@ from django.forms import widgets
 from django.utils import timezone
 from django.db import models as m
 from django.template.loader import render_to_string
-from django.contrib.contenttypes.admin import GenericTabularInline
+from nonrelated_inlines.admin import NonrelatedTabularInline
 from . import models
+from pages.models import I18nSection
 
 from flat_json_widget.widgets import FlatJsonWidget
 from jsoneditor.forms import JSONEditor
 from django_admin_geomap import ModelAdmin as GeoModelAdmin
 
-#TODO move and get to work lol
+# TODO move and get to work lol
+
+
 class CustomJSONEditor(JSONEditor):
     class Media:
         css = {"all": ("templates/json_editor.css",)}
+
 
 class FacetTagInline(admin.StackedInline):
     # TODO: custom template
@@ -70,6 +74,10 @@ class ServiceAdmin(GeoModelAdmin):
 
     geomap_field_longitude = "location__longitude"
     geomap_field_latitude = "location__latitude"
+    geomap_default_latitude = "43.7"
+    geomap_default_longitude = "-79.4"
+    geomap_default_zoom = "10"
+    geomap_height = "600px"
 
     search_fields = ('name',)
 
@@ -104,11 +112,26 @@ class ServiceAdmin(GeoModelAdmin):
 
         return super().response_change(request, obj)
 
-class FacetTranslationInline(GenericTabularInline):
-    model = models.FacetTranslation
+
+class FacetTranslationInline(NonrelatedTabularInline):
+    model = I18nSection
     extra = 1
 
-    fields = ('language', 'value')
+    fields = ('language', 'translation_id', 'text')
+
+    formfield_overrides = {
+        m.TextField: {
+            'widget': widgets.TextInput,
+        }
+    }
+
+    def get_form_queryset(self, obj):
+        prefix = f'tags.{obj.translation_id}'
+        return self.model.objects.filter(translation_id__startswith=prefix)
+
+    def save_new_instance(self, parent, instance):
+        instance.save()
+
 
 @admin.register(models.Facet)
 class FacetAdmin(admin.ModelAdmin):

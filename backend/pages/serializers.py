@@ -6,28 +6,13 @@ from . import models
 Base = FlexFieldsModelSerializer
 
 
-class SectionSerializer(Base):
-    class Meta:
-        abstract = True
-        exclude = ('id', 'object_id', 'content_type')
-
-
-class PageSectionSerializer(SectionSerializer):
-    section_id = serializers.CharField(source="translation_id")
-
-    class Meta(SectionSerializer.Meta):
-        model = models.PageSection
-        exclude = (*SectionSerializer.Meta.exclude, 'translation_id')
-
-
 class I18nSectionSerializer(Base):
     class Meta:
         model = models.I18nSection
-        fields = '__all__'
+        exclude = ('id',)
 
 
 class PageBaseSerializer(serializers.Serializer):
-    content = PageSectionSerializer(many=True)
     pass
 
     # any common functionality will go here
@@ -40,6 +25,23 @@ class BlogPostSerializer(PageBaseSerializer, Base):
 
 
 class PageSerializer(PageBaseSerializer, Base):
+    content = serializers.SerializerMethodField()
+
+    def get_content(self, obj):
+        prefix = f'pages.{obj.slug}.sections.'
+        qs = obj.content.filter(translation_id__startswith=prefix)
+        res = {}
+
+        for section in qs:
+            key = section.translation_id.removeprefix(prefix)
+            res[key] = section.text
+
+        return res
+
+        # return I18nSectionSerializer(
+        #     obj.content.filter(translation_id__contains='.sections.'),
+        #     many=True).data
+
     class Meta:
         model = models.Page
         fields = '__all__'

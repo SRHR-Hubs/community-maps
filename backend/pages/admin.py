@@ -1,14 +1,20 @@
 from django.contrib import admin
 from nonrelated_inlines.admin import NonrelatedStackedInline
 from django.utils import timezone
+from django.db import models as m
+from mdeditor.widgets import MDEditorWidget
 from . import models
 
 class SectionInline(NonrelatedStackedInline):
     model = models.I18nSection
     extra = 0
 
+    formfield_overrides = {
+        m.TextField: {'widget': MDEditorWidget},
+    }
+
     def get_form_queryset(self, obj):
-        return self.model.objects.filter(translation_id__contains=obj.slug)
+        return obj.content
 
     def save_new_instance(self, parent, instance):
         instance.save()
@@ -18,8 +24,6 @@ class PageAdminBase(admin.ModelAdmin):
     list_display_links = ('slug',)
 
     actions = ('publish_selected', 'unpublish_selected',)
-
-    inlines = (SectionInline,)
 
     # TODO:
     # it will have to be the admin's
@@ -52,7 +56,8 @@ class BlogPostAdmin(PageAdminBase):
 
 @admin.register(models.Page)
 class PageAdmin(PageAdminBase):
-    pass
+    inlines = (SectionInline,)
+
 
 @admin.register(models.I18nSection)
 class I18nAdmin(admin.ModelAdmin):

@@ -72,8 +72,9 @@ def run():
                         hours[f'line-{i}'] = ln.strip()
                     params['hours'] = hours
 
-                if params['address']:
-                    params['address'] = params['address'].replace(';', '\n')
+                del params['address']
+                assert 'address' not in params
+                    #params['address'] = params['address'].replace(';', '\n')
 
                 tags = set()
                 extra = {}
@@ -94,13 +95,12 @@ def run():
                   # params['extra'] = extra
 
                 # let's do this thing
-                # service, _service_updated = models.Service.objects.update_or_create(
-                #     id=params['id'],
-                #     defaults=params)
-                # service.extra = extra
-                service = models.Service.objects.get(
-                    id=params['id']
-                )
+                service, _service_updated = models.Service.objects.update_or_create(
+                    **params)
+                service.extra = extra
+                # service = models.Service.objects.get(
+                #     id=params['id']
+                # )
 
                 for facet_name, value in tags:
                     facet, _facet_created = models.Facet.objects.get_or_create(
