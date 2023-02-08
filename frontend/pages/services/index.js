@@ -31,7 +31,7 @@ export async function getServerSideProps({ query, locale }) {
   const { page = 1 } = query;
   const { results: services, meta } = await ServiceService.getPage(page, {
     fields: ["slug", "name"],
-    // published: true,
+    published: true,
   });
 
   const { total_pages: totalPages } = meta;
