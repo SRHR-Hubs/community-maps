@@ -1,4 +1,5 @@
 import useScrollDirection, { UP } from "../../../hooks/useScrollDirection";
+import ContactSection from "../../sections/contact/ContactSection";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
 import SkipToContent from "../skip-to-content/SkipToContent";
@@ -16,6 +17,7 @@ import SkipToContent from "../skip-to-content/SkipToContent";
 const PageLayout = ({
   renderHeader = true,
   renderFooter = true,
+  renderContactSection = true,
   showHeader = true,
   showFooter = true,
   children,
@@ -35,6 +37,7 @@ const PageLayout = ({
           tabIndex={-1}
         >
           {children}
+          {renderContactSection && <ContactSection />}
         </main>
         {renderFooter && <Footer show={showFooter} />}
       </div>

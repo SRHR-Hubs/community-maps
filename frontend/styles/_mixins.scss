@@ -1,0 +1,21 @@
+@use "variables";
+
+// Solution courtesy of:
+// https://codepen.io/canfie1d/details/vKYxvP
+@mixin full-width {
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: calc((100vw - #{variables.$grid-lg-width}) / 2);
+    background-color: inherit;
+  }
+  &::before {
+    right: 100%;
+  }
+  &::after {
+    left: 100%;
+  }
+}
