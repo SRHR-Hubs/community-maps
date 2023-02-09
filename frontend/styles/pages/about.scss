@@ -1,0 +1,25 @@
+@use "../colors";
+@use "../mixins";
+@use "../variables";
+
+.page#about {
+  #our-mission {
+    background-color: colors.$darkblue-400;
+    color: colors.$white;
+  }
+
+  #our-values {
+    background-color: colors.$teal-400;
+    color: colors.$white;
+    > .columns {
+      margin: unset;
+      padding: 2em;
+      background-color: colors.$white;
+      color: colors.$teal-400;
+      > .column {
+        flex: 1;
+        text-align: center;
+      }
+    }
+  }
+}
