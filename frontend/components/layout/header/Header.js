@@ -8,12 +8,12 @@ const { twitter: twitterInfo, instagram: instagramInfo } = config;
 
 const Header = ({ show, ...props }) => (
   <header data-show={show} role="banner">
-    <div className="container">
+    <div className="container grid-xl">
       <div className="columns" id="header-top-row">
         <section className="col-ml-auto links" role="navigation">
           <Link href="/accessibility">Accessibility</Link>
           <Link href="/join-our-team">Get involved</Link>
-          <Link href="#">Get out quick</Link>
+          <Link href="#"><button className="btn btn-error get-out-quick">Get out quick</button></Link>
         </section>
         <div className="col-1 dummy"></div>
       </div>

@@ -10,7 +10,7 @@ const Footer = (props) => {
 
   return (
     <footer role="contentinfo">
-      <div className="container grid-lg">
+      <div className="container grid-xl">
         <p id="land-acknowledgement">
           <Trans i18nKey="layout.footer.land-acknowledgement">
             SRHR Hubs would like to acknowledge that our work is done on the

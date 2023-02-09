@@ -22,4 +22,6 @@ export async function getBlurUrl(publicId) {
     }
 }
 
+
+
 export default cloudinary;

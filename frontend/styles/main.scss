@@ -1,6 +1,4 @@
-// external packages
-@use '../node_modules/spectre.css/src/spectre';
-@use '../node_modules/spectre.css/dist/spectre-icons.min';
+
 
 // internal modules
 @use "fonts";
@@ -14,7 +12,13 @@
 @use "components/image";
 @use "components/layout";
 
+// spectre overrides
+$primary-color: colors.$lilac-400;
+$error-color: colors.$red-400;
 
+// external packages
+@import 'node_modules/spectre.css/src/spectre';
+@import 'node_modules/spectre.css/dist/spectre-icons.min';
 
 
 html,

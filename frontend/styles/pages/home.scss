@@ -1,5 +1,6 @@
 @use "../colors";
 @use "../mixins";
+@use "../variables";
 
 #home {
   main > section {
@@ -37,5 +38,25 @@
     background-color: colors.$teal-400;
     color: colors.$white;
     h2 { text-align: center;}
+    a {
+      text-decoration: underline;
+    }
+  }
+
+  #our-sponsors {
+    background-color: colors.$white;
+    color: colors.$darkblue-400;
+
+    .columns {
+      gap: 1em;
+      justify-content: center;
+      align-items: center;
+    }
+
+    // TODO: YIC scales in a way I really don't like
+    .image-component {
+      max-height: 100px;
+      min-width: 100px;
+    }
   }
 }

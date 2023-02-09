@@ -29,16 +29,23 @@ header {
     display: flex;
     margin-top: auto;
     justify-content: space-around;
+    align-items: center;
     a {
       padding: 0 1em;
 
       &:hover,
       &:focus {
         svg {
+          // TODO
           fill: colors.$red-400;
         }
       }
     }
+
+    .get-out-quick {
+      color: colors.$darkblue-400;
+    }
+
     svg {
       width: 2em;
       @media not (prefers-reduced-motion) {
@@ -131,7 +138,7 @@ footer {
 }
 
 #skip-to-content {
-  position: absolute;
+  position: fixed;
   z-index: 999;
   left: 0;
   width: inherit;
@@ -146,5 +153,11 @@ footer {
 
   &:focus {
     transform: translateY(0);
+  }
+
+  @media print {
+    & {
+      display: none;
+    }
   }
 }
