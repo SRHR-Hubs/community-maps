@@ -72,6 +72,11 @@ header {
         background-color: colors.$lilac-400;
         color: colors.$white;
       }
+
+      &.hero {
+        background-color: colors.$darkblue-400;
+        color: colors.$white;
+      }
     }
   }
 }
@@ -106,6 +111,10 @@ footer {
     position: absolute;
     bottom: 0;
     left: 0;
+  }
+
+  #land-acknowledgement {
+    text-align: center;
   }
 }
 

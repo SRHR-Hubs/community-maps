@@ -47,6 +47,11 @@ export default class PageService {
     const page = await this.getPageBySlug(slug, query);
     if (page.content) {
       const { content } = page;
+
+      // NOTpE: as of ES2015, objects with string keys <<should>>
+      // keep their insertion order:
+      // https://stackoverflow.com/questions/5525795/does-javascript-guarantee-object-property-order
+
       page.content = {};
       for (const [section_id, text] of Object.entries(content)) {
         if (!section_id.includes('.')) {
@@ -58,7 +63,6 @@ export default class PageService {
     }
     return {
       ...page,
-      // ...(await useServerI18n(locale)),
     };
   }
 }

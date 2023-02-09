@@ -1,4 +1,5 @@
 import fetcher from "../hooks/fetch";
+import { serialize } from "../lib/mdx-remote";
 export default class BlogService {
   static prefix = "/api/blog";
 
@@ -43,5 +44,13 @@ export default class BlogService {
     }
 
     return post;
+  }
+
+  static async getPageProps(slug, query) {
+    const post = await this.getPostBySlug(slug, query);
+    post.content = await serialize(post.content);
+    return {
+      ...post,
+    }
   }
 }

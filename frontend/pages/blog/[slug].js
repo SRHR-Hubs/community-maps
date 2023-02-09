@@ -1,6 +1,6 @@
 import PageLayout from "../../components/layout/page/PageLayout";
 import useServerI18n from "../../hooks/useServerI18n";
-import { Markdown, serialize } from "../../lib/mdx-remote";
+import { Markdown } from "../../lib/mdx-remote";
 import { SEO } from "../../lib/seo";
 import BlogService from "../../services/BlogService";
 
@@ -29,22 +29,13 @@ export async function getStaticProps({ params, locale }) {
 
   const fields = ["slug", "title", "description", "image", "content"];
 
-  const post = await BlogService.getPostBySlug(slug, {
+  const postProps = await BlogService.getPageProps(slug, {
     fields,
   });
 
-  post.content = await serialize(post.content);
-
-  // post.content = await Promise.all(
-  //   post.content.map(async ({ section_id, text }) => [
-  //     section_id,
-  //     await serialize(text),
-  //   ])
-  // );
-
   return {
     props: {
-      ...post,
+      ...postProps,
       ...(await useServerI18n(locale)),
     },
   };

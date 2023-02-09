@@ -1,6 +1,6 @@
 import PageLayout from "../components/layout/page/PageLayout";
 import useServerI18n from "../hooks/useServerI18n";
-import { Markdown, serialize } from "../lib/mdx-remote";
+import { Markdown } from "../lib/mdx-remote";
 import { SEO } from "../lib/seo";
 import PageService from "../services/PageService";
 
@@ -9,7 +9,9 @@ const GenericPage = ({ slug, title, description, content }) => {
     <>
       <SEO title={title} description={description} canonical={slug} />
       <PageLayout>
-        <h1>{title}</h1>
+        <section className="hero">
+          <h1>{title}</h1>
+        </section>
         {Object.entries(content).map(([section_id, text]) => (
           <section id={section_id} key={section_id}>
             <Markdown {...text} />
@@ -25,13 +27,12 @@ export async function getStaticProps({ params, locale }) {
   const slug = tokens.join("/");
   const fields = ["slug", "title", "description", "content", "updated_at"];
 
-
   const pageProps = await PageService.getPageProps(slug, {
     fields,
-  })
+  });
 
   return {
-    props:{
+    props: {
       ...pageProps,
       ...(await useServerI18n(locale)),
     },

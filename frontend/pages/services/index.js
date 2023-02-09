@@ -1,29 +1,33 @@
-import PageLayout from "../../components/layout/page/PageLayout";
-import ServiceService from "../../services/ServiceService";
 import Link from "next/link";
+import PageLayout from "../../components/layout/page/PageLayout";
 import PaginationMenu from "../../components/pagination/menu/PaginationMenu";
 import useServerI18n from "../../hooks/useServerI18n";
+import { SEO } from "../../lib/seo";
+import PageService from "../../services/PageService";
+import ServiceService from "../../services/ServiceService";
 
-
-const ServicesHome = ({ services, page, totalPages }) => {
+const ServicesHome = ({ services, page, totalPages, title, slug }) => {
   page = parseInt(page);
 
   return (
-    <PageLayout id="services" renderContactSection={false}>
-      <h1>Services home</h1>
-      <ul role="list">
-        {services.map(({ slug, name }) => (
-          <li key={slug}>
-            <Link href={`/services/${slug}`}>{name}</Link>
-          </li>
-        ))}
-      </ul>
-      <PaginationMenu
-        pathname="/services"
-        page={page}
-        totalPages={totalPages}
-      />
-    </PageLayout>
+    <>
+      <SEO title={title} canonical={slug} />
+      <PageLayout id={slug} renderContactSection={false}>
+        <h1>{title}</h1>
+        <ul role="list">
+          {services.map(({ slug, name }) => (
+            <li key={slug}>
+              <Link href={`/services/${slug}`}>{name}</Link>
+            </li>
+          ))}
+        </ul>
+        <PaginationMenu
+          pathname="/services"
+          page={page}
+          totalPages={totalPages}
+        />
+      </PageLayout>
+    </>
   );
 };
 
@@ -36,12 +40,15 @@ export async function getServerSideProps({ query, locale }) {
 
   const { total_pages: totalPages } = meta;
 
+  const pageProps = await PageService.getPageProps("services");
+
   return {
     props: {
       page,
       services,
       totalPages,
-      ...(await useServerI18n(locale))
+      ...pageProps,
+      ...(await useServerI18n(locale)),
     },
   };
 }

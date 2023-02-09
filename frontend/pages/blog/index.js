@@ -1,15 +1,16 @@
-import PageLayout from "../../components/layout/page/PageLayout";
-import BlogService from "../../services/BlogService";
 import Link from "next/link";
+import PageLayout from "../../components/layout/page/PageLayout";
 import useServerI18n from "../../hooks/useServerI18n";
 import { SEO } from "../../lib/seo";
+import BlogService from "../../services/BlogService";
+import PageService from "../../services/PageService";
 
-const BlogHome = ({ posts }) => {
+const BlogHome = ({ posts, slug, title }) => {
   return (
     <>
-      <SEO title="Blog Home" canonical="blog"/>
-      <PageLayout id="blog">
-        <h1>Blog home</h1>
+      <SEO title={title} canonical={slug} />
+      <PageLayout id={slug}>
+        <h1>{title}</h1>
         <ul>
           {posts.map(({ slug, title }) => (
             <li key={slug}>
@@ -28,9 +29,12 @@ export async function getStaticProps({ locale }) {
     published: true,
   });
 
+  const pageProps = await PageService.getPageProps("blog");
+
   return {
     props: {
       posts,
+      ...pageProps,
       ...(await useServerI18n(locale)),
     },
   };

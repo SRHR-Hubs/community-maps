@@ -1,6 +1,5 @@
 import PageLayout from "../../components/layout/page/PageLayout";
 import useServerI18n from "../../hooks/useServerI18n";
-import { SEO } from "../../lib/seo";
 import ServiceService from "../../services/ServiceService";
 
 const ServiceDetailPage = (props) => {

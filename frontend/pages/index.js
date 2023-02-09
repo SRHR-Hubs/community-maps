@@ -1,15 +1,13 @@
-import PageLayout from "../components/layout/page/PageLayout";
 import { Trans } from "next-i18next";
-import { Markdown, serialize } from "../lib/mdx-remote";
+import PageLayout from "../components/layout/page/PageLayout";
 
+import useServerI18n from "../hooks/useServerI18n";
 import { SEO } from "../lib/seo";
 import PageService from "../services/PageService";
-import useServerI18n from "../hooks/useServerI18n";
 
-import InstagramFeed from "../components/layout/feed/InstagramFeed";
-import { instagram } from "../config/next-seo.config";
 import Link from "next/link";
 import BlogRoll from "../components/blog/BlogRoll";
+import { instagram } from "../config/next-seo.config";
 
 const IndexPage = ({ slug, title, description, content }) => {
   const seoInfo = {
@@ -59,13 +57,13 @@ const IndexPage = ({ slug, title, description, content }) => {
 export async function getStaticProps({ params, locale }) {
   const fields = ["slug", "title", "description", "content"];
 
-  const page = await PageService.getPageBySlug("home", {
+  const pageProps = await PageService.getPageProps('home', {
     fields,
-  });
+  })
 
   return {
     props: {
-      ...page,
+      ...pageProps,
       ...(await useServerI18n(locale)),
     },
   };
