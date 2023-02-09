@@ -10,7 +10,7 @@ const Footer = (props) => {
 
   return (
     <footer role="contentinfo">
-      <div className="container grid-xl">
+      <div className="container grid-lg">
         <p id="land-acknowledgement">
           <Trans i18nKey="layout.footer.land-acknowledgement">
             SRHR Hubs would like to acknowledge that our work is done on the
@@ -20,9 +20,9 @@ const Footer = (props) => {
           </Trans>
         </p>
         <div className="columns border-top">
-          <div className="column col-4 hide-md">
+          {/* <div className="column col-4 hide-md">
             <Logo className="logo" />
-          </div>
+          </div> */}
           <div className="column col-md-12">
             <ul className="links">
               <li>
@@ -32,21 +32,12 @@ const Footer = (props) => {
                 <Link href="/about">About Us</Link>
               </li>
               <li>
-                <Link href="/blog">Blog</Link>
-              </li>
-              <li>
                 <Link href="/contact">Contact</Link>
               </li>
             </ul>
           </div>
           <div className="column col-md-12">
             <ul className="links">
-              <li>
-                <Link href="/join-us">Join our team</Link>
-              </li>
-              <li>
-                <Link href="/accessibility">Accessibility</Link>
-              </li>
               <li>
                 <Link href="/privacy-policy">Privacy</Link>
               </li>

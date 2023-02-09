@@ -2,8 +2,8 @@ import Link from "next/link";
 import BlogCard from "./BlogCard";
 
 const BlogRoll = () => (
-  <div className="columns">
-    <div className="column col-4 col-mx-auto">
+  <div className="columns blog-roll">
+    <div className="column col-4 col-sm-12 col-mx-auto">
       <Link href="/blog/my-first-blog-post">
         <BlogCard
           title="My first blog post"
@@ -12,7 +12,7 @@ const BlogRoll = () => (
         />
       </Link>
     </div>
-    <div className="column col-4 col-mx-auto">
+    <div className="column col-4 col-sm-12 col-mx-auto">
       <Link href="/blog/my-first-blog-post">
         <BlogCard
           title="My first blog post"
@@ -21,7 +21,7 @@ const BlogRoll = () => (
         />
       </Link>
     </div>
-    <div className="column col-4 col-mx-auto">
+    <div className="column col-4 col-sm-12 col-mx-auto">
       <Link href="/blog/my-first-blog-post">
         <BlogCard
           title="My first blog post"

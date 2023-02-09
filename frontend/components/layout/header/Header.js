@@ -9,7 +9,7 @@ const { twitter: twitterInfo, instagram: instagramInfo } = config;
 
 const Header = ({ show, ...props }) => (
   <header data-show={show} role="banner">
-    <div className="container grid-xl">
+    <div className="container grid-lg">
       <div className="columns">
         <section className="navbar-section column col-2 hide-md" aria-hidden>
           <Link href="/" tabIndex={-1}>
@@ -19,8 +19,6 @@ const Header = ({ show, ...props }) => (
         <div className="column col rows">
           <div className="columns" id="header-top-row">
             <section className="col-ml-auto links" role="navigation">
-              <Link href="/accessibility">Accessibility</Link>
-              <Link href="/join-our-team">Get involved</Link>
               <Link href="#">
                 <button className="btn btn-error get-out-quick">
                   Get out quick
@@ -33,18 +31,9 @@ const Header = ({ show, ...props }) => (
               <section className="navbar-section column col links">
                 <Link href="/">Home</Link>
                 <Link href="/about">About Us</Link>
-                <Link href="/blog">Blog</Link>
                 <Link href="/contact">Contact</Link>
               </section>
-              <section className="navbar-section column col-3 links hide-md">
-                <Link
-                  href={twitterInfo.site}
-                  className="tooltip tooltip-bottom"
-                  data-tooltip={twitterInfo.handle}
-                  aria-label="Follow SRHR Hubs on Twitter"
-                >
-                  <Twitter />
-                </Link>
+              <section className="navbar-section column col-4 links hide-md">
                 <Link
                   href={instagramInfo.site}
                   className="tooltip tooltip-bottom"
@@ -53,6 +42,15 @@ const Header = ({ show, ...props }) => (
                 >
                   <Instagram />
                 </Link>
+                <Link
+                  href={twitterInfo.site}
+                  className="tooltip tooltip-bottom"
+                  data-tooltip={twitterInfo.handle}
+                  aria-label="Follow SRHR Hubs on Twitter"
+                >
+                  <Twitter />
+                </Link>
+
                 <Link href="#">
                   <button className="btn btn-primary">
                     <Trans i18nKey={"layout.header.use-the-map"}>

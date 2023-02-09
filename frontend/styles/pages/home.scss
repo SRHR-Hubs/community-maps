@@ -31,13 +31,16 @@
     .card {
       background-color: colors.$darkblue-400;
       color: colors.$white;
+      min-width: 200px;
     }
   }
 
   #latest-from-our-insta {
     background-color: colors.$teal-400;
     color: colors.$white;
-    h2 { text-align: center;}
+    h2 {
+      text-align: center;
+    }
     a {
       text-decoration: underline;
     }

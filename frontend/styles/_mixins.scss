@@ -2,6 +2,7 @@
 
 // Solution courtesy of:
 // https://codepen.io/canfie1d/details/vKYxvP
+// TODO: not fully responsive on smaller screens
 @mixin full-width {
   &::before,
   &::after {

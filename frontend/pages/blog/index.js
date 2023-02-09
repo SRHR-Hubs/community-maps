@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PageLayout from "../../components/layout/page/PageLayout";
+import isProduction from "../../hooks/isProduction";
 import useServerI18n from "../../hooks/useServerI18n";
 import { SEO } from "../../lib/seo";
 import BlogService from "../../services/BlogService";
@@ -32,6 +33,7 @@ export async function getStaticProps({ locale }) {
   const pageProps = await PageService.getPageProps("blog");
 
   return {
+    notFound: isProduction(),
     props: {
       posts,
       ...pageProps,

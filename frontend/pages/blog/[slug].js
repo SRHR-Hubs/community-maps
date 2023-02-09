@@ -1,4 +1,5 @@
 import PageLayout from "../../components/layout/page/PageLayout";
+import isProduction from "../../hooks/isProduction";
 import useServerI18n from "../../hooks/useServerI18n";
 import { Markdown } from "../../lib/mdx-remote";
 import { SEO } from "../../lib/seo";
@@ -34,6 +35,7 @@ export async function getStaticProps({ params, locale }) {
   });
 
   return {
+    notFound: isProduction(),
     props: {
       ...postProps,
       ...(await useServerI18n(locale)),

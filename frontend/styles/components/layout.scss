@@ -40,7 +40,6 @@ header {
 
   .links {
     display: flex;
-    margin-top: auto;
     justify-content: space-around;
     align-items: center;
     a {
@@ -117,8 +116,9 @@ footer {
 
   .border-top {
     border-top: 1px solid colors.$white;
-    margin: 2em;
-    align-items: center;
+    margin: 2em -2em;
+    align-items: start;
+    padding: 2em;
     .column {
       height: 100%;
     }
@@ -133,6 +133,9 @@ footer {
   ul.links {
     list-style: none;
     margin: unset;
+    a {
+      text-decoration: underline;
+    }
   }
 
   [id^="storybook"] & {
