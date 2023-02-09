@@ -6,18 +6,22 @@ import { SEO } from "../lib/seo";
 import PageService from "../services/PageService";
 import useServerI18n from "../hooks/useServerI18n";
 
+import InstagramFeed from "../components/layout/feed/InstagramFeed";
+
 const IndexPage = ({ slug, title, description, content }) => {
   const seoInfo = {
     title,
     description,
     // canonical: slug,
   };
+
   return (
     <>
       <SEO {...seoInfo} />
       <PageLayout>
         <h1>{title}</h1>
-        <Trans i18nKey='pages.home.sections.wocky-slush'>No wocky slush?</Trans>
+        <Trans i18nKey="pages.home.sections.wocky-slush">No wocky slush?</Trans>
+        <InstagramFeed />
       </PageLayout>
     </>
   );
