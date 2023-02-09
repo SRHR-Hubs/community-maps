@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Trans } from "next-i18next";
 
 const Footer = (props) => {
-  const date = new Date();
+  const date = useMemo(() => new Date());
 
   const year = useMemo(() => date.getFullYear(), [date]);
 

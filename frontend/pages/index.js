@@ -24,6 +24,7 @@ const IndexPage = ({ slug, title, description, sponsorImages }) => {
       <SEO {...seoInfo} />
       <PageLayout id="home">
         <section id="search-intro">
+          <p>A virtual map of sexual and reproductive health services, organizations, and resources in the GTA.</p>
           <h1>What are you searching for?</h1>
         </section>
         <section id="about">
