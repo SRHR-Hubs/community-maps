@@ -17,6 +17,7 @@
     "i18next-browser-languagedetector": "^7.0.1",
     "i18next-http-backend": "^2.1.1",
     "lqip-modern": "^1.2.0",
+    "lucide-react": "^0.112.0",
     "next": "13.0.0",
     "next-i18next": "^13.1.0",
     "next-mdx-remote": "^4.2.0",
@@ -52,7 +53,6 @@
     "cross-env": "^7.0.3",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.0",
-    "ionicons": "^6.0.4",
     "storybook": "^7.0.0-alpha.54"
   }
 }
