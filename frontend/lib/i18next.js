@@ -4,7 +4,7 @@ import HTTPBackend from "i18next-http-backend";
 import fetcher from "../hooks/fetch";
 import i18n from '../config/i18n.config.json'
 
-export default {
+const i18next = {
   debug: !isProduction(),
   i18n,
   load: "languageOnly",
@@ -67,3 +67,5 @@ export default {
   },
   serializeConfig: false,
 };
+
+export default i18next;

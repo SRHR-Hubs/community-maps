@@ -9,7 +9,7 @@ const ServicesHome = ({ services, page, totalPages }) => {
   page = parseInt(page);
 
   return (
-    <PageLayout id="services">
+    <PageLayout id="services" renderContactSection={false}>
       <h1>Services home</h1>
       <ul role="list">
         {services.map(({ slug, name }) => (

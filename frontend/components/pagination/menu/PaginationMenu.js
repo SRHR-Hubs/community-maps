@@ -46,7 +46,7 @@ const PaginationMenu = ({ page, pathname, totalPages }) => {
         </>
       )}
       {previousFew.map((pg) => (
-        <li className="page-item">
+        <li className="page-item" key={`page-item-${pg}`}>
           <Link
             scroll={false}
             href={{
@@ -65,7 +65,7 @@ const PaginationMenu = ({ page, pathname, totalPages }) => {
       </li>
 
       {nextFew.map((pg) => (
-        <li className="page-item">
+        <li className="page-item" key={`page-item-${pg}`}>
           <Link
             scroll={false}
             href={{

@@ -1,5 +1,6 @@
 @use "../variables";
 @use "../colors";
+@use "../mixins";
 
 header {
   z-index: 1;
@@ -62,12 +63,14 @@ header {
   main {
     &:focus {
       outline: none;
-
-      section {
-        &#contact {
-          background-color: colors.$lilac-400;
-          color: colors.$white
-        }
+    }
+    section {
+      @include mixins.full-width;
+      position: relative;
+      padding: 4em 0;
+      &#contact {
+        background-color: colors.$lilac-400;
+        color: colors.$white;
       }
     }
   }
@@ -75,7 +78,7 @@ header {
 
 footer {
   width: 100%;
-  border: 1px solid white;
+  border-top: 1px solid white;
   background: colors.$teal-400;
   padding: 3em 0;
 

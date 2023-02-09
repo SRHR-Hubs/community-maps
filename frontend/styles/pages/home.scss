@@ -3,10 +3,6 @@
 
 #home {
   main > section {
-    @include mixins.full-width;
-    position: relative;
-    padding: 4em 0;
-
     &:first-of-type {
       padding-top: 2em;
     }

@@ -11,24 +11,36 @@ export default class ServiceService {
 
   static async getPage(page, params = {}) {
     const query = {
-        ...params,
-        page,
-    }
+      ...params,
+      page,
+    };
 
-    return await this.get("", { query })
+    return await this.get("", { query });
   }
 
   static async getAllServices(params = {}) {
     const result = [];
 
-    let next = '';
+    let next = "";
 
     for (let page = 1; next !== null; page++) {
-      const { results, meta } = await  this.getPage(page, params)
+      const { results, meta } = await this.getPage(page, params);
       result.push(...results);
       next = meta.next;
     }
 
     return result;
+  }
+
+  static async getServiceBySlug(slug, options) {
+    const query = {
+      ...options,
+    };
+    const service = await this.get(slug, { query });
+
+    if (!service) {
+      throw Error("Getting service by slug failed.");
+    }
+    return service;
   }
 }

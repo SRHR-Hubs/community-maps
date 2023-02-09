@@ -11,6 +11,7 @@ class ServiceViewset(vs.ModelViewSet):
     queryset = models.Service.objects.all()
     serializer_class = serializers.ServiceSerializer
     filter_fields = '__all__'
+    lookup_field = 'slug'
 
     @action(methods=['get'], detail=False)
     def documents(self, request):
