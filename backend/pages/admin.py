@@ -1,9 +1,12 @@
 from django.contrib import admin
-from nonrelated_inlines.admin import NonrelatedStackedInline
-from django.utils import timezone
 from django.db import models as m
+from django.template.defaultfilters import truncatechars
+from django.utils import timezone
 from mdeditor.widgets import MDEditorWidget
+from nonrelated_inlines.admin import NonrelatedStackedInline
+
 from . import models
+
 
 # Thank you <3 https://bhomnick.net/django-admin-inlines-for-non-related-models/
 class SectionInline(NonrelatedStackedInline):
@@ -19,6 +22,8 @@ class SectionInline(NonrelatedStackedInline):
 
     def save_new_instance(self, parent, instance):
         instance.save()
+
+
 class PageAdminBase(admin.ModelAdmin):
     list_display = ('slug', 'created_by', 'created_at',
                     'updated_at', 'published',)
@@ -33,7 +38,6 @@ class PageAdminBase(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
-
 
     def get_changeform_initial_data(self, request):
         return {
@@ -62,6 +66,10 @@ class PageAdmin(PageAdminBase):
 
 @admin.register(models.I18nSection)
 class I18nAdmin(admin.ModelAdmin):
-    list_display = ('translation_id', 'language', 'text')
+    list_display = ('translation_id', 'language', 'short_text')
 
     search_fields = ('translation_id', 'text')
+
+    @admin.display(description="Text")
+    def short_text(self, obj):
+        return truncatechars(obj.text, 50)
