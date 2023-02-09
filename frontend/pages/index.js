@@ -21,7 +21,7 @@ const IndexPage = ({ slug, title, description, content }) => {
       <PageLayout>
         <h1>{title}</h1>
         <Trans i18nKey="pages.home.sections.wocky-slush">No wocky slush?</Trans>
-        <InstagramFeed />
+        {/* <InstagramFeed /> */}
       </PageLayout>
     </>
   );

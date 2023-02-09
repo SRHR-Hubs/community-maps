@@ -1,6 +1,7 @@
-import useScrollDirection, {UP} from "../../../hooks/useScrollDirection";
+import useScrollDirection, { UP } from "../../../hooks/useScrollDirection";
 import Footer from "../footer/Footer";
 import Header from "../header/Header";
+import SkipToContent from "../skip-to-content/SkipToContent";
 
 /** Important notes for this file:
  * - Currently, page components merely *compose* this component,
@@ -22,13 +23,22 @@ const PageLayout = ({
 }) => {
   // If the user scrolls up, snap the header into view
   const scrollDirection = useScrollDirection();
-
   return (
-    <div className="page off-canvas" {...props}>
-      {renderHeader && <Header show={showHeader && scrollDirection === UP} />}
-      <main className="container grid-lg" role="main" id="content">{children}</main>
-      {renderFooter && <Footer show={showFooter} />}
-    </div>
+    <>
+      <SkipToContent />
+      <div className="page off-canvas" {...props}>
+        {renderHeader && <Header show={showHeader && scrollDirection === UP} />}
+        <main
+          className="container grid-lg"
+          role="main"
+          id="content"
+          tabIndex={-1}
+        >
+          {children}
+        </main>
+        {renderFooter && <Footer show={showFooter} />}
+      </div>
+    </>
   );
 };
 
