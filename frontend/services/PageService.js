@@ -1,3 +1,4 @@
+import { serialize } from "../lib/mdx-remote";
 import fetcher from "../hooks/fetch";
 
 export default class PageService {
@@ -33,12 +34,31 @@ export default class PageService {
       ...options,
     };
 
-    const page  = await this.get(slug, { query });
+    const page = await this.get(slug, { query });
 
     if (!page) {
       throw Error(`Getting page with slug ${slug} failed.`);
     }
 
     return page;
+  }
+
+  static async getPageProps(slug, query) {
+    const page = await this.getPageBySlug(slug, query);
+    if (page.content) {
+      const { content } = page;
+      page.content = {};
+      for (const [section_id, text] of Object.entries(content)) {
+        if (!section_id.includes('.')) {
+          page.content[section_id] = await serialize(text);
+        } else {
+          page.content[section_id] = text;
+        }
+      }
+    }
+    return {
+      ...page,
+      // ...(await useServerI18n(locale)),
+    };
   }
 }

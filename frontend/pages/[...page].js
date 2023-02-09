@@ -10,7 +10,7 @@ const GenericPage = ({ slug, title, description, content }) => {
       <SEO title={title} description={description} canonical={slug} />
       <PageLayout>
         <h1>{title}</h1>
-        {content.map(([section_id, text]) => (
+        {Object.entries(content).map(([section_id, text]) => (
           <section id={section_id} key={section_id}>
             <Markdown {...text} />
           </section>
@@ -25,20 +25,14 @@ export async function getStaticProps({ params, locale }) {
   const slug = tokens.join("/");
   const fields = ["slug", "title", "description", "content", "updated_at"];
 
-  const page = await PageService.getPageBySlug(slug, {
-    fields,
-  });
 
-  page.content = await Promise.all(
-    Object.entries(page.content).map(async ([section_id, text]) => [
-      section_id,
-      await serialize(text),
-    ])
-  );
+  const pageProps = await PageService.getPageProps(slug, {
+    fields,
+  })
 
   return {
-    props: {
-      ...page,
+    props:{
+      ...pageProps,
       ...(await useServerI18n(locale)),
     },
   };
