@@ -1,4 +1,5 @@
 {
   "locales": ["en"],
-  "defaultLocale": "en"
+  "defaultLocale": "en",
+  "localeDetection": false
 }

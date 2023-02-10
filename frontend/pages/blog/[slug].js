@@ -44,11 +44,12 @@ export async function getStaticProps({ params, locale }) {
 }
 
 export async function getStaticPaths() {
-  const posts = await BlogService.getAllPosts({ published: true });
+  // const posts = await BlogService.getAllPosts({ published: true });
 
-  const paths = posts.map(({ slug }) => ({
-    params: { slug },
-  }));
+  // const paths = posts.map(({ slug }) => ({
+  //   params: { slug },
+  // }));
+  const paths = [];
 
   return { paths, fallback: false };
 }

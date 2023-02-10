@@ -16,6 +16,7 @@ const nextConfig = {
       },
     ],
   },
+  staticPageGenerationTimeout: 1000,
 
   i18n,
 

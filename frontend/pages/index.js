@@ -6,10 +6,10 @@ import { SEO } from "../lib/seo";
 import PageService from "../services/PageService";
 
 import Link from "next/link";
-import BlogRoll from "../components/blog/BlogRoll";
+// import BlogRoll from "../components/blog/BlogRoll";
 import { instagram } from "../config/next-seo.config";
 import { getBlurUrl } from "../lib/cloudinary";
-import InstagramFeed from '../components/layout/feed/InstagramFeed'
+// import InstagramFeed from '../components/layout/feed/InstagramFeed'
 import SponsorGrid from "../components/sections/about/SponsorGrid";
 
 const IndexPage = ({ slug, title, description, sponsorImages }) => {
@@ -37,14 +37,14 @@ const IndexPage = ({ slug, title, description, sponsorImages }) => {
             </div>
           </div>
         </section>
-        <section id="latest-from-our-blog">
+        {/* <section id="latest-from-our-blog">
           <h2>
             <Trans i18nKey="pages.home.sections.latest-from-our-blog.title">
               Latest from our blog
             </Trans>
           </h2>
           <BlogRoll />
-        </section>
+        </section> */}
         <section id="latest-from-our-insta">
           <h2>
             <Trans i18nKey="pages.home.sections.latest-from-our-insta.title">

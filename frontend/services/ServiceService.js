@@ -21,12 +21,14 @@ export default class ServiceService {
   static async getAllServices(params = {}) {
     const result = [];
 
-    let next = "";
+    let totalPages = Infinity;
 
-    for (let page = 1; next !== null; page++) {
-      const { results, meta } = await this.getPage(page, params);
+    for (let page = 1; page < totalPages; page++) {
+      const { results, meta } = await this.getPage(page, { ...params, page });
       result.push(...results);
-      next = meta.next;
+      if (page === 1) {
+        totalPages = meta.total_pages
+      }
     }
 
     return result;

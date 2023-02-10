@@ -34,7 +34,7 @@ export default class PageService {
       ...options,
     };
 
-    const page = await this.get(slug, { query });
+    const page = await this.get(slug, { query }).catch(console.log);
 
     if (!page) {
       throw Error(`Getting page with slug ${slug} failed.`);
@@ -48,7 +48,7 @@ export default class PageService {
     if (page.content) {
       const { content } = page;
 
-      // NOTpE: as of ES2015, objects with string keys <<should>>
+      // NOTE: as of ES2015, objects with string keys <<should>>
       // keep their insertion order:
       // https://stackoverflow.com/questions/5525795/does-javascript-guarantee-object-property-order
 
