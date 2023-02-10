@@ -29,6 +29,9 @@ class Location(models.Model):
     def __str__(self):
         return f'<Location for {self.service.name}>'
 
+    class Meta:
+        ordering = ('id',)
+
 
 class Service(models.Model, GeoItem):
     # administrative fields

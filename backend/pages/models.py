@@ -2,8 +2,6 @@ from django.db import models
 from mdeditor.fields import MDTextField
 from django.contrib.auth import get_user_model
 
-from django.contrib.contenttypes.fields import GenericRelation
-
 User = get_user_model()
 
 
@@ -14,6 +12,10 @@ class I18nSection(models.Model):
 
     def __str__(self):
         return f'{{{self.translation_id}}}'
+
+    class Meta:
+        ordering = ('id',)
+
 
 
 class PageBase(models.Model):
@@ -31,9 +33,12 @@ class PageBase(models.Model):
     slug = models.CharField(unique=True, max_length=255)
     description = models.CharField(max_length=255)
     image = models.URLField(blank=True)
+    language = models.CharField(max_length=12, default="en")
 
     class Meta:
         abstract = True
+        ordering = ('id',)
+
 
 
 class BlogPost(PageBase):
@@ -50,4 +55,4 @@ class Page(PageBase):
     @property
     def content(self):
         prefix = f'pages.{self.slug}'
-        return I18nSection.objects.filter(translation_id__startswith=prefix)
+        return I18nSection.objects.filter(translation_id__startswith=prefix, language=self.language)

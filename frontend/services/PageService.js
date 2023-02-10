@@ -34,7 +34,7 @@ export default class PageService {
       ...options,
     };
 
-    const page = await this.get(slug, { query }).catch(console.log);
+    const page = await this.get(slug, { query })
 
     if (!page) {
       throw Error(`Getting page with slug ${slug} failed.`);
