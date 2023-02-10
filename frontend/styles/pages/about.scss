@@ -14,12 +14,62 @@
     > .columns {
       margin: unset;
       padding: 2em;
+      border-radius: 10px;
       background-color: colors.$white;
       color: colors.$teal-400;
+      gap: 45px;
+
       > .column {
         flex: 1;
+        padding: unset;
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        flex-basis: 175px;
+        svg {
+          flex-basis: 2.5em;
+          width: auto;
+          stroke-width: 1px;
+          margin-bottom: 1em;
+        }
+        .subtitle {
+          font-size: 1.05rem;
+          flex-basis: 3.5em;
+          font-weight: bolder;
+        }
       }
+    }
+  }
+
+  #about-the-map {
+    background-color: colors.$darkblue-400;
+    color: colors.$white;
+
+    article {
+      max-width: 80ch;
+    }
+
+    p + h3 {
+      margin-top: 2em;
+      padding-top: 2em;
+      border-top: 1px solid colors.$white;
+      position: relative;
+      &::after {
+        $diameter: 6px;
+        content: "";
+        background-color: colors.$white;
+        width: $diameter;
+        height: $diameter;
+        position: absolute;
+        top: calc(-#{$diameter} / 2 - .5px);
+        right: 0;
+        border-radius: 100%;
+      }
+    }
+
+    strong {
+      font-weight: normal;
+      text-decoration: underline;
     }
   }
 }

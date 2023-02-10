@@ -6,10 +6,11 @@ import { SEO } from "../lib/seo";
 import PageService from "../services/PageService";
 
 import Link from "next/link";
+import { Markdown } from "../lib/mdx-remote";
 
 import { Users, Grab, FileHeart, HeartHandshake } from "lucide-react";
 
-const AboutPage = ({ slug, title, description }) => {
+const AboutPage = ({ slug, title, description, content }) => {
   const seoInfo = {
     title,
     description,
@@ -32,7 +33,7 @@ const AboutPage = ({ slug, title, description }) => {
       key: "education-activism",
       icon: FileHeart,
       subtitle: "Commitment to Education & Activism",
-      text: "We’re passionate about change, innovation and responding to community needs.",
+      text: "We're passionate about change, innovation and responding to community needs.",
     },
     {
       key: "co-creation",
@@ -71,24 +72,34 @@ const AboutPage = ({ slug, title, description }) => {
               Our Values
             </Trans>
           </h2>
-          <div className="s-rounded columns">
+          <div className="columns">
             {valuesContent.map(({ key, icon: Icon, subtitle, text }) => {
               const i18nKeyPrefix = `pages.about.sections.our-values.${key}`;
               const subtitleKey = `${i18nKeyPrefix}.subtitle`;
-              const contentKey = `${i18nKeyPrefix}.content`;
+              const textKey = `${i18nKeyPrefix}.text`;
               return (
                 <div className="column col-auto col-sm-12" key={key}>
                   <Icon />
-                  <h3><Trans i18nKey={subtitleKey}>{subtitle}</Trans></h3>
-                  <p><Trans i18nKey={contentKey}>{text}</Trans></p>
+                  <h3 className="subtitle">
+                    <Trans i18nKey={subtitleKey}>{subtitle}</Trans>
+                  </h3>
+                  <p className="content">
+                    <Trans i18nKey={textKey}>{text}</Trans>
+                  </p>
                 </div>
               );
             })}
-            {/* <div className="column col-auto col-sm-12">Cock</div>
-                <div className="column col-auto col-sm-12">and</div>
-                <div className="column col-auto col-sm-12">Ball</div>
-                <div className="column col-auto col-sm-12">Torture</div> */}
           </div>
+        </section>
+        <section id="about-the-map">
+          <h2>
+            <Trans i18nKey="pages.about.sections.about-the-map.title">
+              About the Map
+            </Trans>
+          </h2>
+          <article>
+            <Markdown {...content["about-the-map.content"]} />
+          </article>
         </section>
       </PageLayout>
     </>
@@ -100,7 +111,7 @@ export default AboutPage;
 export async function getStaticProps({ params, locale }) {
   const fields = ["slug", "title", "description", "content"];
 
-  const pageProps = await PageService.getPageProps("home", {
+  const pageProps = await PageService.getPageProps("about", {
     fields,
   });
 

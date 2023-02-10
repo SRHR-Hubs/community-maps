@@ -54,10 +54,10 @@ export default class PageService {
 
       page.content = {};
       for (const [section_id, text] of Object.entries(content)) {
-        if (!section_id.includes('.')) {
+        if (section_id.endsWith("content")) {
           page.content[section_id] = await serialize(text);
         } else {
-          page.content[section_id] = text;
+          // page.content[section_id] = text;
         }
       }
     }
