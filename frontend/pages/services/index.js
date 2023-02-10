@@ -31,8 +31,8 @@ const ServicesHome = ({ services, page, totalPages, title, slug }) => {
   );
 };
 
-export async function getServerSideProps({ query, locale }) {
-  const { page = 1 } = query;
+export async function getStaticProps({ query, locale }) {
+  const { page = 1 } = query ?? {};
   const { results: services, meta } = await ServiceService.getPage(page, {
     fields: ["slug", "name"],
     published: true,

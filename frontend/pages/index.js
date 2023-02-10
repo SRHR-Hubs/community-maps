@@ -9,8 +9,9 @@ import Link from "next/link";
 // import BlogRoll from "../components/blog/BlogRoll";
 import { instagram } from "../config/next-seo.config";
 import { getBlurUrl } from "../lib/cloudinary";
-// import InstagramFeed from '../components/layout/feed/InstagramFeed'
+import InstagramFeed from '../components/layout/feed/InstagramFeed'
 import SponsorGrid from "../components/sections/about/SponsorGrid";
+import isProduction from "../hooks/isProduction";
 
 const IndexPage = ({ slug, title, description, sponsorImages }) => {
   const seoInfo = {
@@ -51,7 +52,7 @@ const IndexPage = ({ slug, title, description, sponsorImages }) => {
               Latest from our Insta <Link href={instagram.site}>@SRHRMap</Link>
             </Trans>
           </h2>
-          {/* <InstagramFeed /> */}
+          {isProduction() && <InstagramFeed />}
         </section>
         <section id="our-sponsors">
           <h2>

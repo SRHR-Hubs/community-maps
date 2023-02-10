@@ -15,7 +15,7 @@ export default class ServiceService {
       page,
     };
 
-    return await this.get("", { query });
+    return this.get("", { query });
   }
 
   static async getAllServices(params = {}) {

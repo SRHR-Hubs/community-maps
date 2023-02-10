@@ -51,7 +51,7 @@ export async function getStaticPaths() {
     .filter(({ slug }) => !existingSlugs.includes(slug))
     .map(({ slug, language }) => {
       const page = slug.split("/");
-      return { params: { page, locale: language } };
+      return { params: { page /*locale: language*/ } };
     });
 
   return { paths, fallback: false };
