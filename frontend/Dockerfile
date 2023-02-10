@@ -11,30 +11,33 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 RUN npm install -g npm@9.4.2
+RUN npm ci --only-production
 
 # build stage
 FROM base as build
 WORKDIR /app
-RUN npm ci --only-production
 
+COPY --from=base /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
 # prod deploy
 FROM base as prod
-WORKDIR /app
 ENV NODE_ENV=production
+WORKDIR /app
 
-# RUN groupadd -g 1001 -S node
-# RUN useradd -u 1001 -S nextjs
+RUN groupadd -f -g 1001 node
+RUN useradd -r -u 1001 -md /home/nextjs -g node nextjs 
+RUN chown -R nextjs:node /home/nextjs
 
-COPY --from=build --chown=nextjs:node /app/package.json /app/package-lock.json ./
-COPY --from=build --chown=nextjs:node /app/node_modules ./node_modules
-COPY --from=build --chown=nextjs:node /app/public ./public
+COPY --from=build /app/package.json /app/package-lock.json ./
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/public ./public
+COPY --from=build /app/config ./config
 COPY --from=build --chown=nextjs:node /app/.next ./.next 
 COPY --from=build --chown=nextjs:node /app/next.config.js ./
 
-USER nextjs:node
+USER nextjs
 
 EXPOSE 3000
 CMD npm run start

@@ -24,10 +24,10 @@ export default class ServiceService {
     let totalPages = Infinity;
 
     for (let page = 1; page < totalPages; page++) {
-      const { results, meta } = await this.getPage(page, { ...params, page });
+      const { results, meta } = await this.getPage(page, params);
       result.push(...results);
       if (page === 1) {
-        totalPages = meta.total_pages
+        totalPages = meta.total_pages;
       }
     }
 

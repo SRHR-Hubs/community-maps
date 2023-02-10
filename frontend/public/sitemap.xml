@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<sitemap><loc>https://localhost:3000/sitemap-0.xml</loc></sitemap>
-</sitemapindex>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url><loc>https://localhost:3000/about</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/privacy-policy</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/terms-of-service</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/create-fertility-centre</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/hannam-fertility-centre</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/black-cap</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/planned-parenthood-toronto</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/bay-centre-for-birth-control</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/aid-to-woman</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/birthright-mississauga</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/birthright-toronto</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/capss-mississauga</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/pregnancy-care-centre</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/markham-stouffville-cpc</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/mississauga-life-centre</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/pregnancy-centre-of-north-york</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/rosalie-hall</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/access-alliance-multicultural-health-and-community</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/ontarios-fertility-program</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/anova-fertility-reproductive-health</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/dr-anthony-auyeung</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/trio-fertility</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://localhost:3000/services/repromed-toronto-institute-for-reproductive-medici</loc><lastmod>2023-02-10T06:39:45.900Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+</urlset>
