@@ -50,6 +50,7 @@ export async function getStaticProps({ query, locale }) {
       ...pageProps,
       ...(await useServerI18n(locale)),
     },
+    revalidate: 10,
   };
 }
 

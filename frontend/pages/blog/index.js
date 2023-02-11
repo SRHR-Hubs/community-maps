@@ -39,6 +39,7 @@ export async function getStaticProps({ locale }) {
       ...pageProps,
       ...(await useServerI18n(locale)),
     },
+    revalidate: 10,
   };
 }
 

@@ -40,6 +40,7 @@ export async function getStaticProps({ params, locale }) {
       ...postProps,
       ...(await useServerI18n(locale)),
     },
+    revalidate: 10,
   };
 }
 

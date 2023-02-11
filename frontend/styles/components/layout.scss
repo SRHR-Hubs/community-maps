@@ -95,7 +95,7 @@ header {
     > .container {
       max-width: 90vw;
     }
-    
+
     > section {
       @include mixins.full-width;
       position: relative;
@@ -134,13 +134,13 @@ footer {
     width: auto;
     margin: 0;
   }
+  a {
+    text-decoration: underline;
+  }
 
   ul.links {
     list-style: none;
     margin: unset;
-    a {
-      text-decoration: underline;
-    }
   }
 
   [id^="storybook"] & {

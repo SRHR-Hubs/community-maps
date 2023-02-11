@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { Trans } from "next-i18next";
 
+// TODO: more sustainable solution for link text
+
 const Footer = (props) => {
   const date = useMemo(() => new Date(), []);
 
@@ -12,7 +14,12 @@ const Footer = (props) => {
     <footer role="contentinfo">
       <div className="container grid-lg">
         <p id="land-acknowledgement">
-          <Trans i18nKey="layout.footer.land-acknowledgement">
+          <Trans
+            i18nKey="layout.footer.land-acknowledgement"
+            components={{
+              link_: <Link href="https://native-land.ca" />,
+            }}
+          >
             SRHR Hubs would like to acknowledge that our work is done on the
             ancestral and unceded territory of many indigenous peoples across
             Turtle Island, also called North America, who have cared for the

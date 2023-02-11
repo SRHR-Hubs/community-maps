@@ -99,6 +99,7 @@ export async function getStaticProps({ params, locale }) {
       ...(await useServerI18n(locale)),
       sponsorImages,
     },
+    revalidate: 10,
   };
 }
 
