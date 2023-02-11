@@ -32,6 +32,8 @@ services:
     depends_on:
       - db
     command: python3 manage.py runserver 0.0.0.0:8000
+    environment:
+      - DJANGO_ENV=local
 
   meilisearch:
     container_name: meilisearch

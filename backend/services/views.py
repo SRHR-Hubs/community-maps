@@ -22,15 +22,43 @@ class ServiceViewset(vs.ModelViewSet):
 
         return Response(response.__dict__)
 
+    @action(methods=['get'], detail=False)
+    def geojson(self, request):
+        response = {
+            "type": "geojson",
+        }
+        data = {
+            "type": "FeatureCollection",
+            "features": []
+        }
+        for item in self.get_queryset().filter(location__isnull=False):
+            data["features"].append({
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [
+                    item.location.longitude,
+                    item.location.latitude
+                ]},
+                "properties": {
+                    "slug": item.slug,
+                    "name": item.name,
+                    "description": item.description
+                }
+            })
+
+        response["data"] = data
+
+        return Response(response)
+
     @action(methods=['put'], detail=False)
     def update_search_index(self, request):
+        from search import client
         documents = [
             obj.to_document()
             for obj in self.queryset
         ]
 
-        response = None #client.index('services').add_documents(
-            #documents, primary_key='id')
+        response = client.index('services').add_documents(
+            documents, primary_key='id')
 
         return Response({
             'result': response

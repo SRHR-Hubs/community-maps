@@ -31,7 +31,8 @@ export async function getStaticProps({ params, locale }) {
 }
 
 export async function getStaticPaths() {
-  const services = await ServiceService.getAllServices({ published: true });
+  const fields = ['name', 'slug']
+  const services = await ServiceService.getAllServices({ fields, published: true });
   const paths = services.map(({ slug }) => ({
     params: { slug },
   }));

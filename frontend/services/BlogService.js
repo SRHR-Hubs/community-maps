@@ -12,22 +12,17 @@ export default class BlogService {
    * Get a list of all post IDs for static generation.
    */
   static async getAllPosts(params = {}) {
-    const { fields = ["slug"] } = params;
-
     const result = [];
 
-    const query = {
-      fields,
-      ...params,
-    };
+    let totalPages = Infinity;
 
-    let next = null;
-
-    do {
-      const { results, meta } = await this.get("", { query });
+    for (let page = 1; page <= totalPages; page++) {
+      const { results, meta } = await this.getPage(page, params);
       result.push(...results);
-      next = meta.next;
-    } while (next !== null);
+      if (page === 1) {
+        totalPages = meta.total_pages;
+      }
+    }
 
     return result;
   }

@@ -41,7 +41,8 @@ export async function getStaticProps({ params, locale }) {
 }
 
 export async function getStaticPaths() {
-  const pages = await PageService.getAllPages({ published: true });
+  const pages = await PageService.getAllPages({ published: true, size: 2 });
+  console.log(pages.length, 'pages')
 
   // this only took hours to solve.
   // https://github.com/vercel/next.js/issues/45692

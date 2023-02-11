@@ -23,7 +23,7 @@ export default class ServiceService {
 
     let totalPages = Infinity;
 
-    for (let page = 1; page < totalPages; page++) {
+    for (let page = 1; page <= totalPages; page++) {
       const { results, meta } = await this.getPage(page, params);
       result.push(...results);
       if (page === 1) {
@@ -44,5 +44,9 @@ export default class ServiceService {
       throw Error("Getting service by slug failed.");
     }
     return service;
+  }
+
+  static async getGeoJSON(params = {}) {
+    return this.get('geojson', params);
   }
 }

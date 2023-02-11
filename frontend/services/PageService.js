@@ -9,22 +9,27 @@ export default class PageService {
     return fetcher(url, args);
   }
 
-  static async getAllPages(params = {}) {
-    const { fields = ["slug"] } = params;
-    const result = [];
-
+  static async getPage(page, params = {}) {
     const query = {
-      fields,
       ...params,
+      page,
     };
 
-    let next = null;
+    return this.get("", { query });
+  }
 
-    do {
-      const { results, meta } = await this.get("", { query });
+  static async getAllPages(params = {}) {
+    const result = [];
+
+    let totalPages = Infinity;
+
+    for (let page = 1; page <= totalPages; page++) {
+      const { results, meta } = await this.getPage(page, params);
       result.push(...results);
-      next = meta.next;
-    } while (next !== null);
+      if (page === 1) {
+        totalPages = meta.total_pages;
+      }
+    }
 
     return result;
   }
@@ -34,7 +39,7 @@ export default class PageService {
       ...options,
     };
 
-    const page = await this.get(slug, { query })
+    const page = await this.get(slug, { query });
 
     if (!page) {
       throw Error(`Getting page with slug ${slug} failed.`);

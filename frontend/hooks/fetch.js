@@ -1,12 +1,13 @@
 // import { ofetch } from "ofetch";
+import useQuery from "./useQuery";
 
-// const fetcher = ofetch.create({
-//   baseURL: process.env.API_HOST,
-// });
+const qs = useQuery();
 
 const fetcher = async (url, props) => {
-  const endpoint = `${process.env.API_HOST}${url}`;
-  const res = await fetch(endpoint, props);
+  const {query, ...init} = props;
+  const params = qs(query)
+  const endpoint = process.env.API_HOST + url + '?' + params;
+  const res = await fetch(endpoint, init);
   const data = await res.json()
   return data;
 };
