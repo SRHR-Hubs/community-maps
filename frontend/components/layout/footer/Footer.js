@@ -51,6 +51,9 @@ const Footer = (props) => {
               <li>
                 <Link href="/terms-of-service">Terms of Service</Link>
               </li>
+              <li>
+                <Link href="/sitemap.xml">Sitemap</Link>
+              </li>
             </ul>
           </div>
           <div className="column col-md-12">&copy; SRHR Hubs {year}.</div>
