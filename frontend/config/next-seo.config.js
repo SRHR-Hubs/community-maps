@@ -7,6 +7,17 @@ module.exports = {
     handle: "@srhrmap",
     site: "https://www.instagram.com/srhrmap"
   },
+  openGraph: {
+    type: 'website',
+    images: [
+      {
+        url: 'https://res.cloudinary.com/drk1rc6ld/image/upload/v1676122154/branding/banner_torrk9.png',
+        width: 600,
+        height: 206,
+        alt: 'SRHR Banner'
+      }
+    ]
+  },
   additionalLinkTags: [
     {
       rel: 'icon',
