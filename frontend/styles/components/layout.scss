@@ -91,7 +91,12 @@ header {
     &:focus {
       outline: none;
     }
-    section {
+
+    > .container {
+      max-width: 90vw;
+    }
+    
+    > section {
       @include mixins.full-width;
       position: relative;
       padding: 4em 0;
@@ -152,10 +157,6 @@ footer {
 header,
 footer {
   color: colors.$white;
-
-  a:visited {
-    color: inherit !important;
-  }
 }
 
 #skip-to-content {
