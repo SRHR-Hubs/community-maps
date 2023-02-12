@@ -11,6 +11,7 @@ services:
       target: base
     depends_on:
       - backend
+      - meilisearch
     networks:
       - bridge-network
     volumes:

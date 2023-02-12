@@ -51,14 +51,21 @@ class ServiceViewset(vs.ModelViewSet):
 
     @action(methods=['put'], detail=False)
     def update_search_index(self, request):
-        from search import client
+        from search import client, create_index
         documents = [
             obj.to_document()
-            for obj in self.queryset
+            for obj in self.get_queryset().filter(published=True)
         ]
 
-        response = client.index('services').add_documents(
+        new_index = create_index('services_new')
+
+        new_index.add_documents(
             documents, primary_key='id')
+
+        response = client.swap_indexes(
+            [{'indexes': ['services', 'services_new']}])
+
+        new_index.delete()
 
         return Response({
             'result': response
