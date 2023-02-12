@@ -5,7 +5,7 @@ import fetcher from "../hooks/fetch";
 import i18n from '../config/i18n.config.json'
 
 const i18next = {
-  debug: !isProduction(),
+  debug: false && !isProduction(),
   i18n,
   load: "languageOnly",
   preload: ['en'],

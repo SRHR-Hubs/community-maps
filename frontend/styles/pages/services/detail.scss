@@ -1,0 +1,44 @@
+@use "../../colors";
+@use "../../mixins";
+
+#service-detail {
+  section#details {
+    background-color: colors.$darkblue-400;
+    color: colors.$white;
+
+    .address {
+      white-space: pre-line;
+    }
+
+    .accordion {
+      // make checkbox invisible but still available
+      // to tab
+      input {
+        position: absolute;
+        left: 9999px;
+        // copy over some properties from :checked
+        &:focus-visible {
+          ~ .accordion-body {
+            max-height: 50rem;
+          }
+          ~ .accordion-header > .icon:first-child {
+            transform: rotate(90deg);
+          }
+        }
+      }
+      label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        h2 {
+          display: inline;
+          margin: 0;
+        }
+      }
+    }
+  }
+  section#tags {
+    background-color: colors.$white;
+    color: colors.$darkblue-400;
+  }
+}

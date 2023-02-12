@@ -47,7 +47,7 @@ export async function getStaticPaths() {
   // this only took hours to solve.
   // https://github.com/vercel/next.js/issues/45692
   // current time: 1:39 am.
-  const existingSlugs = ["home", "blog", "services", "about"];
+  const existingSlugs = ["home", "blog", "services", "about", "service-detail"];
 
   const paths = pages
     .filter(({ slug }) => !existingSlugs.includes(slug))
