@@ -4,6 +4,7 @@ import { Twitter, Instagram } from "lucide-react";
 // import Twitter
 import config from "../../../config/next-seo.config";
 import { Trans } from "next-i18next";
+import GetOutQuick from "../get-out-quick/GetOutQuick";
 
 const { twitter: twitterInfo, instagram: instagramInfo } = config;
 
@@ -19,11 +20,7 @@ const Header = ({ show, ...props }) => (
         <div className="column col rows">
           <div className="columns" id="header-top-row">
             <section className="col-ml-auto links" role="navigation">
-              <Link href="#">
-                <button className="btn btn-error get-out-quick">
-                  Get out quick
-                </button>
-              </Link>
+              <GetOutQuick />
             </section>
           </div>
           <div className="columns" id="header-bottom-row">

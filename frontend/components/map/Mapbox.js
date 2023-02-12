@@ -65,19 +65,9 @@ export function makeMap({ ref, initSource, on }) {
   return map;
 }
 
-const Mapbox = ({ initSource, on }) => {
+const Mapbox = ({ ref }) => {
   // TODO: useMemo?
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const map = makeMap({
-      ref,
-      initSource,
-      on,
-    });
-
-    return () => map.remove();
-  }, []);
+  
   return <figure ref={ref} />;
 };
 export default Mapbox;

@@ -44,7 +44,7 @@ header {
     align-items: center;
     a {
       & + a {
-        margin-left: 2em;
+        margin-inline-start: 2em;
       }
 
       &:hover,
@@ -182,5 +182,12 @@ footer {
     & {
       display: none;
     }
+  }
+}
+
+.btn.get-out-quick {
+  color: colors.$darkblue-400;
+  &:hover {
+    background-color: colors.$red-400;
   }
 }
