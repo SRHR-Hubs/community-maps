@@ -39,6 +39,13 @@
       text-decoration: underline;
       gap: 0.75rem;
     }
+    
+    @media (max-width: 480px) {
+      & {
+        display: none;
+      }
+    }
+
   }
   .mapboxgl-map {
     position: absolute !important;

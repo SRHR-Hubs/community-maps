@@ -6,3 +6,5 @@ fly.toml
 !.env.production
 
 _*/**_*
+
+fixtures/

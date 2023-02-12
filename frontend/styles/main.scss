@@ -41,7 +41,12 @@ a,
 a:visited {
   &:not(:focus) {
     color: inherit;
-  } 
+  }
+}
+
+a:focus,
+a:focus * {
+  text-decoration: underline;
 }
 
 * {

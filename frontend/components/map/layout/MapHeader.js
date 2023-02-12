@@ -10,7 +10,7 @@ const MapHeader = () => {
       <section className="links">
         <Link href="/">Home</Link>
         <Link href="/about">About Us</Link>
-        <Link href="/contact">Contact</Link>
+        <Link href="/#contact">Contact</Link>
       </section>
     </header>
   );

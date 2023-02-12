@@ -29,3 +29,4 @@ backend/db*
 **/*.pyc
 backend/data/staticfiles/**/*
 backend/_*/**/_*
+backend/fixtures/

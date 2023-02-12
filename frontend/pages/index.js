@@ -9,11 +9,20 @@ import Link from "next/link";
 // import BlogRoll from "../components/blog/BlogRoll";
 import { instagram } from "../config/next-seo.config";
 import { getBlurUrl } from "../lib/cloudinary";
-import InstagramFeed from '../components/layout/feed/InstagramFeed'
+import InstagramFeed from "../components/layout/feed/InstagramFeed";
 import SponsorGrid from "../components/sections/about/SponsorGrid";
 import isProduction from "../hooks/isProduction";
+import Image from "../components/image";
+import toImageProps from "../hooks/toImageProps";
+import { ChevronRight } from "lucide-react";
 
-const IndexPage = ({ slug, title, description, sponsorImages }) => {
+const IndexPage = ({
+  slug,
+  title,
+  description,
+  sponsorImages,
+  otherImages,
+}) => {
   const seoInfo = {
     title,
     description,
@@ -25,16 +34,41 @@ const IndexPage = ({ slug, title, description, sponsorImages }) => {
       <SEO {...seoInfo} />
       <PageLayout id="home">
         <section id="search-intro">
-          <p>A virtual map of sexual and reproductive health services, organizations, and resources in the GTA.</p>
+          <p>
+            A virtual map of sexual and reproductive health services,
+            organizations, and resources in the GTA.
+          </p>
           <h1>What are you searching for?</h1>
         </section>
         <section id="about">
           <div className="columns">
             <div className="column col-sm-12">
               <h2>About the Map</h2>
+              <Image {...otherImages.aboutTheMap} />
+              <div className="to-right">
+                <Link href="/about#about-the-map">
+                  <button className="btn">
+                    Learn more <ChevronRight />
+                  </button>
+                </Link>
+              </div>
             </div>
             <div className="column col-sm-12">
               <h2>About the team</h2>
+              <div className="image-container">
+                <img
+                  src="https://source.unsplash.com/random/450x250?team"
+                  alt="A placeholder photo."
+                  title="A placeholder photo."
+                />
+              </div>
+              <div className="to-right">
+                <Link href="/about">
+                  <button className="btn">
+                    Learn more <ChevronRight />
+                  </button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -93,11 +127,23 @@ export async function getStaticProps({ params, locale }) {
     },
   };
 
+  const otherImages = {
+    aboutTheMap: toImageProps({
+      ...(await getBlurUrl("media/map_screenshot.png")),
+      alt: "A screenshot of the Community Map in action, with dark green map markers dotting a map of Toronto.",
+    }),
+    aboutTheTeam: toImageProps({
+      ...(await getBlurUrl("branding/banner_torrk9")),
+      alt: "A banner that reads 'SRHR Hubs'.",
+    }),
+  };
+
   return {
     props: {
       ...pageProps,
       ...(await useServerI18n(locale)),
       sponsorImages,
+      otherImages,
     },
     revalidate: 10,
   };

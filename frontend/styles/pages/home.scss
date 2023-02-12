@@ -19,6 +19,31 @@
     background-color: colors.$darkblue-400;
     color: colors.$white;
     text-align: center;
+
+    .columns {
+      gap: 2em;
+    }
+
+    // TODO: this is so unbelievably WIP
+    .image-container {
+      height: 250px;
+      img {
+        max-height: 200px;
+        max-width: 360px;
+        object-fit: cover;
+        border: 5px solid white;
+        border-radius: 10px;
+      }
+    }
+    .to-right {
+      display: flex;
+      justify-content: flex-end;
+      max-width: 400px;
+    }
+    button {
+      display: flex;
+      justify-content: center;
+    }
   }
 
   #latest-from-our-blog {

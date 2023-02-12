@@ -28,7 +28,7 @@ const Header = ({ show, ...props }) => (
               <section className="navbar-section column col links">
                 <Link href="/">Home</Link>
                 <Link href="/about">About Us</Link>
-                <Link href="/contact">Contact</Link>
+                <Link href="#contact">Contact</Link>
               </section>
               <section className="navbar-section column col-4 links hide-md">
                 <Link
@@ -47,9 +47,8 @@ const Header = ({ show, ...props }) => (
                 >
                   <Twitter />
                 </Link>
-
                 <Link href="/map">
-                  <button className="btn btn-primary">
+                  <button className="btn btn-primary" tabIndex={-1}>
                     <Trans i18nKey={"layout.header.use-the-map"}>
                       Use the map
                     </Trans>

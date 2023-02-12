@@ -51,14 +51,10 @@ const MapHome = ({ geoJSON, slug, title, description }) => {
         renderFooter={false}
         id="community-map"
       >
-        <div className="columns col-gapless">
-          <div className="column col-auto hide-sm">
-            <MapHeader />
-          </div>
-          <div className="column col-auto">
-            <figure ref={ref} />
-            <MapFilterContainer />
-          </div>
+        <MapHeader />
+        <div className="map-overlay">
+          <figure ref={ref} />
+          <MapFilterContainer />
         </div>
         <GetOutQuick />
       </PageLayout>

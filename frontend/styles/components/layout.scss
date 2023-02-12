@@ -103,6 +103,11 @@ header {
       &#contact {
         background-color: colors.$lilac-400;
         color: colors.$white;
+
+        .button-list {
+          justify-content: flex-start;
+          gap: 1em;
+        }
       }
 
       &.hero {
