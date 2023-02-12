@@ -3,22 +3,6 @@ import isServer from "../../hooks/isServer";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef } from "react";
 
-const Mapbox = ({ initSource, on }) => {
-  // TODO: useMemo?
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const map = makeMap({
-      ref,
-      initSource,
-      on
-    });
-
-    return () => map.remove();
-  }, []);
-  return <figure ref={ref} />;
-};
-
 export function makeMap({ ref, initSource, on }) {
   if (isServer() || !ref.current) {
     return;
@@ -43,15 +27,27 @@ export function makeMap({ ref, initSource, on }) {
         //   cluster: true,
       });
       map.addLayer({
-        id: "service-map",
+        id: "service-points",
         source: "services",
         type: "symbol",
         layout: {
           "icon-image": "marker",
-          "icon-size": .5,
-          // "icon-allow-overlap": true,
+          "icon-size": 0.5,
+          "icon-allow-overlap": true,
           "icon-anchor": "bottom",
           "icon-ignore-placement": true,
+        },
+      });
+      map.addLayer({
+        id: "service-text",
+        source: "services",
+        type: "symbol",
+        minzoom: 12,
+        layout: {
+          "text-field": ["get", "name"],
+          "text-justify": "left",
+          "text-anchor": "left",
+          "text-offset": [1, 0],
         },
       });
     });
@@ -59,22 +55,29 @@ export function makeMap({ ref, initSource, on }) {
 
   map.on("click", (event) => {
     const [feature] = map.queryRenderedFeatures(event.point, {
-      layers: ["service-map"],
+      layers: ["service-points"],
     });
     if (feature && on?.click) {
-        on.click(feature, map)
+      on.click(feature, map);
     }
   });
 
   return map;
-
-  // return () => {
-  //   map.remove();
-  //   if (onUnmount) {
-  //     onMount();
-  //   }
-  // };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 }
 
+const Mapbox = ({ initSource, on }) => {
+  // TODO: useMemo?
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const map = makeMap({
+      ref,
+      initSource,
+      on,
+    });
+
+    return () => map.remove();
+  }, []);
+  return <figure ref={ref} />;
+};
 export default Mapbox;

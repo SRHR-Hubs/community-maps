@@ -99,7 +99,7 @@ header {
     > section {
       @include mixins.full-width;
       position: relative;
-      padding: 4em 0;
+      padding: 4em 1rem;
       &#contact {
         background-color: colors.$lilac-400;
         color: colors.$white;

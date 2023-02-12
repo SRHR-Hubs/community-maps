@@ -47,13 +47,16 @@ const i18next = {
     }
     await Promise.all(
       lngs.map((language) => {
-        const body = {
+        const body = JSON.stringify({
           language,
           translation_id: key.includes('.') ? key : `common.${key}`,
           text: fallbackValue,
-        };
+        });
         return fetcher("/api/i18n/", {
           method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body,
         });
       })

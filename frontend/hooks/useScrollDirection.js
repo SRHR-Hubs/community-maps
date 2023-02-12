@@ -23,9 +23,14 @@ const useScrollDirection = () => {
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    const events = ["scroll", "touchmove"];
+    events.forEach((ev) =>
+      window.addEventListener(ev, handleScroll, { passive: true })
+    );
     return () => {
-      window.removeEventListener("scroll", handleScroll, { passive: true });
+      events.forEach((ev) =>
+        window.removeEventListener(ev, handleScroll, { passive: true })
+      );
     };
   }, [direction]);
 

@@ -1,4 +1,4 @@
-import { index, client } from "../lib/meilisearch";
+import { index } from "../lib/meilisearch";
 import FacetService from "../services/FacetService";
 import { useEffect, useRef, useState } from "react";
 import PageLayout from "../components/layout/page/PageLayout";
@@ -20,7 +20,7 @@ const TestPage = ({ facets, locale }) => {
         if (!selected) continue;
         filters.push(`tags.${facet} = "${value}"`);
       }
-      const newFiltered = await client.index("services").search("", {
+      const newFiltered = await index.search("", {
         limit: 50,
         filter: filters,
       });
@@ -43,8 +43,17 @@ const TestPage = ({ facets, locale }) => {
           >
             {Object.entries(facets).map(
               ([translation_id, { translations }]) => {
+                const humanized = translation_id
+                  .split("_")
+                  .map(
+                    (token) =>
+                      token.slice(0, 1).toUpperCase() +
+                      token.slice(1).toLowerCase()
+                  )
+                  .join(" ");
                 const display =
-                  translations?.[locale] ?? t(`tags.${translation_id}`);
+                  translations?.[locale] ??
+                  t(`tags.${translation_id}`, humanized);
                 return <option value={translation_id}>{display}</option>;
               }
             )}
