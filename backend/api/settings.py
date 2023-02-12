@@ -31,7 +31,8 @@ SECRET_KEY = getenv(
 SECRET_KEY_FALLBACKS = [getenv('INSECURE_LOCAL_KEY', ''),]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = getenv('DEBUG', '0') != '0' or getenv('DJANGO_ENV') == "development"
+DEBUG = getenv('DJANGO_ENV') == "local" or getenv('DEBUG', '0') != '0'
+print(f'{DEBUG=}')
 
 ALLOWED_HOSTS = getenv('ALLOWED_HOSTS', '').split(' ')
 CSRF_TRUSTED_ORIGINS = getenv('CSRF_TRUSTED_ORIGINS', '').split(' ')

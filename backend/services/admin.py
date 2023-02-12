@@ -153,14 +153,8 @@ class FacetAdmin(admin.ModelAdmin):
         # services with each key-value pair.
         # suitable Subquery:
         # Service.objects.filter(facettag__facet__translation_id="<>", facettag__value__eq="<>")
-
-        qs = models.FacetTag.objects.filter(facet=obj)
-
-        result = qs.values('value')\
-            .annotate(value_count=m.Count('value'))\
-            .values_list('value', 'value_count')
-
-        src = dict(result.all())
+        result = obj.distribution.values_list('value', 'value_count')
+        src = dict(sorted(result, key=lambda item: item[1], reverse=True))
         return render_to_string("as_table.html", {'src': src})
 
     # formfield_overrides = {

@@ -19,6 +19,7 @@
     "lqip-modern": "^1.2.0",
     "lucide-react": "^0.112.0",
     "mapbox-gl": "^2.12.1",
+    "meilisearch": "^0.31.1",
     "next": "13.0.0",
     "next-i18next": "^13.1.0",
     "next-mdx-remote": "^4.2.0",

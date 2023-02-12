@@ -4,6 +4,7 @@ from django_admin_geomap import GeoItem
 from mdeditor.fields import MDTextField
 
 from functools import partial
+from pages.models import I18nSection
 from search import searchable_fields
 from . import schemas
 
@@ -139,6 +140,21 @@ class Service(models.Model, GeoItem):
 class Facet(models.Model):
     translation_id = models.CharField(max_length=31, unique=True)
     _description = models.CharField(max_length=255, blank=True)
+
+    @property
+    def translations(self):
+        prefix = 'tags.' + self.translation_id
+        return I18nSection.objects.filter(translation_id=prefix)
+
+    @property
+    def distribution(self):
+        qs = FacetTag.objects.filter(facet=self)
+
+        return (
+            qs
+            .values('value')
+            .annotate(value_count=models.Count('value'))
+        )
 
     def __str__(self):
         return f'{self.translation_id}'

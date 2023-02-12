@@ -1,12 +1,12 @@
-# import meilisearch
-# from api.settings import MEILISEARCH as settings
+import meilisearch
+from api.settings import MEILISEARCH as settings
 
-# client = meilisearch.client.Client(
-#     settings['HOST'],
-#     settings['KEY']
-# )
+client = meilisearch.client.Client(
+    settings['HOST'],
+    settings['KEY']
+)
 
-searchable_fields = ['name']
+searchable_fields = ['name', 'slug']
 filterable_fields = ['tags']
 
 # try:

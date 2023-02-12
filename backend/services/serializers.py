@@ -21,7 +21,7 @@ class FacetSerializer(Base):
             qs = obj.translations.all()
 
         return {
-            trans.language: trans.value
+            trans.language: trans.text
             for trans in qs
         }
 

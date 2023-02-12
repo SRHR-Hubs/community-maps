@@ -69,3 +69,9 @@ class FacetViewset(vs.ModelViewSet):
     queryset = models.Facet.objects.all()
     serializer_class = serializers.FacetSerializer
     filter_fields = '__all__'
+    lookup_field = 'translation_id'
+
+    @action(detail=True)
+    def distribution(self, request, translation_id=None):
+        obj = self.get_object()
+        return Response(obj.distribution)
