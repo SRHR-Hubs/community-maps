@@ -26,6 +26,11 @@ const BlogPost = ({ title, description, image, content }) => {
 };
 
 export async function getStaticProps({ params, locale }) {
+  if (isProduction()) {
+    return {
+      notFound: true,
+    };
+  }
   const { slug } = params;
 
   const fields = ["slug", "title", "description", "image", "content"];
@@ -35,7 +40,6 @@ export async function getStaticProps({ params, locale }) {
   });
 
   return {
-    notFound: isProduction(),
     props: {
       ...postProps,
       ...(await useServerI18n(locale)),

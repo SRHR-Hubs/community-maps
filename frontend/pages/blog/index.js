@@ -25,6 +25,11 @@ const BlogHome = ({ posts, slug, title }) => {
 };
 
 export async function getStaticProps({ locale }) {
+  if (isProduction()) {
+    return {
+      notFound: true,
+    };
+  }
   const posts = await BlogService.getAllPosts({
     fields: ["slug", "title"],
     published: true,
@@ -33,7 +38,6 @@ export async function getStaticProps({ locale }) {
   const pageProps = await PageService.getPageProps("blog");
 
   return {
-    notFound: isProduction(),
     props: {
       posts,
       ...pageProps,

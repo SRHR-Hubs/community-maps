@@ -34,6 +34,7 @@ COPY --from=build /app/package.json /app/package-lock.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/public ./public
 COPY --from=build /app/config ./config
+COPY --from=build /app/.env* ./
 COPY --from=build --chown=nextjs:node /app/.next ./.next 
 COPY --from=build --chown=nextjs:node /app/next.config.js ./
 

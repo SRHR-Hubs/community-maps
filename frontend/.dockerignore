@@ -5,3 +5,5 @@ node_modules
 !.env.production
 
 fly.toml
+
+pages/**/_test.js
