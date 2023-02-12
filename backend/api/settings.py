@@ -12,13 +12,18 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
-from os import getenv
+from os import getenv, environ
 import dj_database_url
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(f".env.{getenv('DJANGO_ENV', 'production')}")
+env_file =f".env.{getenv('DJANGO_ENV', 'production')}"
+
+load_dotenv(env_file,
+    verbose=True,
+    override=False
+)
 
 print("Loading settings for", getenv('DJANGO_ENV'))
 
@@ -32,7 +37,6 @@ SECRET_KEY_FALLBACKS = [getenv('INSECURE_LOCAL_KEY', ''),]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv('DJANGO_ENV') == "local" or getenv('DEBUG', '0') != '0'
-print(f'{DEBUG=}')
 
 ALLOWED_HOSTS = getenv('ALLOWED_HOSTS', '').split(' ')
 CSRF_TRUSTED_ORIGINS = getenv('CSRF_TRUSTED_ORIGINS', '').split(' ')

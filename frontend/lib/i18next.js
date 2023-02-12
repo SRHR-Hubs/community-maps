@@ -14,7 +14,7 @@ const i18next = {
   fallbackNS: 'common',
   fallbackLng: "en",
 
-  reloadOnPrerender: !isProduction(),
+  // reloadOnPrerender: !isProduction(),
   initImmediate: false,
 
   use: [HTTPBackend],
@@ -23,6 +23,11 @@ const i18next = {
     crossDomain: true,
     loadPath: process.env.API_HOST + "/api/i18n/{{lng}}/",
     addPath: process.env.API_HOST + "/api/i18n/",
+  },
+
+  react: {
+    bindI18n: 'languageChanged loaded',
+    bindStore: 'added removed',
   },
 
   // appendNamespaceToMissingKey: false,

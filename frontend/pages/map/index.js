@@ -52,7 +52,7 @@ const MapHome = ({ geoJSON, slug, title, description }) => {
         id="community-map"
       >
         <div className="columns col-gapless">
-          <div className="column col-auto">
+          <div className="column col-auto hide-sm">
             <MapHeader />
           </div>
           <div className="column col-auto">
