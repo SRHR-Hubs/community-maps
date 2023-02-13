@@ -27,9 +27,12 @@
     // TODO: this is so unbelievably WIP
     .image-container {
       height: 250px;
-      img {
+      img,
+      svg {
         max-height: 200px;
         max-width: 360px;
+      }
+      img {
         object-fit: cover;
         border: 5px solid white;
         border-radius: 10px;
@@ -38,7 +41,7 @@
     .to-right {
       display: flex;
       justify-content: flex-end;
-      max-width: 400px;
+      max-width: 360px;
     }
     button {
       display: flex;

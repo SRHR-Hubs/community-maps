@@ -40,7 +40,7 @@ const ContactSection = () => (
         <div className="column col-auto" key={key}>
           <Link href={link} target="_blank">
             <button className="btn btn-secondary">
-              <Trans i18nKey={`common.sections.contact.form-button.${key}`} />
+              <Trans i18nKey={`pages.common.sections.contact.form-button.${key}`} />
             </button>
           </Link>
         </div>

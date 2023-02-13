@@ -27,6 +27,10 @@ const ServiceDetailPage = ({
     canonical: "/services/" + slug,
   };
 
+  const showTags = 10;
+  const unshownTags = Math.max(0, tags.length - showTags)
+
+
   // const showContact = [website, email, socials].some(Boolean)
 
   return (
@@ -122,8 +126,8 @@ const ServiceDetailPage = ({
             </Trans>
           </h2>
           <ul>
-            {tags.map(({ facet: translation_id, value }) => (
-              <li>
+            {tags.slice(0, showTags).map(({ facet: translation_id, value }) => (
+              <li key={`${translation_id}=${value}`}>
                 <strong>
                   <Trans i18nKey={`tags.${translation_id}`}>
                     {translation_id}
@@ -132,6 +136,9 @@ const ServiceDetailPage = ({
                 : {value}
               </li>
             ))}
+            {unshownTags > 0 && (
+              <em>and {unshownTags} others</em>
+            )}
           </ul>
         </section>
         {/* </div> */}
@@ -148,7 +155,6 @@ export async function getStaticProps({ params, locale }) {
   const pageProps = await PageService.getPageProps("service-detail");
 
   service.description = await serialize(service.description);
-  console.log(service.description);
 
   return {
     props: {

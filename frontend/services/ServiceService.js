@@ -18,7 +18,9 @@ export default class ServiceService {
     return this.get("", { query });
   }
 
-  static async getAllServices(params = {}) {
+  static async getAllServices(params = {
+    published: false,
+  }) {
     const result = [];
 
     let totalPages = Infinity;

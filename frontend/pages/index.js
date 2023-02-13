@@ -14,7 +14,7 @@ import SponsorGrid from "../components/sections/about/SponsorGrid";
 import isProduction from "../hooks/isProduction";
 import Image from "../components/image";
 import toImageProps from "../hooks/toImageProps";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, HeartHandshake } from "lucide-react";
 
 const IndexPage = ({
   slug,
@@ -35,10 +35,16 @@ const IndexPage = ({
       <PageLayout id="home">
         <section id="search-intro">
           <p>
-            A virtual map of sexual and reproductive health services,
-            organizations, and resources in the GTA.
+            <Trans i18nKey="pages.home.sections.search-intro.subtitle">
+              A virtual map of sexual and reproductive health services,
+              organizations, and resources.
+            </Trans>
           </p>
-          <h1>What are you searching for?</h1>
+          <h1>
+            <Trans i18nKey="pages.home.sections.search-intro.title">
+              What are you searching for?
+            </Trans>
+          </h1>
         </section>
         <section id="about">
           <div className="columns">
@@ -56,11 +62,7 @@ const IndexPage = ({
             <div className="column col-sm-12">
               <h2>About the team</h2>
               <div className="image-container">
-                <img
-                  src="https://source.unsplash.com/random/450x250?team"
-                  alt="A placeholder photo."
-                  title="A placeholder photo."
-                />
+                <HeartHandshake/>
               </div>
               <div className="to-right">
                 <Link href="/about">
@@ -111,7 +113,7 @@ export async function getStaticProps({ params, locale }) {
   const sponsorImages = {
     goc: {
       name: "Government of Canada",
-      imageData: await getBlurUrl("sponsors/canada_az4xia"),
+      imageData: await getBlurUrl("sponsors/canada-2"),
     },
     oxfam: {
       name: "Oxfam Canada",

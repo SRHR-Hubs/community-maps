@@ -30,10 +30,10 @@ const Header = ({ show, ...props }) => (
                 <Link href="/about">About Us</Link>
                 <Link href="#contact">Contact</Link>
               </section>
-              <section className="navbar-section column col-4 links hide-md">
+              <section className="navbar-section column col-4 col-md-12 links">
                 <Link
                   href={instagramInfo.site}
-                  className="tooltip tooltip-bottom"
+                  className="tooltip tooltip-bottom hide-md"
                   data-tooltip={instagramInfo.handle}
                   aria-label="Follow SRHR Hubs on Instagram"
                 >
@@ -41,7 +41,7 @@ const Header = ({ show, ...props }) => (
                 </Link>
                 <Link
                   href={twitterInfo.site}
-                  className="tooltip tooltip-bottom"
+                  className="tooltip tooltip-bottom hide-md"
                   data-tooltip={twitterInfo.handle}
                   aria-label="Follow SRHR Hubs on Twitter"
                 >
