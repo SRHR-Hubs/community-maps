@@ -47,7 +47,7 @@ const Header = ({ show, ...props }) => (
                 >
                   <Twitter />
                 </Link>
-                <Link href="/map">
+                <Link href="/map" prefetch={false}>
                   <button className="btn btn-primary" tabIndex={-1}>
                     <Trans i18nKey={"layout.header.use-the-map"}>
                       Use the map

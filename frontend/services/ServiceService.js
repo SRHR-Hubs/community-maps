@@ -19,7 +19,7 @@ export default class ServiceService {
   }
 
   static async getAllServices(params = {
-    published: false,
+    published: true
   }) {
     const result = [];
 

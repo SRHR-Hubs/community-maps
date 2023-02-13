@@ -74,8 +74,11 @@ export default MapHome;
 
 export async function getServerSideProps({ locale }) {
   const pageProps = await PageService.getPageProps("map");
+  const query = {
+    published: true,
+  };
 
-  const geoJSON = await ServiceService.getGeoJSON();
+  const geoJSON = await ServiceService.getGeoJSON({ query });
 
   return {
     props: {
