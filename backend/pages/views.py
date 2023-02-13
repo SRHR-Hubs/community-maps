@@ -30,7 +30,9 @@ class I18nSectionViewset(vs.ModelViewSet):
         def nested_dict(): return defaultdict(nested_dict)
         response = nested_dict()
 
-        for item in self.get_queryset().filter(language=language):
+        qs = self.filter_queryset(self.get_queryset())
+
+        for item in qs.filter(language=language):
             *namespaces, _id = item.translation_id.split('.')
             # create dict keys recursively to drill down to the namespace
             curr = response

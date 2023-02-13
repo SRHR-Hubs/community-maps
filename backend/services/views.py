@@ -31,7 +31,10 @@ class ServiceViewset(vs.ModelViewSet):
             "type": "FeatureCollection",
             "features": []
         }
-        for item in self.get_queryset().filter(location__isnull=False):
+
+        qs = self.filter_queryset(self.get_queryset())
+
+        for item in qs.filter(location__isnull=False):
             data["features"].append({
                 "type": "Feature",
                 "geometry": {"type": "Point", "coordinates": [
