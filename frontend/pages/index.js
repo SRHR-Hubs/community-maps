@@ -14,7 +14,7 @@ import SponsorGrid from "../components/sections/about/SponsorGrid";
 import isProduction from "../hooks/isProduction";
 import Image from "../components/image";
 import toImageProps from "../hooks/toImageProps";
-import { ChevronRight, HeartHandshake } from "lucide-react";
+import { ChevronRight, HeartHandshake, MapPin } from "lucide-react";
 
 const IndexPage = ({
   slug,
@@ -50,7 +50,10 @@ const IndexPage = ({
           <div className="columns">
             <div className="column col-sm-12">
               <h2>About the Map</h2>
-              <Image {...otherImages.aboutTheMap} />
+              <div className="image-container">
+                <MapPin />
+              </div>
+              {/* <Image {...otherImages.aboutTheMap} /> */}
               <div className="to-right">
                 <Link href="/about#about-the-map">
                   <button className="btn">
@@ -62,7 +65,7 @@ const IndexPage = ({
             <div className="column col-sm-12">
               <h2>About the team</h2>
               <div className="image-container">
-                <HeartHandshake/>
+                <HeartHandshake />
               </div>
               <div className="to-right">
                 <Link href="/about">

@@ -30,7 +30,8 @@
       img,
       svg {
         max-height: 200px;
-        max-width: 360px;
+        height: 100%;
+        width: 360px;
       }
       img {
         object-fit: cover;
@@ -40,8 +41,8 @@
     }
     .to-right {
       display: flex;
-      justify-content: flex-end;
-      max-width: 360px;
+      justify-content: center;
+      // max-width: 360px;
     }
     button {
       display: flex;

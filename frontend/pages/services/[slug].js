@@ -39,7 +39,7 @@ const ServiceDetailPage = ({
       <PageLayout id="service-detail">
         {/* <div className="columns"> */}
         <section id="details">
-          <Link href="/map" prefetch="false">
+          <Link href="/map" prefetch={false}>
             <Trans i18nKey="pages.service-detail.back-to-map">
               Return to map
             </Trans>

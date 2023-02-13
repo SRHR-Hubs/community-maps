@@ -5,7 +5,9 @@ const MapHeader = () => {
   return (
     <header role="banner" className="map-header">
       <section id="logo">
-        <Logo className="logo" />
+        <Link href="/">
+          <Logo className="logo" />
+        </Link>
       </section>
       <section className="links">
         <Link href="/">Home</Link>
