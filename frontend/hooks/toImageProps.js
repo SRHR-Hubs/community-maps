@@ -5,6 +5,7 @@ export default function toImageProps({
   width = null,
   alt = null,
   title = null,
+  preserveAspectRatio = false
 }) {
   return {
     image: {
@@ -17,7 +18,7 @@ export default function toImageProps({
       style: {
         width,
         height,
-        aspectRatio: `${originalWidth} / ${originalHeight}`,
+        aspectRatio: preserveAspectRatio && `${originalWidth} / ${originalHeight}`,
       },
     },
   };
