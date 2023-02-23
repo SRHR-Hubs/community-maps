@@ -125,7 +125,7 @@ class Facet(models.Model):
 
     @property
     def distribution(self):
-        qs = FacetTag.objects.filter(facet=self)
+        qs = FacetTag.objects.filter(facet=self, service__published=True)
 
         return (
             qs

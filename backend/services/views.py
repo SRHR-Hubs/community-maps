@@ -84,7 +84,7 @@ class ServiceViewset(vs.ModelViewSet):
                 }, status=400)
 
             new_index_job = client.create_index('services_new')
-            
+
             new_index = client.index('services_new')
             new_index.update_settings(config)
             new_index.add_documents(
@@ -115,3 +115,66 @@ class FacetViewset(vs.ModelViewSet):
     def distribution(self, request, translation_id=None):
         obj = self.get_object()
         return Response(obj.distribution)
+
+    @action(methods=['get', 'put'], detail=False)
+    def documents(self, request):
+        q_published = request.query_params.get('published', "1")
+        config = client.index('tags').get_settings()
+
+        searchable_fields = config.get('searchableAttributes', [])
+
+        if searchable_fields == ['*']:
+            raise NotImplemented
+            searchable_fields = models.Service._meta.fields
+
+        qs = self.filter_queryset(self.get_queryset()).distinct()
+
+        documents = []
+
+        for facet in qs:
+            values = (models.FacetTag.objects.filter(
+                facet=facet,
+                service__published=q_published
+            )
+            .order_by('value')
+            .distinct('value')
+            .values_list('value', flat=True)
+            )
+
+            fields = {
+                field: getattr(facet, field)
+                for field in searchable_fields
+            }
+
+            documents.append({
+                'id': facet.id,
+                'value': list(values),
+                **fields,
+            })
+
+        if request.method == 'PUT':
+            if q_published != "1":
+                return Response({
+                    'error': 'Cannot upload tags from unpublished services to search index.',
+                }, status=400)
+
+            new_index_job = client.create_index('tags_new')
+
+            new_index = client.index('tags_new')
+            new_index.update_settings(config)
+            new_index.add_documents(
+                documents, primary_key='id'
+            )
+
+            response = {
+                'create_job': new_index_job,
+                'swap_job': client.swap_indexes([
+                    {'indexes': ['tags', 'tags_new']}
+                ]),
+                'delete_job': new_index.delete()
+            }
+
+            return Response(response)
+
+        assert request.method == 'GET'
+        return Response(documents)
