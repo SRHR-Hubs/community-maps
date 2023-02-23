@@ -3,6 +3,7 @@ from rest_framework import viewsets as vs, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from . import models, serializers
+from search import client
 
 # from search import client, searchable_fields
 
@@ -12,15 +13,6 @@ class ServiceViewset(vs.ModelViewSet):
     serializer_class = serializers.ServiceSerializer
     filter_fields = '__all__'
     lookup_field = 'slug'
-
-    @action(methods=['get'], detail=False)
-    def documents(self, request):
-        from search import client
-        response = client.index('services').get_documents(
-            **request.GET
-        )
-
-        return Response(response.__dict__)
 
     @action(methods=['get'], detail=False)
     def geojson(self, request):
@@ -52,27 +44,65 @@ class ServiceViewset(vs.ModelViewSet):
 
         return Response(response)
 
-    @action(methods=['put'], detail=False)
-    def update_search_index(self, request):
-        from search import client, create_index
-        documents = [
-            obj.to_document()
-            for obj in self.get_queryset().filter(published=True)
-        ]
+    @action(methods=['get', 'put'], detail=False)
+    def documents(self, request):
+        config = client.index('services').get_settings()
 
-        new_index = create_index('services_new')
+        searchable_fields = config.get('searchableAttributes', [])
 
-        new_index.add_documents(
-            documents, primary_key='id')
+        if searchable_fields == ['*']:
+            raise NotImplemented
+            searchable_fields = models.Service._meta.fields
 
-        response = client.swap_indexes(
-            [{'indexes': ['services', 'services_new']}])
+        qs = self.filter_queryset(self.get_queryset())
 
-        new_index.delete()
+        documents = []
 
-        return Response({
-            'result': response
-        })
+        for obj in qs:
+            flat_tags = []
+            for tag in obj.tags.all():
+                flat_tags.append({
+                    'id': tag.id,
+                    tag.facet.translation_id: tag.value
+                })
+
+            fields = {
+                field: getattr(obj, field)
+                for field in searchable_fields
+            }
+
+            documents.append({
+                'id': obj.id,
+                **fields,
+                'tags': flat_tags
+            })
+
+        if request.method == 'PUT':
+            if request.query_params.get('published') != "1":
+                return Response({
+                    'error': 'Cannot upload unpublished services to search index.',
+                }, status=400)
+
+            new_index_job = client.create_index('services_new')
+            
+            new_index = client.index('services_new')
+            new_index.update_settings(config)
+            new_index.add_documents(
+                documents, primary_key='id'
+            )
+
+            response = {
+                'create_job': new_index_job,
+                'swap_job': client.swap_indexes([
+                    {'indexes': ['services', 'services_new']}
+                ]),
+                'delete_job': new_index.delete()
+            }
+
+            return Response(response)
+        else:
+            assert request.method == 'GET'
+            return Response(documents)
 
 
 class FacetViewset(vs.ModelViewSet):

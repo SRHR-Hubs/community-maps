@@ -5,7 +5,7 @@ from mdeditor.fields import MDTextField
 
 from functools import partial
 from pages.models import I18nSection
-from search import searchable_fields
+from search import client
 from . import schemas
 
 
@@ -67,29 +67,6 @@ class Service(models.Model, GeoItem):
 
     # private
     _contact = models.CharField(max_length=255, blank=True)
-
-    # tags = models.ManyToManyField(
-    #     'Facet',
-    #     through='FacetTag',
-    #     through_fields=('service', 'facet'),
-    # )
-
-    def to_document(self):
-        formatted_tags = [{
-            'id': tag.id,
-            tag.facet.translation_id: tag.value
-        } for tag in self.tags.all()]
-
-        fields = {
-            field: getattr(self, field)
-            for field in searchable_fields
-        }
-
-        return {
-            'id': self.id,
-            **fields,
-            'tags': formatted_tags
-        }
 
     def __str__(self):
         return self.name

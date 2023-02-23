@@ -56,7 +56,9 @@ class ServiceSerializer(Base):
     def get_tags(self, obj):
         ret = {}
 
-        for key, tags in it.groupby(obj.tags.order_by('facet__translation_id'), key=lambda t: t.facet.translation_id):
+        for key, tags in it.groupby(
+                obj.tags.order_by('facet__translation_id'),
+                key=lambda t: t.facet.translation_id):
             ret[key] = [tag.value for tag in tags]
 
         return ret
