@@ -18,12 +18,12 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-env_file =f".env.{getenv('DJANGO_ENV', 'production')}"
+env_file = f".env.{getenv('DJANGO_ENV', 'production')}"
 
 load_dotenv(env_file,
-    verbose=True,
-    override=False
-)
+            verbose=True,
+            override=False
+            )
 
 print("Loading settings for", getenv('DJANGO_ENV'))
 
@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'flat_json_widget',
     'jsoneditor',
     'django_admin_geomap',
+    'solo',
 
     # my apps
     'pages',
@@ -199,6 +200,9 @@ MDEDITOR_CONFIGS = {
     }
 
 }
+
+# django-jsoneditor
+# JSON_EDITOR_CSS = str(BASE_DIR / 'services' / 'templates' / 'json_editor.css')
 
 # django shell
 NOTEBOOK_ARGUMENTS = [
