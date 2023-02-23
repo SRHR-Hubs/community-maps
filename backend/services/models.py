@@ -68,17 +68,17 @@ class Service(models.Model, GeoItem):
     # private
     _contact = models.CharField(max_length=255, blank=True)
 
-    tags = models.ManyToManyField(
-        'Facet',
-        through='FacetTag',
-        through_fields=('service', 'facet'),
-    )
+    # tags = models.ManyToManyField(
+    #     'Facet',
+    #     through='FacetTag',
+    #     through_fields=('service', 'facet'),
+    # )
 
     def to_document(self):
         formatted_tags = [{
             'id': tag.id,
             tag.facet.translation_id: tag.value
-        } for tag in self.facettag_set.all()]
+        } for tag in self.tags.all()]
 
         fields = {
             field: getattr(self, field)
@@ -166,7 +166,7 @@ class Facet(models.Model):
 class FacetTag(models.Model):
     # TODO: do these on_delete behaviours make sense?
     service = models.ForeignKey(
-        Service, on_delete=models.CASCADE)
+        Service, on_delete=models.CASCADE, related_name='tags')
     # Service, on_delete=models.SET(Service.sentinel))
     facet = models.ForeignKey(Facet, on_delete=models.CASCADE)
     value = models.TextField()

@@ -3,6 +3,8 @@ from rest_flex_fields import FlexFieldsModelSerializer
 
 from . import models
 
+import itertools as it
+
 Base = FlexFieldsModelSerializer
 
 
@@ -48,9 +50,16 @@ class LocationSerializer(Base):
 
 class ServiceSerializer(Base):
 
-    # 2 hours lost here. Gotta understand reverse relations better.
-    tags = TagSerializer(many=True, read_only=True, source='facettag_set')
+    tags = serializers.SerializerMethodField()
     location = LocationSerializer(many=False, read_only=True)
+
+    def get_tags(self, obj):
+        ret = {}
+
+        for key, tags in it.groupby(obj.tags.order_by('facet__translation_id'), key=lambda t: t.facet.translation_id):
+            ret[key] = [tag.value for tag in tags]
+
+        return ret
 
     class Meta:
         model = models.Service
