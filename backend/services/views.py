@@ -127,12 +127,12 @@ class FacetViewset(vs.ModelViewSet):
             raise NotImplemented
             searchable_fields = models.Service._meta.fields
 
-        qs = self.filter_queryset(self.get_queryset()).distinct()
+        qs = self.get_queryset().distinct()
 
         documents = []
 
         for facet in qs:
-            values = (models.FacetTag.objects.filter(
+            values = self.filter_queryset(models.FacetTag.objects.filter(
                 facet=facet,
                 service__published=q_published
             )
@@ -147,7 +147,7 @@ class FacetViewset(vs.ModelViewSet):
             }
 
             documents.append({
-                'id': facet.id,
+                'id': facet.translation_id,
                 **fields,
                 'value': list(values),
             })
@@ -177,4 +177,11 @@ class FacetViewset(vs.ModelViewSet):
             return Response(response)
 
         assert request.method == 'GET'
-        return Response(documents)
+        return Response({
+                'results': documents,
+                'meta': {
+                    'total': sum(
+                        len(facet['value']) for facet in documents
+                    )
+                }
+            })
