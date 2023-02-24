@@ -119,7 +119,7 @@ class FacetViewset(vs.ModelViewSet):
     @action(methods=['get', 'put'], detail=False)
     def documents(self, request):
         q_published = request.query_params.get('published', "1")
-        config = client.index('tags').get_settings()
+        config = client.index('facets').get_settings()
 
         searchable_fields = config.get('searchableAttributes', [])
 
@@ -136,31 +136,31 @@ class FacetViewset(vs.ModelViewSet):
                 facet=facet,
                 service__published=q_published
             )
-            .order_by('value')
-            .distinct('value')
-            .values_list('value', flat=True)
+                .order_by('value')
+                .distinct('value')
+                .values_list('value', flat=True)
             )
 
             fields = {
-                field: getattr(facet, field)
+                field: getattr(facet, field, None)
                 for field in searchable_fields
             }
 
             documents.append({
                 'id': facet.id,
-                'value': list(values),
                 **fields,
+                'value': list(values),
             })
 
         if request.method == 'PUT':
             if q_published != "1":
                 return Response({
-                    'error': 'Cannot upload tags from unpublished services to search index.',
+                    'error': 'Cannot upload facets from unpublished services to search index.',
                 }, status=400)
 
-            new_index_job = client.create_index('tags_new')
+            new_index_job = client.create_index('facets_new')
 
-            new_index = client.index('tags_new')
+            new_index = client.index('facets_new')
             new_index.update_settings(config)
             new_index.add_documents(
                 documents, primary_key='id'
@@ -169,7 +169,7 @@ class FacetViewset(vs.ModelViewSet):
             response = {
                 'create_job': new_index_job,
                 'swap_job': client.swap_indexes([
-                    {'indexes': ['tags', 'tags_new']}
+                    {'indexes': ['facets', 'facets_new']}
                 ]),
                 'delete_job': new_index.delete()
             }
