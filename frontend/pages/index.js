@@ -34,46 +34,56 @@ const IndexPage = ({
       <SEO {...seoInfo} />
       <PageLayout id="home">
         <section id="search-intro">
-          <p>
-            <Trans i18nKey="pages.home.sections.search-intro.subtitle">
-              A virtual map of sexual and reproductive health services,
-              organizations, and resources.
-            </Trans>
-          </p>
-          <h1>
-            <Trans i18nKey="pages.home.sections.search-intro.title">
-              What are you searching for?
-            </Trans>
-          </h1>
+          <div className="image-background" />
+          <div className="overlay">
+            <Link href="/map">
+              <h4>
+                <Trans i18nKey="pages.home.sections.search-intro.subtitle">
+                  A virtual map of sexual and reproductive health services,
+                  organizations, and resources.
+                </Trans>
+              </h4>
+              <h1>
+                <Trans i18nKey="pages.home.sections.search-intro.title">
+                  What are you searching for?
+                </Trans>
+              </h1>
+            </Link>
+          </div>
         </section>
         <section id="about">
           <div className="columns">
             <div className="column col-sm-12">
-              <h2>About the Map</h2>
-              <div className="image-container">
-                <MapPin />
-              </div>
-              {/* <Image {...otherImages.aboutTheMap} /> */}
-              <div className="to-right">
-                <Link href="/about#about-the-map">
-                  <button className="btn">
-                    Learn more <ChevronRight />
-                  </button>
-                </Link>
-              </div>
+              <h2>
+                <Trans i18nKey="pages.home.sections.about.about-the-team">
+                  About us
+                </Trans>
+              </h2>
+              <Link href="/about">
+                <Image {...otherImages.aboutTheTeam} />
+                <button className="btn btn-link">
+                  <Trans i18nKey="pages.home.sections.about.cta">
+                    Learn more
+                  </Trans>{" "}
+                  <ChevronRight />
+                </button>
+              </Link>
             </div>
             <div className="column col-sm-12">
-              <h2>About the team</h2>
-              <div className="image-container">
-                <HeartHandshake />
-              </div>
-              <div className="to-right">
-                <Link href="/about">
-                  <button className="btn">
-                    Learn more <ChevronRight />
-                  </button>
-                </Link>
-              </div>
+              <h2>
+                <Trans i18nKey="pages.home.sections.about.about-the-map">
+                  About the Map
+                </Trans>
+              </h2>
+              <Link href="/about#about-the-map">
+                <Image {...otherImages.aboutTheMap} />
+                <button className="btn btn-link">
+                  <Trans i18nKey="pages.home.sections.about.cta">
+                    Learn more
+                  </Trans>{" "}
+                  <ChevronRight />
+                </button>
+              </Link>
             </div>
           </div>
         </section>

@@ -1,5 +1,6 @@
 {
-  "extends": "next/core-web-vitals",
+  "root": true,
+  "extends": ["next/core-web-vitals"],
   "rules": {
     "react-hooks/rules-of-hooks": "off"
   }

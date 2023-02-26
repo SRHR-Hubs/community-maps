@@ -30,7 +30,11 @@ class I18nSectionViewset(vs.ModelViewSet):
         def nested_dict(): return defaultdict(nested_dict)
         response = nested_dict()
 
-        qs = self.filter_queryset(self.get_queryset())
+        substr = request.query_params.get('q', '')
+
+        qs = (self.filter_queryset(self.get_queryset())
+              .filter(translation_id__contains=substr)
+              )
 
         for item in qs.filter(language=language):
             *namespaces, _id = item.translation_id.split('.')
@@ -38,6 +42,11 @@ class I18nSectionViewset(vs.ModelViewSet):
             curr = response
             for key in namespaces or ['common']:
                 curr = curr[key]
+
+            if isinstance(curr, str):
+                raise ValueError(
+                    f"Item {'.'.join(namespaces)} is a prefix of {item.translation_id}.")
+
             curr[_id] = item.text
 
         return Response(response)
