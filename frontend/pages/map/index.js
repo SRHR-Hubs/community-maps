@@ -1,25 +1,22 @@
 import PageLayout from "../../components/layout/page/PageLayout";
-// import { makeMap } from "../../components/map/Mapbox";
 import useServerI18n from "../../hooks/useServerI18n";
 import { SEO } from "../../lib/seo";
 import PageService from "../../services/PageService";
 import ServiceService from "../../services/ServiceService";
 
-import { useEffect, useRef } from "react";
 import { renderToString } from "react-dom/server";
 import GetOutQuick from "../../components/layout/get-out-quick/GetOutQuick";
-import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
 import MapHeader from "../../components/map/layout/MapHeader";
 import MapPopup from "../../components/map/MapPopup";
 
+import { Popup } from "mapbox-gl";
 import dynamic from "next/dynamic";
-import { makeMap } from "../../components/map/Mapbox";
+const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
+  loading: () => "loading",
+  ssr: false,
+});
 
 const MapHome = ({ geoJSON, slug, title, description }) => {
-  const ref = useRef(null);
-  let map;
-  let Popup;
-
   const handleClick = (feature, map) => {
     const _popup = new Popup({ offset: [0, -15] })
       .setLngLat(feature.geometry.coordinates)
@@ -27,27 +24,14 @@ const MapHome = ({ geoJSON, slug, title, description }) => {
       .addTo(map);
   };
 
-  useEffect(() => {
-    (async () => {
-      const mapbox = await import("mapbox-gl");
-      Popup = mapbox.Popup;
-    })();
-
-    map = makeMap({
-      ref,
-      initSource: geoJSON,
-      on: {
-        click: handleClick,
-      },
-    });
-
-    return () => map.remove();
-  }, []);
-
   const seoInfo = {
     title,
     description,
     canonical: slug,
+  };
+
+  const handlers = {
+    click: handleClick,
   };
 
   return (
@@ -61,8 +45,8 @@ const MapHome = ({ geoJSON, slug, title, description }) => {
       >
         <MapHeader />
         <div className="map-overlay">
-          <figure ref={ref} />
-          <MapFilterContainer />
+          <MapboxGLMap initSource={geoJSON} on={handlers} />
+          {/* <MapFilterContainer /> */}
         </div>
         <GetOutQuick />
       </PageLayout>

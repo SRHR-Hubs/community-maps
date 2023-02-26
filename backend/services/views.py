@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.utils.text import Truncator
 from rest_framework import viewsets as vs, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -35,6 +36,10 @@ class ServiceViewset(vs.ModelViewSet):
         qs = self.filter_queryset(self.get_queryset())
 
         for item in qs.filter(location__isnull=False):
+            blurb = item.blurb
+            if len(blurb) == 0:
+                blurb = Truncator(item.description).chars(60)
+
             data["features"].append({
                 "type": "Feature",
                 "geometry": {"type": "Point", "coordinates": [
@@ -44,7 +49,7 @@ class ServiceViewset(vs.ModelViewSet):
                 "properties": {
                     "slug": item.slug,
                     "name": item.name,
-                    "description": item.description
+                    "blurb": blurb
                 }
             })
 
