@@ -1,6 +1,7 @@
 export default function toImageProps({
   url,
   metadata: { originalWidth, originalHeight, dataURIBase64 },
+  width,
   height,
   alt,
   title,
