@@ -213,7 +213,7 @@ class FacetTagViewSet(vs.ModelViewSet):
         distributions = (self.filter_queryset(self.get_queryset())
                          .filter(service__published=True)
                          .values('facet__translation_id', 'value')
-                        #  .select_related('facet')
+                         #  .select_related('facet')
                          .annotate(matches=Count('value'))
                          )
 
@@ -221,16 +221,21 @@ class FacetTagViewSet(vs.ModelViewSet):
         documents = []
 
         for tag in distributions:
-            tag['facet'] = tag['facet__translation_id']
+            translation_id = tag['facet__translation_id']
             del tag['facet__translation_id']
             section = I18nSection.objects.get(
-                translation_id='tags.' + tag['facet'],
+                translation_id='tags.' + translation_id,
                 language='en'
             )
+
+            tag['facet'] = {
+                'translation_id': translation_id,
+                'name': section.text
+            }
+
             documents.append({
                 'id': uuid.uuid4().hex[:8],
                 **tag,
-                'name': section.text
             })
 
         # documents = [{
