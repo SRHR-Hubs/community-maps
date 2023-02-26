@@ -49,7 +49,11 @@ const IndexPage = ({
         <section id="about">
           <div className="columns">
             <div className="column col-sm-12">
-              <h2>About the Map</h2>
+              <h2>
+                <Trans i18nKey="pages.home.sections.about.about-the-map">
+                  About the Map
+                </Trans>
+              </h2>
               <div className="image-container">
                 <MapPin />
               </div>
@@ -57,20 +61,24 @@ const IndexPage = ({
               <div className="to-right">
                 <Link href="/about#about-the-map">
                   <button className="btn">
-                    Learn more <ChevronRight />
+                    <Trans i18nKey="pages.home.sections.about.cta">Learn more</Trans> <ChevronRight />
                   </button>
                 </Link>
               </div>
             </div>
             <div className="column col-sm-12">
-              <h2>About the team</h2>
+            <h2>
+                <Trans i18nKey="pages.home.sections.about.about-the-team">
+                  About the team
+                </Trans>
+              </h2>
               <div className="image-container">
                 <HeartHandshake />
               </div>
               <div className="to-right">
                 <Link href="/about">
                   <button className="btn">
-                    Learn more <ChevronRight />
+                  <Trans i18nKey="pages.home.sections.about.cta">Learn more</Trans> <ChevronRight />
                   </button>
                 </Link>
               </div>
