@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.utils.translation import get_language
 from rest_framework import viewsets as vs, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -146,6 +147,16 @@ class FacetViewset(vs.ModelViewSet):
                 for field in searchable_fields
             }
 
+
+            # TODO: more sustainable way of handling this
+            if 'name' in fields:
+                locale = get_language().split('-')[0] or 'en'
+
+                if section := facet.translations.filter(
+                    language=locale
+                ).first():
+                    fields['name'] = section.text
+
             documents.append({
                 'id': facet.translation_id,
                 **fields,
@@ -178,10 +189,10 @@ class FacetViewset(vs.ModelViewSet):
 
         assert request.method == 'GET'
         return Response({
-                'results': documents,
-                'meta': {
-                    'total': sum(
+            'results': documents,
+            'meta': {
+                'total': sum(
                         len(facet['value']) for facet in documents
-                    )
-                }
-            })
+                        )
+            }
+        })

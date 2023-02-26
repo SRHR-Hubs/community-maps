@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--inspect-brk=0.0.0.0' next dev",
     "build": "next build",
     "postbuild": "next-sitemap --config config/next-sitemap.config.js",
     "start": "next start",
