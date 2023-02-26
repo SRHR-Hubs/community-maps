@@ -37,5 +37,15 @@ module.exports = {
       type: 'image/png',
       sizes: '48x48'
     },
+    {
+      rel: 'shortcut icon',
+      href: '/favicon.ico',
+      type: 'image/x-icon'
+    },
+    {
+      rel: 'icon',
+      href: '/favicon.ico',
+      type: 'image/x-icon'
+    }
   ],
 };
