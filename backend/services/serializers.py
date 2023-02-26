@@ -37,6 +37,8 @@ class TagSerializer(Base):
     facet = serializers.SlugRelatedField(
         read_only=True, slug_field='translation_id')
 
+    
+
     class Meta:
         model = models.FacetTag
         fields = ('id', 'facet_id', 'facet', 'value', 'extra')
