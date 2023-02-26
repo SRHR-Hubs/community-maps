@@ -61,7 +61,7 @@ const Omnisearch = () => {
       <ResultsBox index={omni} display={(hit) => (
         'slug' in hit
           ? hit.name
-          : hit.value
+          : `<${hit.facet.name}=${hit.value}>`
       )} placeholder="omni" />
       </div>
     </div>

@@ -1,10 +1,10 @@
 export default function toImageProps({
   url,
   metadata: { originalWidth, originalHeight, dataURIBase64 },
-  height = null,
-  width = null,
-  alt = null,
-  title = null,
+  height,
+  alt,
+  title,
+  preserveAspectRatio = false,
 }) {
   return {
     image: {
@@ -15,9 +15,11 @@ export default function toImageProps({
     },
     container: {
       style: {
-        width,
-        height,
-        aspectRatio: `${originalWidth} / ${originalHeight}`,
+        ...(width && { width }),
+        ...(height && { height }),
+        ...(preserveAspectRatio && {
+          aspectRatio: `${originalWidth} / ${originalHeight}`,
+        }),
       },
     },
   };

@@ -2,10 +2,11 @@
 
 .image-container {
     width: 100%;
+    position: relative;
 
-    > div {
-        position: unset !important;
-    }
+    // > div {
+    //     position: unset !important;
+    // }
 
     .image-component {
         object-fit: contain;

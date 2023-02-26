@@ -20,6 +20,10 @@ const nextConfig = {
 
   i18n,
 
+  experimental: {
+    enableUndici: true
+  },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // config.resolve.fallback = {
