@@ -9,6 +9,7 @@ processes = []
 
 [experimental]
   auto_rollback = true
+  swap = true
 
 [[services]]
   http_checks = []
