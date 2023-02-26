@@ -55,38 +55,35 @@ const IndexPage = ({
           <div className="columns">
             <div className="column col-sm-12">
               <h2>
+                <Trans i18nKey="pages.home.sections.about.about-the-team">
+                  About us
+                </Trans>
+              </h2>
+              <Link href="/about">
+                <Image {...otherImages.aboutTheTeam} />
+                <button className="btn btn-link">
+                  <Trans i18nKey="pages.home.sections.about.cta">
+                    Learn more
+                  </Trans>{" "}
+                  <ChevronRight />
+                </button>
+              </Link>
+            </div>
+            <div className="column col-sm-12">
+              <h2>
                 <Trans i18nKey="pages.home.sections.about.about-the-map">
                   About the Map
                 </Trans>
               </h2>
-              <div className="image-container">
-                <MapPin />
-              </div>
-              {/* <Image {...otherImages.aboutTheMap} /> */}
-              <div className="to-right">
-                <Link href="/about#about-the-map">
-                  <button className="btn">
-                    <Trans i18nKey="pages.home.sections.about.cta">Learn more</Trans> <ChevronRight />
-                  </button>
-                </Link>
-              </div>
-            </div>
-            <div className="column col-sm-12">
-            <h2>
-                <Trans i18nKey="pages.home.sections.about.about-the-team">
-                  About the team
-                </Trans>
-              </h2>
-              <div className="image-container">
-                <HeartHandshake />
-              </div>
-              <div className="to-right">
-                <Link href="/about">
-                  <button className="btn">
-                  <Trans i18nKey="pages.home.sections.about.cta">Learn more</Trans> <ChevronRight />
-                  </button>
-                </Link>
-              </div>
+              <Link href="/about#about-the-map">
+                <Image {...otherImages.aboutTheMap} />
+                <button className="btn btn-link">
+                  <Trans i18nKey="pages.home.sections.about.cta">
+                    Learn more
+                  </Trans>{" "}
+                  <ChevronRight />
+                </button>
+              </Link>
             </div>
           </div>
         </section>
