@@ -24,6 +24,7 @@ RUN npm run build
 # prod deploy
 FROM base as prod
 ENV NODE_ENV=production
+ENV NODE_OPTIONS='--max-old-space-size=192'
 WORKDIR /app
 
 RUN groupadd -f -g 1001 node

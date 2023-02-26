@@ -31,7 +31,7 @@ const i18next = {
   },
 
   // appendNamespaceToMissingKey: false,
-  saveMissing: !isProduction(),
+  saveMissing: true, //!isProduction(),
   // saveMissingTo: "current",
 
   missingKeyHandler: async (
