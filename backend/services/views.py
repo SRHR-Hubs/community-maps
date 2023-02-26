@@ -1,10 +1,14 @@
+import uuid
 from django.shortcuts import render
 from django.utils.translation import get_language
 from rest_framework import viewsets as vs, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
+from pages.models import I18nSection
 from . import models, serializers
-from search import client
+from django.db.models import Count, F
+from search import client, refresh_client
 
 # from search import client, searchable_fields
 
@@ -119,6 +123,7 @@ class FacetViewset(vs.ModelViewSet):
 
     @action(methods=['get', 'put'], detail=False)
     def documents(self, request):
+        # TODO: I don't know if this was the right place to put this.
         q_published = request.query_params.get('published', "1")
         config = client.index('facets').get_settings()
 
@@ -146,7 +151,6 @@ class FacetViewset(vs.ModelViewSet):
                 field: getattr(facet, field, None)
                 for field in searchable_fields
             }
-
 
             # TODO: more sustainable way of handling this
             if 'name' in fields:
@@ -196,3 +200,50 @@ class FacetViewset(vs.ModelViewSet):
                         )
             }
         })
+
+
+class FacetTagViewSet(vs.ModelViewSet):
+    queryset = models.FacetTag.objects.all()
+    serializer_class = serializers.TagSerializer
+    filter_fields = '__all__'
+    # lookup_field = 'translation_id'
+
+    @action(methods=['get', 'put'], detail=False)
+    def documents(self, request):
+        distributions = (self.filter_queryset(self.get_queryset())
+                         .filter(service__published=True)
+                         .values('facet__translation_id', 'value')
+                        #  .select_related('facet')
+                         .annotate(matches=Count('value'))
+                         )
+
+        # TODO language sensitive
+        documents = []
+
+        for tag in distributions:
+            tag['facet'] = tag['facet__translation_id']
+            del tag['facet__translation_id']
+            section = I18nSection.objects.get(
+                translation_id='tags.' + tag['facet'],
+                language='en'
+            )
+            documents.append({
+                'id': uuid.uuid4().hex[:8],
+                **tag,
+                'name': section.text
+            })
+
+        # documents = [{
+        #     'id': uuid.uuid4().hex[:8],
+        #     'facet': tag['facet__translation_id'],
+        #     'value': tag['value'],
+        #     'hits': tag['hits'],
+        #     # 'name': tag['name']
+        # } for tag in distributions]
+
+        if request.method == 'PUT':
+            jobs = refresh_client('tags', documents)
+            return Response(jobs)
+
+        assert request.method == 'GET'
+        return Response(documents)

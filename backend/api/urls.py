@@ -12,6 +12,7 @@ for prefix, viewset in [
     ('i18n', pages.views.I18nSectionViewset),
     ('services', services.views.ServiceViewset),
     ('facets', services.views.FacetViewset),
+    ('tags', services.views.FacetTagViewSet),
 ]:
     router.register(prefix, viewset)
 
