@@ -22,7 +22,9 @@ module.exports = {
 
     assetRule.exclude = svgPath;
 
-    console.log(assetRule);
+    config.externals = {
+      fs: 'fs',
+    }
 
     config.module.rules.push({
       test: /\.svg$/,

@@ -102,16 +102,6 @@ class ServiceAdmin(GeoModelAdmin):
     def unpublish_selected(self, request, queryset):
         queryset.update(published=False)
 
-    def response_change(self, request, obj):
-        # update search index after save.
-        # post_save and signals don't work, see:
-        # https://igorsobreira.com/2011/02/12/change-object-after-saving-all-inlines-in-django-admin.html
-
-        # from search import client
-        # client.index('services').update_documents([obj.to_document()])
-
-        return super().response_change(request, obj)
-
 
 class FacetTranslationInline(NonrelatedTabularInline):
     model = I18nSection

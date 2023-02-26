@@ -8,7 +8,7 @@ const Image = ({container, image}) => (
             fill
             placeholder='blur'
             {...image}
-        /></div>
+    /></div>
 ) 
 
 export default Image

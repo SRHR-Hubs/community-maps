@@ -5,7 +5,7 @@ from mdeditor.fields import MDTextField
 
 from functools import partial
 from pages.models import I18nSection
-from search import searchable_fields
+from search import client
 from . import schemas
 
 
@@ -68,29 +68,6 @@ class Service(models.Model, GeoItem):
     # private
     _contact = models.CharField(max_length=255, blank=True)
 
-    tags = models.ManyToManyField(
-        'Facet',
-        through='FacetTag',
-        through_fields=('service', 'facet'),
-    )
-
-    def to_document(self):
-        formatted_tags = [{
-            'id': tag.id,
-            tag.facet.translation_id: tag.value
-        } for tag in self.facettag_set.all()]
-
-        fields = {
-            field: getattr(self, field)
-            for field in searchable_fields
-        }
-
-        return {
-            'id': self.id,
-            **fields,
-            'tags': formatted_tags
-        }
-
     def __str__(self):
         return self.name
         # return f'<Service: {self.name[:10]}>'
@@ -148,7 +125,7 @@ class Facet(models.Model):
 
     @property
     def distribution(self):
-        qs = FacetTag.objects.filter(facet=self)
+        qs = FacetTag.objects.filter(facet=self, service__published=True)
 
         return (
             qs
@@ -166,7 +143,7 @@ class Facet(models.Model):
 class FacetTag(models.Model):
     # TODO: do these on_delete behaviours make sense?
     service = models.ForeignKey(
-        Service, on_delete=models.CASCADE)
+        Service, on_delete=models.CASCADE, related_name='tags')
     # Service, on_delete=models.SET(Service.sentinel))
     facet = models.ForeignKey(Facet, on_delete=models.CASCADE)
     value = models.TextField()

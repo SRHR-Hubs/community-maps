@@ -1,3 +1,9 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.10.0/jsoneditor.css");
+
 .jsoneditor-menu{
     background-color: var(--primary);
+}
+
+.jsoneditor-field {
+    color: var(--body-fg);
 }
