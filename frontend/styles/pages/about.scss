@@ -9,6 +9,8 @@
     color: colors.$white;
   }
 
+  /**NOT IN USE*/
+  /*************/
   #our-values {
     background-color: colors.$teal-400;
     color: colors.$white;
@@ -43,6 +45,24 @@
           font-weight: bolder;
         }
       }
+    }
+  }
+  /*************/
+
+  #our-vision {
+    background-color: colors.$teal-400;
+    color: colors.$white;
+
+    h2, h3 {
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+    }
+    h3 {
+      font-family: fonts.$sans-serif;
+      font-size: 1.4rem;
     }
   }
 
