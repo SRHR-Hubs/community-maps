@@ -1,4 +1,4 @@
-export const Chip = ({ children, handleClose, ...props }) => {
+const Chip = ({ children, handleClose, ...props }) => {
   return (
     <div className="chip" {...props}>
       {children}
@@ -14,3 +14,4 @@ export const Chip = ({ children, handleClose, ...props }) => {
     </div>
   );
 };
+export default Chip;

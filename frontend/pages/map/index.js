@@ -12,7 +12,7 @@ import MapPopup from "../../components/map/MapPopup";
 import { Popup } from "mapbox-gl";
 import dynamic from "next/dynamic";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
-  loading: () => "loading",
+  loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
 });
 

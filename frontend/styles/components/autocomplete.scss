@@ -1,14 +1,37 @@
 #omnisearch {
-    .form-input {
-        height: auto;
-    }
+  .form-input {
+    height: auto;
+  }
 
-    .tile-content .columns {
-        margin: 0;
-    }
+  .tile-content .columns {
+    margin: 0;
+  }
 
-    [id^=storybook] & {
-        max-width: 50%;
-        color: red;
+  .menu {
+    .menu-item {
+        cursor: pointer;
     }
+  }
+
+  .menu#tag-hits{
+    .chip {
+    
+    }
+  }
+
+  .menu#service-hits {
+    .menu-item {
+        a { 
+            display: block;
+            width: 100%;
+        }
+      &:hover {
+        background-color: #eef0f3;
+      }
+    }
+  }
+
+  [id^="storybook"] & {
+    max-width: 50%;
+  }
 }
