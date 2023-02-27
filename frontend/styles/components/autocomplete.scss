@@ -1,0 +1,14 @@
+#omnisearch {
+    .form-input {
+        height: auto;
+    }
+
+    .tile-content .columns {
+        margin: 0;
+    }
+
+    [id^=storybook] & {
+        max-width: 50%;
+        color: red;
+    }
+}
