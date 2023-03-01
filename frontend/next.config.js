@@ -20,9 +20,9 @@ const nextConfig = {
 
   i18n,
 
-  experimental: {
-    enableUndici: true
-  },
+  // experimental: {
+  //   enableUndici: true
+  // },
 
   webpack: (config, { isServer }) => {
     if (!isServer) {

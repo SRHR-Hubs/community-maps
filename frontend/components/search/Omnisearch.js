@@ -24,16 +24,23 @@ const ServiceHit = ({ _formatted: hit }) => (
   </Link>
 );
 
-const Omnisearch = () => {
+const Omnisearch = ({
+  controller: {
+    state: { searchTerm, serviceHits, tagHits },
+    control: { setSearchTerm, setServiceHits, setTagHits },
+  },
+  on,
+}) => {
   const { services, tags } = useSearch();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [serviceHits, setServiceHits] = useState(null);
-  const [tagHits, setTagHits] = useState(null);
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [serviceHits, setServiceHits] = useState(null);
+  // const [tagHits, setTagHits] = useState(null);
 
   useEffect(() => {
     if (searchTerm.length === 0) {
       setServiceHits(null);
       setTagHits(null);
+      on?.search?.(null);
       return;
     }
 
@@ -49,12 +56,19 @@ const Omnisearch = () => {
 
       setServiceHits(serviceResults.hits);
       setTagHits(tagResults.hits);
+
+      on?.search?.({
+        services: serviceResults.hits,
+        tags: tagResults.hits,
+      });
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
 
   const handleChange = (e) => {
-    setSearchTerm(e.target.value);
+    const newValue = e.target.value || "";
+    setSearchTerm(newValue);
+    on?.input?.(newValue);
   };
 
   return (
@@ -71,6 +85,7 @@ const Omnisearch = () => {
             className="form-input"
             id="omnisearch-input"
             onChange={handleChange}
+            value={searchTerm}
           />
           <SuggestionList id="tag-hits" hits={tagHits} display={TagHit} />
           <SuggestionList

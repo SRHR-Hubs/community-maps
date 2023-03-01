@@ -5,5 +5,6 @@ module.exports = {
     generateIndexSitemap: false,
     exclude: [
         '/blog*',
+        '/test*',
     ]
 }
