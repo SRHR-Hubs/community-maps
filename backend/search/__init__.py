@@ -15,6 +15,8 @@ def refresh_client(_id, documents, primary_key='id'):
 
     _create_index = client.create_index(_new_id)
     new_index = client.index(_new_id)
+    print(_id, _new_id)
+    print(new_index)
     new_index.update_settings(settings)
     new_index.add_documents(
         documents, primary_key=primary_key
@@ -23,6 +25,7 @@ def refresh_client(_id, documents, primary_key='id'):
     _swap = client.swap_indexes([
         {'indexes': [_id, _new_id]}
     ])
+
 
     _delete = new_index.delete()
 

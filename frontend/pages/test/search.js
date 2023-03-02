@@ -14,13 +14,37 @@ const SearchTest = ({ initQuery }) => {
       selectedTags: [].concat(initQuery?.tag ?? []),
     },
   });
-  const { state } = controller;
+  const {
+    state,
+    control: { setServiceHits },
+  } = controller;
   syncStateToQuery(
     // NOTE: to preserve any other query params, add to below:
     // {  ...initQuery },
     { q: state.searchTerm, tag: state.selectedTags },
     { tag: (tags) => tags.map((tag) => tag.id) }
   );
+
+  const { services } = useSearch();
+
+  useEffect(() => {
+    if (
+      state.selectedTags.length < 1 ||
+      typeof state.selectedTags[0] === "string"
+    ) {
+      return;
+    }
+    (async () => {
+      const filter = state.selectedTags
+        .map(({ facet, value }) => `tags.${facet.translation_id} = '${value}'`)
+        .join(" AND ");
+      console.log(filter);
+      const { hits } = await services.search(state.searchTerm, {
+        filter,
+      });
+      setServiceHits(hits.map(hit => ({_formatted: hit})))
+    })();
+  }, [state.searchTerm, state.selectedTags]);
 
   return (
     <PageLayout>

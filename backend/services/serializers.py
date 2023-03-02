@@ -33,15 +33,21 @@ class FacetSerializer(Base):
 
 
 class TagSerializer(Base):
-    facet_id = serializers.PrimaryKeyRelatedField(read_only=True)
-    facet = serializers.SlugRelatedField(
-        read_only=True, slug_field='translation_id')
+    facet = serializers.SerializerMethodField()
 
-    
+    def get_facet(self, obj):
+        # TODO: multilingual
+        # serialized = FacetSerializer(obj.facet, context=self.context).data
+        return {
+            "id": obj.facet.id,
+            # serialized["translation_id"],
+            "translation_id": obj.facet.translation_id,
+            "name": obj.facet.translations.get(language="en").text
+        }
 
     class Meta:
         model = models.FacetTag
-        fields = ('id', 'facet_id', 'facet', 'value', 'extra')
+        fields = ('id', 'facet', 'value', 'extra')
 
 
 class LocationSerializer(Base):

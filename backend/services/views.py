@@ -238,8 +238,11 @@ class FacetTagViewSet(vs.ModelViewSet):
                 'name': section.text
             }
 
+            sanitized_value = "".join(
+                [char for char in tag["value"].lower() if char.isalpha() and char.isascii()][:16])
+
             documents.append({
-                'id': uuid.uuid4().hex[:8],
+                'id': f'{uuid.uuid4().hex[:8]}-{sanitized_value}',
                 **tag,
             })
 

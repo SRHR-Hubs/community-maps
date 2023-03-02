@@ -40,6 +40,8 @@ const Omnisearch = ({
       if (selectedTags.length > 0 && typeof selectedTags[0] === "string") {
         try {
           const newTags = [];
+          // TODO: can be done in one search using
+          // the IN filter operator, but doesn't preserve order
           for (const id of selectedTags) {
             const [hit] = (
               await tags.search("", {
