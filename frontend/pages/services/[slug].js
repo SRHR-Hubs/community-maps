@@ -28,8 +28,7 @@ const ServiceDetailPage = ({
   };
 
   const showTags = 10;
-  const unshownTags = Math.max(0, tags.length - showTags)
-
+  const unshownTags = Math.max(0, tags.length - showTags);
 
   // const showContact = [website, email, socials].some(Boolean)
 
@@ -126,19 +125,19 @@ const ServiceDetailPage = ({
             </Trans>
           </h2>
           <ul>
-            {tags.slice(0, showTags).map(({ facet: translation_id, value }) => (
-              <li key={`${translation_id}=${value}`}>
-                <strong>
-                  <Trans i18nKey={`tags.${translation_id}`}>
-                    {translation_id}
-                  </Trans>
-                </strong>
-                : {value}
-              </li>
-            ))}
-            {unshownTags > 0 && (
-              <em>and {unshownTags} others</em>
-            )}
+            {Object.entries(tags)
+              .slice(0, showTags)
+              .map(([translation_id, values]) => (
+                <li key={`${translation_id}`}>
+                  <strong>
+                    <Trans i18nKey={`tags.${translation_id}`}>
+                      {translation_id}
+                    </Trans>
+                  </strong>
+                  : {values.join(", ")}
+                </li>
+              ))}
+            {unshownTags > 0 && <em>and {unshownTags} others</em>}
           </ul>
         </section>
         {/* </div> */}
