@@ -59,9 +59,10 @@ export function makeMap({ ref, initSource, on }) {
     const [feature] = map.queryRenderedFeatures(event.point, {
       layers: ["service-points"],
     });
-    if (feature && on?.click) {
-      on.click(feature, map);
-    }
+    on?.click?.(feature, map);
+    // if (feature && on?.click) {
+    //   on.click(feature, map);
+    // }
   });
 }
 

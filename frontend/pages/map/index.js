@@ -11,17 +11,32 @@ import MapPopup from "../../components/map/MapPopup";
 
 import { Popup } from "mapbox-gl";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import syncStateToQuery from "../../hooks/syncStatetoQuery";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
 });
 
-const MapHome = ({ geoJSON, slug, title, description }) => {
+const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
+  const [selectedService, setSelectedService] = useState(
+    initQuery?.selected ?? null
+  );
+  syncStateToQuery({ selectedService }, { selectedService: "selected" });
+
+  // TODO: hydrate selected service popup
+  // (requires access to map instance)
+
   const handleClick = (feature, map) => {
+    if (!feature) {
+      setSelectedService(null);
+      return;
+    }
     const _popup = new Popup({ offset: [0, -15] })
       .setLngLat(feature.geometry.coordinates)
       .setHTML(renderToString(<MapPopup {...feature.properties} />))
       .addTo(map);
+    setSelectedService(feature.properties.slug);
   };
 
   const seoInfo = {
@@ -56,7 +71,7 @@ const MapHome = ({ geoJSON, slug, title, description }) => {
 
 export default MapHome;
 
-export async function getServerSideProps({ locale }) {
+export async function getServerSideProps({ locale, query: initQuery }) {
   const pageProps = await PageService.getPageProps("map");
   const query = {
     published: true,
@@ -69,6 +84,7 @@ export async function getServerSideProps({ locale }) {
       geoJSON,
       ...pageProps,
       ...(await useServerI18n(locale)),
+      initQuery,
     },
   };
 }

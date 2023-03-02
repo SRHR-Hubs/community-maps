@@ -19,12 +19,6 @@ const syncStateToQuery = (state, transformers = {}) => {
     for (const [k, v] of Object.entries(state)) {
       const key = k in transformers ? transformers[k] : k;
       const valueDeleteable = typeof v !== "boolean" && !v;
-      // if (key in initial && valueDeleteable) {
-      //   // TODO: how to handle on first render?
-      //   // isInit state?
-      //   console.log("what to do?", key, v, initial);
-      //   continue;
-      // } else
       if (valueDeleteable) {
         delete transformedState[key];
         continue;
