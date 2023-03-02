@@ -5,16 +5,18 @@ import SuggestionList from "./autocomplete/SuggestionList";
 import Link from "next/link";
 import { Trans } from "next-i18next";
 
-const TagHit = ({ _formatted: hit }) => (
-  <div className="columns" role="menuitem">
+const TagHit = ({ _formatted: hit }, { onSelect, onDeselect, ...props }) => (
+  <div className="columns">
     <div className="col col-2">
-      <Chip tabIndex={0}>{hit.value}</Chip>
+      <Chip tabIndex={0} onClick={onSelect(hit)} handleClose={onDeselect(hit)}>
+        {hit.value}
+      </Chip>
     </div>
     <div className="col col-auto col-ml-auto text-gray">{hit.facet.name}</div>
   </div>
 );
 
-const ServiceHit = ({ _formatted: hit }) => (
+const ServiceHit = ({ _formatted: hit }, props) => (
   <Link href={"/services/" + hit.slug}>
     <span
       dangerouslySetInnerHTML={{
@@ -26,15 +28,36 @@ const ServiceHit = ({ _formatted: hit }) => (
 
 const Omnisearch = ({
   controller: {
-    state: { searchTerm, serviceHits, tagHits },
-    control: { setSearchTerm, setServiceHits, setTagHits },
+    state: { searchTerm, serviceHits, tagHits, selectedTags },
+    control: { setSearchTerm, setServiceHits, setTagHits, setSelectedTags },
   },
   on,
 }) => {
   const { services, tags } = useSearch();
-  // const [searchTerm, setSearchTerm] = useState("");
-  // const [serviceHits, setServiceHits] = useState(null);
-  // const [tagHits, setTagHits] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      if (selectedTags.length > 0 && typeof selectedTags[0] === "string") {
+        try {
+          const newTags = [];
+          for (const id of selectedTags) {
+            const [hit] = (
+              await tags.search("", {
+                filter: [`id = ${id}`],
+              })
+            ).hits;
+            if (hit) {
+              newTags.push(hit);
+            }
+          }
+          setSelectedTags(newTags);
+        } catch {
+          setSelectedTags([]);
+        }
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (searchTerm.length === 0) {
@@ -65,10 +88,24 @@ const Omnisearch = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
 
+  const displayedTagHits = tagHits
+    ? tagHits.filter((tag) => !selectedTags.some((v) => v.id === tag.id))
+    : null;
+
   const handleChange = (e) => {
     const newValue = e.target.value || "";
     setSearchTerm(newValue);
     on?.input?.(newValue);
+  };
+
+  const handleTagSelect = (tag) => (e) => {
+    setSelectedTags((prev) => prev.filter((v) => v.id !== tag.id).concat(tag));
+  };
+
+  const handleTagDeselect = (tag) => (e) => {
+    e.preventDefault();
+    setSelectedTags((prev) => prev.filter((v) => v.id !== tag.id));
+    console.log(selectedTags);
   };
 
   return (
@@ -87,13 +124,31 @@ const Omnisearch = ({
             onChange={handleChange}
             value={searchTerm}
           />
-          <SuggestionList id="tag-hits" hits={tagHits} display={TagHit} />
-          <SuggestionList
-            id="service-hits"
-            hits={serviceHits}
-            display={ServiceHit}
-          />
+
+          <div id="omnisearch-selected-tags">
+            {selectedTags.map((tag) => (
+              <Chip key={tag.id} showClose handleClose={handleTagDeselect(tag)}>
+                {tag.value}
+              </Chip>
+            ))}
+          </div>
         </div>
+        {true ? (
+          <SuggestionList
+            id="tag-hits"
+            hits={displayedTagHits}
+            display={TagHit}
+            onSelect={handleTagSelect}
+            onDeselect={handleTagDeselect}
+          />
+        ) : (
+          <div>loading</div>
+        )}
+        <SuggestionList
+          id="service-hits"
+          hits={serviceHits}
+          display={ServiceHit}
+        />
       </div>
     </div>
   );

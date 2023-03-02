@@ -1,17 +1,16 @@
-const Chip = ({ children, handleClose, ...props }) => {
+const Chip = ({ children, showClose = false, handleClose, ...props }) => {
   return (
-    <div className="chip" {...props}>
+    <span className="chip" {...props}>
       {children}
-      {handleClose && (
+      {showClose && (
         <a
-          href="#"
           className="btn btn-clear"
           aria-label="Close"
           role="button"
           onClick={handleClose}
         ></a>
       )}
-    </div>
+    </span>
   );
 };
 export default Chip;

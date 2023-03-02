@@ -3,5 +3,8 @@
   "extends": ["next/core-web-vitals"],
   "rules": {
     "react-hooks/rules-of-hooks": "off"
-  }
+  },
+  "ignorePatterns": [
+    "**/*.stories.js"
+  ]
 }

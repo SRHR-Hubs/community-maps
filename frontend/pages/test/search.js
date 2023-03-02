@@ -4,23 +4,22 @@ import Omnisearch from "../../components/search/Omnisearch";
 import useOmnisearchState from "../../hooks/control/useOmnisearchState";
 import isProduction from "../../hooks/isProduction";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
+import useSearch from "../../hooks/useSearch";
 import useServerI18n from "../../hooks/useServerI18n";
 
 const SearchTest = ({ initQuery }) => {
   const controller = useOmnisearchState({
     init: {
       searchTerm: initQuery?.q,
+      selectedTags: [].concat(initQuery?.tag ?? []),
     },
   });
-  const { searchTerm } = controller.state;
-//   const [hits, setHits] = useState(null);
+  const { state } = controller;
   syncStateToQuery(
-    // NOTE: to preserve any other query params, replace below with:
-    // { searchTerm, ...initQuery },
-    { searchTerm },
-    {
-      searchTerm: "q",
-    }
+    // NOTE: to preserve any other query params, add to below:
+    // {  ...initQuery },
+    { q: state.searchTerm, tag: state.selectedTags },
+    { tag: (tags) => tags.map((tag) => tag.id) }
   );
 
   return (
@@ -32,9 +31,9 @@ const SearchTest = ({ initQuery }) => {
       >
         <Omnisearch
           controller={controller}
-        //   on={{
-        //     search: setHits,
-        //   }}
+          //   on={{
+          //     search: setHits,
+          //   }}
         />
       </div>
     </PageLayout>

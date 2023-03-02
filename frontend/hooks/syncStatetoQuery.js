@@ -17,25 +17,18 @@ const syncStateToQuery = (state, transformers = {}) => {
   useEffect(() => {
     const transformedState = {};
     for (const [k, v] of Object.entries(state)) {
-      const key = k in transformers ? transformers[k] : k;
       const valueDeleteable = typeof v !== "boolean" && !v;
       if (valueDeleteable) {
-        delete transformedState[key];
+        delete transformedState[k];
         continue;
       }
-      // TODO: does !== undefined make sense for deletion?
-      if (k in transformers && transformers[k] !== undefined) {
-        transformedState[transformers[k]] = v;
-      } else {
-        transformedState[k] = v;
-      }
+      transformedState[k] = transformers[k]?.(v) ?? v;
     }
 
-    if (!Object.values(transformedState).some((v) => !!v)) {
-      router.replace(pathname, undefined, { shallow: true });
-      return;
-    }
-    const newUrl = `${pathname}?${qs(transformedState)}`;
+    const newUrl = `${pathname}?${qs(transformedState)}`
+      // if qs is empty, remove the trailing ?
+      .replace(/\?$/, "");
+
     router.replace(newUrl, undefined, { shallow: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...Object.values(state)]);
