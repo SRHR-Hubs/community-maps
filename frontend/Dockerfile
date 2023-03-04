@@ -1,6 +1,9 @@
 # base layer
 FROM node:lts-bullseye-slim AS base
-RUN apt-get update && apt-get install libssl-dev ca-certificates -y
+RUN apt-get update && apt-get install \
+    libssl-dev ca-certificates \
+    libjemalloc2 \
+    -y
 WORKDIR /app
 
 # ARG CLOUDINARY_CLOUD_NAME
@@ -24,7 +27,9 @@ RUN npm run build
 # prod deploy
 FROM base as prod
 ENV NODE_ENV=production
-ENV NODE_OPTIONS='--max-old-space-size=192'
+ENV NODE_OPTIONS='--max-old-space-size=1024'
+ENV LD_PRELOAD='/usr/lib/x86_64-linux-gnu/libjemalloc.so.2'
+
 WORKDIR /app
 
 RUN groupadd -f -g 1001 node

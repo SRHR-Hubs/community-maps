@@ -16,32 +16,32 @@ const AboutPage = ({ slug, title, description, content }) => {
     description,
     canonical: slug,
   };
-  const valuesContent = [
-    {
-      key: "community-service",
-      icon: Users,
-      subtitle: "Community Service",
-      text: "Our map has been built by the community for the community.",
-    },
-    {
-      key: "youth-empowerment",
-      icon: Grab,
-      subtitle: "Youth Empowerment",
-      text: "Validating lived experiences and prioritizing autonomy of youth.",
-    },
-    {
-      key: "education-activism",
-      icon: FileHeart,
-      subtitle: "Commitment to Education & Activism",
-      text: "We're passionate about change, innovation and responding to community needs.",
-    },
-    {
-      key: "co-creation",
-      icon: HeartHandshake,
-      subtitle: "Co-creation with our Community",
-      text: "Working in tandem with our community to address barriers to SRH related care.",
-    },
-  ];
+  // const valuesContent = [
+  //   {
+  //     key: "community-service",
+  //     icon: Users,
+  //     subtitle: "Community Service",
+  //     text: "Our map has been built by the community for the community.",
+  //   },
+  //   {
+  //     key: "youth-empowerment",
+  //     icon: Grab,
+  //     subtitle: "Youth Empowerment",
+  //     text: "Validating lived experiences and prioritizing autonomy of youth.",
+  //   },
+  //   {
+  //     key: "education-activism",
+  //     icon: FileHeart,
+  //     subtitle: "Commitment to Education & Activism",
+  //     text: "We're passionate about change, innovation and responding to community needs.",
+  //   },
+  //   {
+  //     key: "co-creation",
+  //     icon: HeartHandshake,
+  //     subtitle: "Co-creation with our Community",
+  //     text: "Working in tandem with our community to address barriers to SRH related care.",
+  //   },
+  // ];
 
   return (
     <>
@@ -66,13 +66,19 @@ const AboutPage = ({ slug, title, description, content }) => {
             </Trans>
           </p>
         </section>
-        <section id="our-values">
+        <section id="our-vision">
           <h2>
-            <Trans i18nKey="pages.about.sections.our-values.title">
-              Our Values
+            <Trans i18nKey="pages.about.sections.our-vision.title">
+              Our Vision
             </Trans>
           </h2>
-          <div className="columns">
+          <h3>
+            <Trans i18nKey={"pages.about.section.our-vision.subtitle"}>
+              For all people to have full control to make informed decisions
+              about their sexual and reproductive health and wellness.
+            </Trans>
+          </h3>
+          {/* <div className="columns">
             {valuesContent.map(({ key, icon: Icon, subtitle, text }) => {
               const i18nKeyPrefix = `pages.about.sections.our-values.${key}`;
               const subtitleKey = `${i18nKeyPrefix}.subtitle`;
@@ -89,7 +95,7 @@ const AboutPage = ({ slug, title, description, content }) => {
                 </div>
               );
             })}
-          </div>
+          </div> */}
         </section>
         <section id="about-the-map">
           <h2>
