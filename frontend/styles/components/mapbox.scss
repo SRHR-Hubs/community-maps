@@ -61,6 +61,7 @@
     bottom: 0;
     min-height: 1em;
     padding: 1em 1em;
+    padding-bottom: 2em;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -113,6 +114,13 @@
       transition: transform 0.17s ease;
     }
   }
+
+  #filter-modal {
+    .form-group {
+      flex-wrap: wrap;
+    }
+  }
+
   figure,
   .mapboxgl-map {
     position: absolute !important;

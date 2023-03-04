@@ -1,55 +1,87 @@
 import { Triangle } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { Trans } from "react-i18next";
+import syncStateToQuery from "../../../hooks/syncStatetoQuery";
 import useSearch from "../../../hooks/useSearch";
 
-const MapFilterChip = ({ id: translation_id, name }) => (
-  <span className="filter-chip chip">
+const MapFilterChip = ({ filter: { name }, ...props }) => (
+  <span className="filter-chip chip" role="menuitem" tabIndex={0} {...props}>
     {name} <i className="icon icon-arrow-down" />
   </span>
 );
 
-const MapFilterContainer = ({ facets, searchValue = "" }) => {
+const MapFilterModal = ({ filter, onSelect, handleClose }) => {
+  if (!filter) return null;
+  const { name, id: translation_id, value: values } = filter;
+  return (
+    <div className="modal active" id="filter-modal">
+      <a className="modal-overlay" aria-label="Close" onClick={handleClose}></a>
+      <div className="modal-container">
+        <div className="modal-header">
+          <a
+            className="btn btn-clear float-right"
+            aria-label="Close"
+            onClick={handleClose}
+          ></a>
+          <div className="modal-title">{name}</div>
+        </div>
+        <div className="modal-body">
+          <div className="content">
+            <div className="form-group form-horizontal d-flex">
+              {values.map((value) => (
+                <div key={value} className="col-6 col-sm-12 d-flex d-centered">
+                  <label class="form-checkbox form-inline">
+                    <input type="checkbox" />
+                    <i class="form-icon"></i> {value}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="modal-footer"></div>
+      </div>
+    </div>
+  );
+};
+
+const MapFilterContainer = ({ facets }) => {
   const [show, setShow] = useState(true);
-  // const [selectedFacets, setSelected] = useState({});
-  // const [hits, setHits] = useState([]);
-  // let totalDocuments = 0;
+  const [selectedFilter, setSelectedFilter] = useState(null);
 
-  // Whenever the selections are updated
-  // useEffect(() => {
-  //   (async () => {
-  //     const filters = [];
-  //     Object.entries(selectedFacets).forEach(([translation_id, selections]) => {
-  //       const filter = [];
-  //       selections.forEach((value) => {
-  //         filter.push(`tags.${translation_id} = ${value}`);
-  //       });
-  //       filters.push(filter);
-  //     });
-  //     const { hits } = await index.search(searchValue, {
-  //       filter: filters,
-  //       limit: totalDocuments,
-  //     });
-  //     setHits(hits);
-  //   })();
-  // }, [selectedFacets]);
-
-  // TODO: not very SOLID of me to put this here, but it's 3am.
-  // It'll also probably perform poorly.
-  //   const makeMapFilter = (tags)
+  syncStateToQuery({
+    "filter-modal": selectedFilter?.id,
+  });
 
   const handleToggleShow = (e) => {
     setShow(!show);
   };
 
+  const handleCloseModal = () => {
+    setSelectedFilter(null);
+  };
+
+  const handleFilterSelect = (filter) => () => {
+    setSelectedFilter(filter);
+  };
+
   return (
-    <div id="filter-container" data-show={show} onClick={handleToggleShow}>
-      <div className="show-toggle">
-        <Trans i18nKey="layout.map.filter-menu.toggle">Filter results</Trans>
-        <i className="icon icon-arrow-up" />
+    <>
+      <MapFilterModal filter={selectedFilter} handleClose={handleCloseModal} />
+      <div id="filter-container" role="menu" data-show={show}>
+        <div className="show-toggle" onClick={handleToggleShow}>
+          <Trans i18nKey="layout.map.filter-menu.toggle">Filter results</Trans>
+          <i className="icon icon-arrow-up" />
+        </div>
+        {facets.map((filter) => (
+          <MapFilterChip
+            key={filter.id}
+            filter={filter}
+            onClick={handleFilterSelect(filter)}
+          />
+        ))}
       </div>
-      {facets.map(MapFilterChip)}
-    </div>
+    </>
   );
 };
 

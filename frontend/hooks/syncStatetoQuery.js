@@ -12,17 +12,17 @@ import useQuery from "./useQuery";
 const syncStateToQuery = (state, transformers = {}) => {
   const qs = useQuery();
   const router = useRouter();
-  const { pathname } = router;
+  const { pathname, query } = router;
 
   useEffect(() => {
-    const transformedState = {};
+    const transformedState = {...query};
     for (const [k, v] of Object.entries(state)) {
       const valueDeleteable = typeof v !== "boolean" && !v;
       if (valueDeleteable) {
         delete transformedState[k];
         continue;
       }
-      transformedState[k] = transformers[k]?.(v) ?? v;
+      transformedState[k] = transformers?.[k]?.(v) ?? v;
     }
 
     const newUrl = `${pathname}?${qs(transformedState)}`

@@ -24,7 +24,7 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery, facets }) => {
   const [selectedService, setSelectedService] = useState(
     initQuery?.selected ?? null
   );
-  syncStateToQuery({ selectedService }, { selectedService: "selected" });
+  syncStateToQuery({ selected: selectedService });
 
   // TODO: hydrate selected service popup
   // (requires access to map instance)
