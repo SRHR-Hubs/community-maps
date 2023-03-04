@@ -23,7 +23,7 @@ const MapFilterModal = ({ filter, onSelect, handleClose }) => {
             aria-label="Close"
             onClick={handleClose}
           ></a>
-          <div className="modal-title">{name}</div>
+          <div className="modal-title h3">{name}</div>
         </div>
         <div className="modal-body">
           <div className="content">
