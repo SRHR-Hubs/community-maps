@@ -6,11 +6,6 @@ RUN apt-get update && apt-get install \
     -y
 WORKDIR /app
 
-# ARG CLOUDINARY_CLOUD_NAME
-# ENV CLOUDINARY_CLOUD_NAME=$CLOUDINARY_CLOUD_NAME
-# ARG CLOUDINARY_API_KEY
-# ARG CLOUDINARY_API_SECRET
-
 COPY package.json package-lock.json ./
 
 RUN npm install -g npm@9.4.2
