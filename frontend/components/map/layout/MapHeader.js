@@ -3,7 +3,7 @@ import Logo from "../../../public/logo-alt.svg";
 
 const MapHeader = () => {
   return (
-    <header role="banner" className="map-header">
+    <header role="banner" className="map-header hide-md">
       <section id="logo">
         <Link href="/">
           <Logo className="logo" />

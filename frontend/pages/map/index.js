@@ -13,12 +13,14 @@ import { Popup } from "mapbox-gl";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
+import fetcher from "../../hooks/fetch";
+import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
 });
 
-const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
+const MapHome = ({ geoJSON, slug, title, description, initQuery, facets }) => {
   const [selectedService, setSelectedService] = useState(
     initQuery?.selected ?? null
   );
@@ -58,10 +60,12 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
         renderFooter={false}
         id="community-map"
       >
-        <MapHeader />
         <div className="map-overlay">
-          <MapboxGLMap initSource={geoJSON} on={handlers} />
-          {/* <MapFilterContainer /> */}
+          <MapHeader />
+          <div className="map-viewport">
+            <MapboxGLMap initSource={geoJSON} on={handlers} />
+            <MapFilterContainer facets={facets} />
+          </div>
         </div>
         <GetOutQuick />
       </PageLayout>
@@ -79,12 +83,16 @@ export async function getServerSideProps({ locale, query: initQuery }) {
 
   const geoJSON = await ServiceService.getGeoJSON({ query });
 
+  // TODO: here?
+  const { results: facets } = await fetcher("/api/facets/documents/");
+
   return {
     props: {
       geoJSON,
       ...pageProps,
       ...(await useServerI18n(locale)),
       initQuery,
+      facets,
     },
   };
 }
