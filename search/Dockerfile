@@ -1,1 +1,2 @@
-FROM getmeili/meilisearch:v0.30
+FROM getmeili/meilisearch:v1.0
+# ENV MEILI_ENV=production

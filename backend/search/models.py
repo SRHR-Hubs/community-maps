@@ -51,7 +51,7 @@ class MeilisearchConfig(SingletonModel):
 class SearchIndex(models.Model):
     _rel = models.ForeignKey(MeilisearchConfig, null=True,
                              on_delete=models.SET_NULL,
-                             default=MeilisearchConfig.objects.get,
+                             default=MeilisearchConfig.get_solo,
                              related_name='indexes',
                              )
 
