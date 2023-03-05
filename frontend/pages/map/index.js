@@ -15,12 +15,15 @@ import { useEffect, useState } from "react";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
 import fetcher from "../../hooks/fetch";
 import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
+import useOmnisearchState from "../../hooks/control/useOmnisearchState";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
 });
 
-const MapHome = ({ geoJSON, slug, title, description, initQuery, facets }) => {
+const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
+  const { state, control } = useOmnisearchState({ initQuery });
+
   const [selectedService, setSelectedService] = useState(
     initQuery?.selected ?? null
   );
@@ -64,7 +67,10 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery, facets }) => {
           <MapHeader />
           <div className="map-viewport">
             <MapboxGLMap initSource={geoJSON} on={handlers} />
-            <MapFilterContainer facets={facets} />
+            <MapFilterContainer
+              selectedTags={state.selectedTags}
+              handleSelect={control.setSelectedTags}
+            />
           </div>
         </div>
         <GetOutQuick />
@@ -83,16 +89,12 @@ export async function getServerSideProps({ locale, query: initQuery }) {
 
   const geoJSON = await ServiceService.getGeoJSON({ query });
 
-  // TODO: here?
-  const { results: facets } = await fetcher("/api/facets/documents/");
-
   return {
     props: {
       geoJSON,
       ...pageProps,
       ...(await useServerI18n(locale)),
       initQuery,
-      facets,
     },
   };
 }
