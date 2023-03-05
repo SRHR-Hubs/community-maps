@@ -22,7 +22,7 @@ const syncStateToQuery = (state, transformers = {}) => {
         delete transformedState[k];
         continue;
       }
-      transformedState[k] = transformers?.[k]?.(v) ?? v;
+      transformedState[k] = transformers[k]?.(v) ?? v;
     }
 
     const newUrl = `${pathname}?${qs(transformedState)}`

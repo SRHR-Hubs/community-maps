@@ -1,5 +1,4 @@
-import { Triangle } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Trans } from "react-i18next";
 import syncStateToQuery from "../../../hooks/syncStatetoQuery";
 import useSearch from "../../../hooks/useSearch";
@@ -15,9 +14,29 @@ const MapFilterChip = ({ filter: { name }, ...props }) => (
   </span>
 );
 
-const MapFilterModal = ({ filter, onSelect, handleClose }) => {
-  if (!filter) return null;
-  const { name, id: translation_id, value: values } = filter;
+const MapFilterModal = ({ filter, onSelect, handleClose, selectedTags }) => {
+  const { tags: tagIndex } = useSearch();
+  const [tagValues, setTagValues] = useState(null);
+  useEffect(() => {
+    if (filter) {
+      (async () => {
+        const { hits } = await tagIndex.search("", {
+          filter: `facet.translation_id = ${filter.id}`,
+          limit: 999,
+          sort: ["value:asc"],
+        });
+        setTagValues(hits);
+      })();
+    } else {
+      setTagValues(null);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter]);
+
+  if (!filter) return <p>loading</p>;
+
+  const { name } = filter;
+
   return (
     <div className="modal active" id="filter-modal">
       <a className="modal-overlay" aria-label="Close" onClick={handleClose}></a>
@@ -33,14 +52,20 @@ const MapFilterModal = ({ filter, onSelect, handleClose }) => {
         <div className="modal-body">
           <div className="content">
             <div className="form-group form-horizontal d-flex">
-              {values.map((value) => (
-                <div key={value} className="col-6 col-sm-12 d-flex d-centered">
+              {tagValues?.map((tag) => (
+                <div
+                  key={tag.value}
+                  className="col-6 col-sm-12 d-flex d-centered"
+                >
                   <label className="form-checkbox form-inline">
                     <input
                       type="checkbox"
-                      onChange={onSelect(translation_id, value)}
+                      onChange={onSelect(tag)}
+                      checked={selectedTags.some(
+                        (selected) => selected.id === tag.id
+                      )}
                     />
-                    <i className="form-icon"></i> {value}
+                    <i className="form-icon"></i> {tag.value}
                   </label>
                 </div>
               ))}
@@ -83,18 +108,16 @@ const MapFilterContainer = ({ selectedTags, handleSelect }) => {
   };
 
   const handleFilterValueSelect =
-    (translation_id, value) =>
+    (tag) =>
     ({ target }) => {
-      const filterString = `tags.${translation_id} = '${value}'`;
-      const newSelectedTags = selectedTags.filter(
-        (tag) => tag !== filterString
-      );
       if (target.checked) {
-        handleSelect(newSelectedTags.concat(filterString));
+        handleSelect(selectedTags.concat(tag));
       } else {
-        handleSelect(newSelectedTags);
+        handleSelect(selectedTags.filter(({ id }) => id !== tag.id));
       }
     };
+
+  const facetsFiltered = new Set(selectedTags.map((tag) => tag.id)).size;
 
   return (
     <>
@@ -102,12 +125,13 @@ const MapFilterContainer = ({ selectedTags, handleSelect }) => {
         filter={selectedFilter}
         handleClose={handleCloseModal}
         onSelect={handleFilterValueSelect}
+        selectedTags={selectedTags}
       />
       <div id="filter-container" role="menu" data-show={show}>
         <div
-          className={"show-toggle " + (selectedTags?.length && "badge")}
+          className={"show-toggle " + (facetsFiltered && "badge")}
           onClick={handleToggleShow}
-          data-badge={selectedTags?.length}
+          data-badge={facetsFiltered}
         >
           <Trans i18nKey="layout.map.filter-menu.toggle">Filter results</Trans>
           <i className="icon icon-arrow-up" />
@@ -119,8 +143,8 @@ const MapFilterContainer = ({ selectedTags, handleSelect }) => {
               filter={filter}
               onClick={handleFilterSelect(filter)}
               data-badge={
-                selectedTags.filter((stmt) =>
-                  stmt.startsWith(`tags.${filter.id}`)
+                selectedTags.filter(
+                  (tag) => tag.facet.translation_id === filter.id
                 ).length
               }
             />
