@@ -64,11 +64,12 @@ export function makeMap({ ref, initSource, on }) {
     //   on.click(feature, map);
     // }
   });
+  return map;
 }
 
-const MapboxGLMap = ({ initSource, on = {} }) => {
-  const [instance, setInstance] = useState(null);
+const MapboxGLMap = ({ initSource, on = {}, instance: parentInstance }) => {
   const containerRef = useRef(null);
+  const [instance, setInstance] = useState(null);
 
   useEffect(() => {
     if (!instance) {
@@ -82,11 +83,9 @@ const MapboxGLMap = ({ initSource, on = {} }) => {
           ...on,
         },
       });
+    } else {
+      parentInstance.set(instance);
     }
-
-    return () => {
-      instance && instance.remove();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [instance]);
 

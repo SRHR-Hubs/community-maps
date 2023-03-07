@@ -11,7 +11,7 @@ import MapPopup from "../../components/map/MapPopup";
 
 import { Popup } from "mapbox-gl";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
 import fetcher from "../../hooks/fetch";
 import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
@@ -23,6 +23,7 @@ const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
 
 const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
   const { state, control } = useOmnisearchState({ initQuery });
+  const [mapInstance, setMapInstance] = useState(null);
 
   const [selectedService, setSelectedService] = useState(
     initQuery?.selected ?? null
@@ -39,18 +40,32 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
     }
   );
 
-  // TODO: hydrate selected service popup
-  // (requires access to map instance)
+  useEffect(() => {
+    // control map popups
+    if (!selectedService || !mapInstance) {
+      return;
+    }
+
+    const feature = geoJSON.data.features.find(
+      ({ properties: { slug } }) => slug === selectedService
+    );
+
+    const _popup = new Popup({ offset: [0, -15] })
+      .setLngLat(feature.geometry.coordinates)
+      .setHTML(renderToString(<MapPopup {...feature.properties} />))
+      .addTo(mapInstance);
+
+    return () => {
+      _popup.remove();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedService, mapInstance]);
 
   const handleClick = (feature, map) => {
     if (!feature) {
       setSelectedService(null);
       return;
     }
-    const _popup = new Popup({ offset: [0, -15] })
-      .setLngLat(feature.geometry.coordinates)
-      .setHTML(renderToString(<MapPopup {...feature.properties} />))
-      .addTo(map);
     setSelectedService(feature.properties.slug);
   };
 
@@ -76,7 +91,14 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
         <div className="map-overlay">
           <MapHeader />
           <div className="map-viewport">
-            <MapboxGLMap initSource={geoJSON} on={handlers} />
+            <MapboxGLMap
+              initSource={geoJSON}
+              on={handlers}
+              instance={{
+                current: mapInstance,
+                set: setMapInstance,
+              }}
+            />
             <MapFilterContainer
               selectedTags={state.selectedTags}
               handleSelect={control.setSelectedTags}
