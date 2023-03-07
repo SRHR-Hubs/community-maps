@@ -35,7 +35,7 @@ const MapFilterModal = ({ filter, onSelect, handleClose, selectedTags }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
-  if (!filter) return <p>loading</p>;
+  if (!filter) return null;
 
   const { name } = filter;
 

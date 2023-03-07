@@ -4,6 +4,7 @@ import Chip from "./autocomplete/Chip";
 import SuggestionList from "./autocomplete/SuggestionList";
 import Link from "next/link";
 import { Trans } from "next-i18next";
+import useOmnisearch from "../../hooks/useOmnisearch";
 
 const TagHit = ({ _formatted: hit }, { onSelect, onDeselect, ...props }) => (
   <div className="columns">
@@ -26,45 +27,48 @@ const ServiceHit = ({ _formatted: hit }, props) => (
   </Link>
 );
 
-const Omnisearch = ({
-  controller: {
+const Omnisearch = ({ on }) => {
+  const {
     state: { searchTerm, serviceHits, tagHits, selectedTags },
     control: { setSearchTerm, setServiceHits, setTagHits, setSelectedTags },
-  },
-  on,
-}) => {
+  } = useOmnisearch();
   const { services, tags } = useSearch();
+  const [localServiceHits, setLocalServiceHits] = useState(null);
+  const [localTagHits, setLocalTagHits] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      if (selectedTags.length > 0 && typeof selectedTags[0] === "string") {
-        try {
-          const newTags = [];
-          // TODO: can be done in one search using
-          // the IN filter operator, but doesn't preserve order
-          for (const id of selectedTags) {
-            const [hit] = (
-              await tags.search("", {
-                filter: [`id = ${id}`],
-              })
-            ).hits;
-            if (hit) {
-              newTags.push(hit);
-            }
-          }
-          setSelectedTags(newTags);
-        } catch {
-          setSelectedTags([]);
-        }
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (selectedTags.length > 0 && typeof selectedTags[0] === "string") {
+  //       try {
+  //         const newTags = [];
+  //         // TODO: can be done in one search using
+  //         // the IN filter operator, but doesn't preserve order
+  //         for (const id of selectedTags) {
+  //           const [hit] = (
+  //             await tags.search("", {
+  //               filter: [`id = ${id}`],
+  //             })
+  //           ).hits;
+  //           if (hit) {
+  //             newTags.push(hit);
+  //           }
+  //         }
+  //         setSelectedTags(newTags);
+  //       } catch {
+  //         setSelectedTags([]);
+  //       }
+  //     }
+  //   })();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
+  // TODO:
+  // paginated results, sorting, etc.
 
   useEffect(() => {
     if (searchTerm.length === 0) {
-      setServiceHits(null);
-      setTagHits(null);
+      setLocalServiceHits(null);
+      setLocalTagHits(null);
       on?.search?.(null);
       return;
     }
@@ -74,13 +78,15 @@ const Omnisearch = ({
         attributesToHighlight: ["name"],
         highlightPreTag: "<mark>",
         highlightPostTag: "</mark>",
+        limit: 5,
       });
       const tagResults = await tags.search(searchTerm, {
         attributesToCrop: ["value:5"],
+        limit: 5,
       });
 
-      setServiceHits(serviceResults.hits);
-      setTagHits(tagResults.hits);
+      setLocalServiceHits(serviceResults.hits);
+      setLocalTagHits(tagResults.hits);
 
       on?.search?.({
         services: serviceResults.hits,
@@ -90,9 +96,9 @@ const Omnisearch = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm]);
 
-  const displayedTagHits = tagHits
-    ? tagHits.filter((tag) => !selectedTags.some((v) => v.id === tag.id))
-    : null;
+  const displayedTagHits =
+    localTagHits?.filter((tag) => !selectedTags.some((v) => v.id === tag.id)) ??
+    null;
 
   const handleChange = (e) => {
     const newValue = e.target.value || "";
@@ -101,12 +107,12 @@ const Omnisearch = ({
   };
 
   const handleTagSelect = (tag) => (e) => {
-    setSelectedTags((prev) => prev.filter((v) => v.id !== tag.id).concat(tag));
+    setSelectedTags(selectedTags.concat(tag));
   };
 
   const handleTagDeselect = (tag) => (e) => {
     e.preventDefault();
-    setSelectedTags((prev) => prev.filter((v) => v.id !== tag.id));
+    setSelectedTags(selectedTags.filter((v) => v.id !== tag.id));
   };
 
   return (
@@ -147,7 +153,7 @@ const Omnisearch = ({
         )}
         <SuggestionList
           id="service-hits"
-          hits={serviceHits}
+          hits={localServiceHits}
           display={ServiceHit}
         />
       </div>

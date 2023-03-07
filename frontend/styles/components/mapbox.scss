@@ -108,9 +108,9 @@
       padding: 1em;
 
       cursor: pointer;
-      overflow:visible;
+      overflow: visible;
 
-      &::after{
+      &::after {
         position: absolute;
         left: 95%;
       }
@@ -120,7 +120,6 @@
         font-size: 0.8em;
         margin-left: 1em;
       }
-      
     }
 
     @media not (prefers-reduced-motion) {
@@ -131,6 +130,27 @@
   #filter-modal {
     .form-group {
       flex-wrap: wrap;
+    }
+  }
+
+  #omnisearch-container {
+    position: absolute;
+    background: colors.$teal-400;
+    padding: 10px;
+    width: 45%;
+    min-height: 40%;
+    min-width: min(100vw, 500px);
+    max-width: 700px;
+    
+    #omnisearch {
+      position: relative;
+      .form-autocomplete{
+        overflow: hidden;
+      }
+
+      .menu {
+        overflow-y: scroll;
+      }
     }
   }
 
