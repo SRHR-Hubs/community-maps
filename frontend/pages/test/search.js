@@ -38,7 +38,7 @@ const SearchTest = ({ initQuery }) => {
       const filter = state.selectedTags
         .map(({ facet, value }) => `tags.${facet.translation_id} = '${value}'`)
         .join(" AND ");
-      console.log(filter)
+      console.log
       const { hits, ...etc } = await services.search(state.searchTerm, {
         filter,
       });

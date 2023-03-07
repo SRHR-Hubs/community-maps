@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import syncStateToQuery from "../../hooks/syncStatetoQuery";
 
 export const OmnisearchContext = createContext({});
 
@@ -22,8 +23,6 @@ const OmnisearchProvider = ({ init, children }) => {
       setSelectedTags,
     },
   };
-
-  console.log("providder", children);
 
   return (
     <OmnisearchContext.Provider value={value}>

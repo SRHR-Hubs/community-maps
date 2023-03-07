@@ -11,30 +11,19 @@ import MapPopup from "../../components/map/MapPopup";
 
 import { Popup } from "mapbox-gl";
 import dynamic from "next/dynamic";
-import {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
-import fetcher from "../../hooks/fetch";
 import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
-// import useOmnisearchState from "../../hooks/control/useOmnisearchState";
 import useSearch from "../../hooks/useSearch";
-import OmnisearchProvider, {
-  OmnisearchContext,
-} from "../../context/providers/OmnisearchProvider";
+import OmnisearchProvider from "../../context/providers/OmnisearchProvider";
+import useOmnisearch from "../../hooks/useOmnisearch";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
 });
 
 const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
-  const { state, control } = useContext(OmnisearchContext);
-  console.log(OmnisearchContext, OmnisearchProvider);
-  console.log(state, control);
+  const { state, control } = useOmnisearch();
 
   const [mapInstance, setMapInstance] = useState(null);
   const [tagsReady, setTagsReady] = useState(false);
@@ -61,14 +50,19 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
     // hydrate tags
     if (!tagsReady) {
       (async () => {
-        const { hits: hydratedTags } = await tagIndex.search("", {
-          filter: `id IN [${state.selectedTags.join(", ")}]`,
-        });
-        control.setSelectedTags(hydratedTags);
+        if (initQuery?.tag) {
+          const tags = [].concat(initQuery.tag);
+          console.log(tags)
+          const { hits: hydratedTags } = await tagIndex.search("", {
+            filter: `id IN [${tags.join(", ")}]`,
+          });
+          control.setSelectedTags(hydratedTags);
+        }
         setTagsReady(true);
       })();
     }
-  }, [state.selectedTags, tagsReady]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tagsReady]);
 
   useEffect(() => {
     if (!tagsReady) return;
