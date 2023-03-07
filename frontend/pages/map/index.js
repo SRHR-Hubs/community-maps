@@ -11,27 +11,33 @@ import MapPopup from "../../components/map/MapPopup";
 
 import { Popup } from "mapbox-gl";
 import dynamic from "next/dynamic";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
 import fetcher from "../../hooks/fetch";
 import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
-import useOmnisearchState from "../../hooks/control/useOmnisearchState";
+// import useOmnisearchState from "../../hooks/control/useOmnisearchState";
 import useSearch from "../../hooks/useSearch";
+import OmnisearchProvider, {
+  OmnisearchContext,
+} from "../../context/providers/OmnisearchProvider";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
 });
 
 const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
-  const { state, control } = useOmnisearchState({
-    init: {
-      selectedTags: [].concat(initQuery?.tag ?? []),
-    },
-  });
+  const { state, control } = useContext(OmnisearchContext);
+  console.log(OmnisearchContext, OmnisearchProvider);
+  console.log(state, control);
+
   const [mapInstance, setMapInstance] = useState(null);
-  const [tagsReady, setTagsReady] = useState(
-    typeof state.selectedTags[0] !== "string"
-  );
+  const [tagsReady, setTagsReady] = useState(false);
   const { services: serviceIndex, tags: tagIndex } = useSearch();
 
   const [selectedService, setSelectedService] = useState(
@@ -122,7 +128,6 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
       .forEach((layer) => {
         mapInstance.setFilter(layer.id, mapFilterExpr);
       });
-    mapInstance.triggerRepaint();
   }, [mapInstance, state.serviceHits, tagsReady]);
 
   useEffect(() => {
@@ -166,7 +171,11 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
   };
 
   return (
-    <>
+    <OmnisearchProvider
+      init={{
+        selectedTags: [].concat(initQuery?.tag ?? []),
+      }}
+    >
       <SEO {...seoInfo} />
       <PageLayout
         renderHeader={false}
@@ -195,7 +204,7 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
         </div>
         <GetOutQuick />
       </PageLayout>
-    </>
+    </OmnisearchProvider>
   );
 };
 
