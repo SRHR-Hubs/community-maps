@@ -9,6 +9,17 @@ const OmnisearchProvider = ({ init, children }) => {
   const [tagHits, setTagHits] = useState(null);
   const [selectedTags, setSelectedTags] = useState(init?.selectedTags ?? []);
 
+  syncStateToQuery(
+    {
+      tag: selectedTags,
+    },
+    {
+      tag: (tags) => {
+        return tags.map((tag) => tag.id);
+      },
+    }
+  );
+
   const value = {
     state: {
       searchTerm,

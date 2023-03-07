@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Trans } from "react-i18next";
+import { OmnisearchContext } from "../../../context/providers/OmnisearchProvider";
 import syncStateToQuery from "../../../hooks/syncStatetoQuery";
+import useOmnisearch from "../../../hooks/useOmnisearch";
 import useSearch from "../../../hooks/useSearch";
 
 const MapFilterChip = ({ filter: { name }, ...props }) => (
@@ -30,7 +32,7 @@ const MapFilterModal = ({ filter, onSelect, handleClose, selectedTags }) => {
     } else {
       setTagValues(null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   if (!filter) return <p>loading</p>;
@@ -78,10 +80,14 @@ const MapFilterModal = ({ filter, onSelect, handleClose, selectedTags }) => {
   );
 };
 
-const MapFilterContainer = ({ selectedTags, handleSelect }) => {
+const MapFilterContainer = ({ ready }) => {
   const [show, setShow] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [facets, setFacets] = useState([]);
+  const {
+    state: { selectedTags },
+    control,
+  } = useOmnisearch();
 
   useEffect(() => {
     (async () => {
@@ -111,9 +117,9 @@ const MapFilterContainer = ({ selectedTags, handleSelect }) => {
     (tag) =>
     ({ target }) => {
       if (target.checked) {
-        handleSelect(selectedTags.concat(tag));
+        control.setSelectedTags(selectedTags.concat(tag));
       } else {
-        handleSelect(selectedTags.filter(({ id }) => id !== tag.id));
+        control.setSelectedTags(selectedTags.filter(({ id }) => id !== tag.id));
       }
     };
 
@@ -143,6 +149,7 @@ const MapFilterContainer = ({ selectedTags, handleSelect }) => {
               filter={filter}
               onClick={handleFilterSelect(filter)}
               data-badge={
+                ready &&
                 selectedTags.filter(
                   (tag) => tag.facet.translation_id === filter.id
                 ).length

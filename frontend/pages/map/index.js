@@ -9,14 +9,13 @@ import GetOutQuick from "../../components/layout/get-out-quick/GetOutQuick";
 import MapHeader from "../../components/map/layout/MapHeader";
 import MapPopup from "../../components/map/MapPopup";
 
-import { Popup } from "mapbox-gl";
+import { LngLat, LngLatBounds, Popup } from "mapbox-gl";
 import dynamic from "next/dynamic";
-import { useEffect, useLayoutEffect, useState } from "react";
-import syncStateToQuery from "../../hooks/syncStatetoQuery";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
 import useSearch from "../../hooks/useSearch";
-import OmnisearchProvider from "../../context/providers/OmnisearchProvider";
 import useOmnisearch from "../../hooks/useOmnisearch";
+import syncStateToQuery from "../../hooks/syncStatetoQuery";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
@@ -28,31 +27,25 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
   const [mapInstance, setMapInstance] = useState(null);
   const [tagsReady, setTagsReady] = useState(false);
   const { services: serviceIndex, tags: tagIndex } = useSearch();
+  const [filterExpr, setFilterExpr] = useState(null);
 
   const [selectedService, setSelectedService] = useState(
     initQuery?.selected ?? null
   );
-  syncStateToQuery(
-    {
-      selected: selectedService,
-      tag: state.selectedTags,
-    },
-    {
-      tag: (tags) => {
-        return tags.map((tag) => tag.id);
-      },
-    }
-  );
+
+  syncStateToQuery({
+    selected: selectedService,
+  });
 
   ////// effects
   // TODO a lot of these should go somewhere else
   useEffect(() => {
     // hydrate tags
+
     if (!tagsReady) {
       (async () => {
         if (initQuery?.tag) {
           const tags = [].concat(initQuery.tag);
-          console.log(tags)
           const { hits: hydratedTags } = await tagIndex.search("", {
             filter: `id IN [${tags.join(", ")}]`,
           });
@@ -60,8 +53,7 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
         }
         setTagsReady(true);
       })();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsReady]);
 
   useEffect(() => {
@@ -104,25 +96,52 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
       .getStyle()
       .layers.filter((layer) => layer.source === "services");
 
-    if (state.serviceHits === null) {
-      layers.forEach((layer) => {
-        mapInstance.setFilter(layer.id, null);
-      });
+    const slugs = state.serviceHits?.map((service) => service.slug);
+
+    const mapFilterExpr =
+      state.serviceHits !== null
+        ? ["in", ["get", "slug"], ["literal", slugs]]
+        : null;
+
+    layers.forEach((layer) => {
+      mapInstance.setFilter(layer.id, mapFilterExpr);
+      console.log("filter set for", layer.id, mapFilterExpr);
+    });
+
+    if (slugs && !slugs.includes(selectedService)) {
+      setSelectedService(null);
+    }
+
+    setFilterExpr(mapFilterExpr);
+  }, [mapInstance, state.serviceHits]);
+
+  useEffect(() => {
+    // TODO: doesn't work properly just yet
+    // return;
+    // https://stackoverflow.com/a/35715102
+    if (!mapInstance) {
       return;
     }
 
-    const mapFilterExpr = [
-      "in",
-      ["get", "slug"],
-      ["literal", state.serviceHits.map((service) => service.slug)],
-    ];
-    mapInstance
-      .getStyle()
-      .layers.filter((layer) => layer.source === "services")
-      .forEach((layer) => {
-        mapInstance.setFilter(layer.id, mapFilterExpr);
+    const boundingBox = mapInstance
+      .queryRenderedFeatures(undefined, {
+        layers: ["service-points"],
+      })
+      .map(({ geometry: { coordinates } }) => {
+        return LngLat.convert(coordinates);
+      })
+      .reduce((bounds, coords) => {
+        return bounds.extend(coords);
+      }, new LngLatBounds());
+
+    if (!boundingBox.isEmpty()) {
+      console.log(boundingBox);
+      mapInstance.fitBounds(boundingBox, {
+        maxZoom: 12,
+        padding: 50,
       });
-  }, [mapInstance, state.serviceHits, tagsReady]);
+    }
+  }, [mapInstance, state.serviceHits]);
 
   useEffect(() => {
     // control map popups
@@ -165,11 +184,7 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
   };
 
   return (
-    <OmnisearchProvider
-      init={{
-        selectedTags: [].concat(initQuery?.tag ?? []),
-      }}
-    >
+    <>
       <SEO {...seoInfo} />
       <PageLayout
         renderHeader={false}
@@ -188,17 +203,12 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
                 set: setMapInstance,
               }}
             />
-            {tagsReady && (
-              <MapFilterContainer
-                selectedTags={state.selectedTags}
-                handleSelect={control.setSelectedTags}
-              />
-            )}
+            <MapFilterContainer ready={tagsReady} />
           </div>
         </div>
         <GetOutQuick />
       </PageLayout>
-    </OmnisearchProvider>
+    </>
   );
 };
 
