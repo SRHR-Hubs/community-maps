@@ -17,7 +17,6 @@ export function makeMap({ ref, initSource, on }) {
   });
 
   map.once("load", () => {
-    on?.load?.(map);
     // if (onMount) onMount();
     map.loadImage("/res/marker.png", (error, image) => {
       if (error) throw error;
@@ -40,18 +39,23 @@ export function makeMap({ ref, initSource, on }) {
           "icon-ignore-placement": true,
         },
       });
-      map.addLayer({
-        id: "service-text",
-        source: "services",
-        type: "symbol",
-        minzoom: 12,
-        layout: {
-          "text-field": ["get", "name"],
-          "text-justify": "left",
-          "text-anchor": "left",
-          "text-offset": [1, 0],
+      map.addLayer(
+        {
+          id: "service-text",
+          source: "services",
+          type: "symbol",
+          minzoom: 12,
+          layout: {
+            "text-field": ["get", "name"],
+            "text-justify": "left",
+            "text-anchor": "left",
+            "text-offset": [1, 0],
+          },
         },
-      });
+        "service-points"
+      );
+
+      on?.load?.(map);
     });
   });
 
@@ -79,12 +83,11 @@ const MapboxGLMap = ({ initSource, on = {}, instance: parentInstance }) => {
         on: {
           load: (instance) => {
             setInstance(instance);
+            parentInstance.set(instance);
           },
           ...on,
         },
       });
-    } else {
-      parentInstance.set(instance);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [instance]);

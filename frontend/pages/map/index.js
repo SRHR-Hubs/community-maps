@@ -11,19 +11,28 @@ import MapPopup from "../../components/map/MapPopup";
 
 import { Popup } from "mapbox-gl";
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
 import fetcher from "../../hooks/fetch";
 import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
 import useOmnisearchState from "../../hooks/control/useOmnisearchState";
+import useSearch from "../../hooks/useSearch";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
 });
 
 const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
-  const { state, control } = useOmnisearchState({ initQuery });
+  const { state, control } = useOmnisearchState({
+    init: {
+      selectedTags: [].concat(initQuery?.tag ?? []),
+    },
+  });
   const [mapInstance, setMapInstance] = useState(null);
+  const [tagsReady, setTagsReady] = useState(
+    typeof state.selectedTags[0] !== "string"
+  );
+  const { services: serviceIndex, tags: tagIndex } = useSearch();
 
   const [selectedService, setSelectedService] = useState(
     initQuery?.selected ?? null
@@ -39,6 +48,82 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
       },
     }
   );
+
+  ////// effects
+  // TODO a lot of these should go somewhere else
+  useEffect(() => {
+    // hydrate tags
+    if (!tagsReady) {
+      (async () => {
+        const { hits: hydratedTags } = await tagIndex.search("", {
+          filter: `id IN [${state.selectedTags.join(", ")}]`,
+        });
+        control.setSelectedTags(hydratedTags);
+        setTagsReady(true);
+      })();
+    }
+  }, [state.selectedTags, tagsReady]);
+
+  useEffect(() => {
+    if (!tagsReady) return;
+    else if (state.selectedTags.length === 0) {
+      control.setServiceHits(null);
+      return;
+    }
+    (async () => {
+      const groupedTags = state.selectedTags.reduce((acc, tag) => {
+        const { translation_id } = tag.facet;
+        return {
+          ...acc,
+          [translation_id]: (acc[translation_id] ?? []).concat(tag),
+        };
+      }, {});
+
+      const filter = Object.entries(groupedTags).map(
+        ([translation_id, tags]) =>
+          tags && [
+            `tags.${translation_id} IN [${tags
+              .map((tag) => `'${tag.value}'`)
+              .join(", ")}]`,
+          ]
+      );
+      const { hits } = await serviceIndex.search(state.searchTerm, {
+        filter,
+        limit: 999,
+      });
+      control.setServiceHits(hits);
+    })();
+  }, [state.searchTerm, state.selectedTags, tagsReady]);
+
+  useLayoutEffect(() => {
+    if (!mapInstance || !tagsReady) {
+      return;
+    }
+
+    const layers = mapInstance
+      .getStyle()
+      .layers.filter((layer) => layer.source === "services");
+
+    if (state.serviceHits === null) {
+      layers.forEach((layer) => {
+        mapInstance.setFilter(layer.id, null);
+      });
+      return;
+    }
+
+    const mapFilterExpr = [
+      "in",
+      ["get", "slug"],
+      ["literal", state.serviceHits.map((service) => service.slug)],
+    ];
+    mapInstance
+      .getStyle()
+      .layers.filter((layer) => layer.source === "services")
+      .forEach((layer) => {
+        mapInstance.setFilter(layer.id, mapFilterExpr);
+      });
+    mapInstance.triggerRepaint();
+  }, [mapInstance, state.serviceHits, tagsReady]);
 
   useEffect(() => {
     // control map popups
@@ -61,7 +146,8 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedService, mapInstance]);
 
-  const handleClick = (feature, map) => {
+  ////// handlers
+  const handleClick = (feature) => {
     if (!feature) {
       setSelectedService(null);
       return;
@@ -99,10 +185,12 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
                 set: setMapInstance,
               }}
             />
-            <MapFilterContainer
-              selectedTags={state.selectedTags}
-              handleSelect={control.setSelectedTags}
-            />
+            {tagsReady && (
+              <MapFilterContainer
+                selectedTags={state.selectedTags}
+                handleSelect={control.setSelectedTags}
+              />
+            )}
           </div>
         </div>
         <GetOutQuick />

@@ -107,7 +107,6 @@ const Omnisearch = ({
   const handleTagDeselect = (tag) => (e) => {
     e.preventDefault();
     setSelectedTags((prev) => prev.filter((v) => v.id !== tag.id));
-    console.log(selectedTags);
   };
 
   return (
