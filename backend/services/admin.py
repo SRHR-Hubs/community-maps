@@ -150,3 +150,7 @@ class FacetAdmin(admin.ModelAdmin):
     # formfield_overrides = {
     #     m.JSONField: {'widget': FlatJsonWidget},
     # }
+
+@admin.register(models.FacetTag)
+class FacetTagAdmin(admin.ModelAdmin):
+    search_fields = ('value',)

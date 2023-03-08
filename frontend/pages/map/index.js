@@ -92,7 +92,6 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
         filter,
         limit: 999,
       });
-      console.log(hits);
       control.setServiceHits(hits);
     })();
   }, [state.selectedTags, tagsReady]);

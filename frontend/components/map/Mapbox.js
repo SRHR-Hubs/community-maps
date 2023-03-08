@@ -92,6 +92,13 @@ const MapboxGLMap = ({ initSource, on = {}, instance: parentInstance }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [instance]);
 
+  useEffect(() => {
+    return () => {
+      instance?.remove();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <figure
       className="mapboxgl-map"

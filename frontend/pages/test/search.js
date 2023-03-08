@@ -1,23 +1,14 @@
 import { useEffect, useState } from "react";
 import PageLayout from "../../components/layout/page/PageLayout";
 import Omnisearch from "../../components/search/Omnisearch";
-import useOmnisearchState from "../../hooks/control/useOmnisearchState";
 import isProduction from "../../hooks/isProduction";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
+import useOmnisearch from "../../hooks/useOmnisearch";
 import useSearch from "../../hooks/useSearch";
 import useServerI18n from "../../hooks/useServerI18n";
 
 const SearchTest = ({ initQuery }) => {
-  const controller = useOmnisearchState({
-    init: {
-      searchTerm: initQuery?.q,
-      selectedTags: [].concat(initQuery?.tag ?? []),
-    },
-  });
-  const {
-    state,
-    control,
-  } = controller;
+  const { state, control } = useOmnisearch();
   syncStateToQuery(
     // NOTE: to preserve any other query params, add to below:
     // {  ...initQuery },
@@ -38,7 +29,6 @@ const SearchTest = ({ initQuery }) => {
       const filter = state.selectedTags
         .map(({ facet, value }) => `tags.${facet.translation_id} = '${value}'`)
         .join(" AND ");
-      console.log
       const { hits, ...etc } = await services.search(state.searchTerm, {
         filter,
       });
@@ -53,12 +43,7 @@ const SearchTest = ({ initQuery }) => {
           height: "1500px",
         }}
       >
-        <Omnisearch
-          controller={controller}
-          //   on={{
-          //     search: setHits,
-          //   }}
-        />
+        <Omnisearch />
       </div>
     </PageLayout>
   );
