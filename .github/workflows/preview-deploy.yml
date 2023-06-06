@@ -45,8 +45,6 @@ jobs:
       prefix: ${{ needs.env_setup.outputs.slug }}
     
     steps:
-      - run: "echo $prefix"
-      - run: "exit 1"
       - uses: actions/checkout@v2
 
       - name: Deploy Meilisearch
