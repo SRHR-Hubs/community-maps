@@ -13,7 +13,7 @@ env:
 
 jobs:
   preview_deploy:
-    # runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
     concurrency:
       group: $ENV_NAME
