@@ -25,7 +25,7 @@ jobs:
           pr_number: ${{ github.event.number }}
           name: ${{ github.head_ref }}
         run: |
-          echo "PREVIEW_SLUG=${pr_number}-${name/\//-}" >> ${GITHUB_OUTPUT}
+          echo "PREVIEW_SLUG=${pr_number}-${name/\//-}" >> "${GITHUB_OUTPUT}"
     outputs:
       slug: ${{ steps.preview_slug.PREVIEW_SLUG }}
 
