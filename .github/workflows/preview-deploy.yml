@@ -25,7 +25,7 @@ jobs:
           pr_number: ${{ github.event.number }}
           name: ${{ github.head_ref }}
         run: |
-          echo "PREVIEW_SLUG=${pr_number}-${name/\//-} >> ${GITHUB_OUTPUT}"
+          echo "PREVIEW_SLUG=${pr_number}-${name/\//-}" >> ${GITHUB_OUTPUT}
     outputs:
       slug: ${{ steps.preview_slug.PREVIEW_SLUG }}
 
@@ -83,7 +83,7 @@ jobs:
   # Clean up environment on PR close
   cleanup_environment:
     if: ${{ always() && github.event.action == 'closed' }}
-    needs: [preview_deploy, teardown_on_failure]
+    needs: [env_setup, preview_deploy, teardown_on_failure]
     runs-on: ubuntu-latest
     steps:
     - uses: strumwolf/delete-deployment-environment@v2.3.0
