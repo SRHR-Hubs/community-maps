@@ -1,0 +1,53 @@
+name: Deploy Preview App
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  FLY_REGION: yyz
+  FLY_ORG: personal
+
+  ENV_NAME: preview-${{ github.event.number }}
+
+jobs:
+  preview_deploy:
+    # runs-on: ubuntu-latest
+
+    concurrency:
+      group: $ENV_NAME
+
+    environment:
+      name: $ENV_NAME
+      url: ${{ steps.deploy.outputs.url }}
+    
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy Meilisearch
+        uses: superfly/fly-pr-review-apps@1.0.0
+        with:
+          update: false # don't redeploy when PR is updated
+          path: search
+          name: $ENV_NAME-meilisearch
+      
+      - name: Deploy backend
+        uses: superfly/fly-pr-review-apps@1.0.0
+        with:
+          path: backend
+          name: $ENV_NAME-django
+          postgres: ${{ secrets.DEV_DB_APP_NAME }}
+
+      - name: Deploy frontend
+        uses: superfly/fly-pr-review-apps@1.0.0
+        with:
+          path: frontend
+          name: $ENV_NAME-frontend
+
+      - name: Clean up environment on PR close
+        if: ${{ github.event.action == 'closed' }}
+        uses: strumwolf/delete-deployment-environment@2.3.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: $ENV_NAME
