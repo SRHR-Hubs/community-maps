@@ -44,11 +44,13 @@ jobs:
         with:
           path: frontend
           name: preview-${{ github.event.number }}-frontend
-
-      - name: Teardown apps on failure
-        if: ${{ failure() }}
-        uses: superfly/flyctl-actions/setup-flyctl@master
-        env:
+  
+  teardown_on_failure:
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - env:
           ENV_NAME: preview-${{ github.event.number }}
         run: |
           flyctl apps destroy -y $ENV_NAME-meilisearch; \
@@ -57,7 +59,7 @@ jobs:
 
   # Clean up environment on PR close
   cleanup_environment:
-    if: ${{ github.event.action == 'closed' }}
+    if: ${{ always() && github.event.action == 'closed' }}
     runs-on: ubuntu-latest
     steps:
     - uses: strumwolf/delete-deployment-environment@v2.3.0
