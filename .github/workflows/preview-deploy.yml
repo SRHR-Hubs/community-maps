@@ -27,8 +27,7 @@ jobs:
         run: |
           echo "PREVIEW_SLUG=${PR_NUMBER}-${BRANCH_NAME/\//-}" >> ${GITHUB_OUTPUT}
     outputs:
-      slug: 
-        value: ${{ steps.preview_slug.PREVIEW_SLUG }}
+      slug: ${{ steps.preview_slug.outputs.PREVIEW_SLUG }}
 
   preview_deploy:
     runs-on: ubuntu-latest
