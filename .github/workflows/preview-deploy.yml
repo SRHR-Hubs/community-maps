@@ -22,12 +22,13 @@ jobs:
       - name: Create preview slug
         id: preview_slug
         env:
-          pr_number: ${{ github.event.number }}
-          name: ${{ github.head_ref }}
+          PR_NUMBER: ${{ github.event.number }}
+          BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          echo "PREVIEW_SLUG=${pr_number}-${name/\//-}" >> "${GITHUB_OUTPUT}"
+          echo "PREVIEW_SLUG=${PR_NUMBER}-${BRANCH_NAME/\//-}" >> ${GITHUB_OUTPUT}
     outputs:
-      slug: ${{ steps.preview_slug.PREVIEW_SLUG }}
+      slug: 
+        value: ${{ steps.preview_slug.PREVIEW_SLUG }}
 
   preview_deploy:
     runs-on: ubuntu-latest
