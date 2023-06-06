@@ -47,9 +47,13 @@ jobs:
 
       - name: Teardown apps on failure
         if: ${{ failure() }}
+        uses: superfly/flyctl-actions/setup-flyctl@master
         env:
           ENV_NAME: preview-${{ github.event.number }}
-        run: "fly destroy -y $ENV_NAME-meilisearch; fly destroy -y $ENV_NAME-django; fly destroy -y $ENV_NAME-frontend"
+        run: |
+          flyctl apps destroy -y $ENV_NAME-meilisearch; \
+          flyctl apps destroy -y $ENV_NAME-django; \
+          flyctl apps destroy -y $ENV_NAME-frontend
 
   # Clean up environment on PR close
   cleanup_environment:
