@@ -47,7 +47,7 @@ jobs:
 
       - name: Clean up environment on PR close
         if: ${{ github.event.action == 'closed' }}
-        uses: strumwolf/delete-deployment-environment@2.3.0
+        uses: strumwolf/delete-deployment-environment@v2.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           environment: $ENV_NAME
