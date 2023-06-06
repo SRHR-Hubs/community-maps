@@ -16,8 +16,22 @@ env:
 jobs:
   # TODO: would https://github.com/dorny/paths-filter#conditional-execution
   # cause desync/unknown variables?
+  env_setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create preview slug
+        id: preview_slug
+        env:
+          name: ${{ env.head_ref }}
+        run: |
+          echo "PREVIEW_SLUG=${name/\//-} >> ${GITHUB_OUTPUT}"
+    outputs:
+      slug: ${{ steps.preview_slug.PREVIEW_SLUG }}
+
   preview_deploy:
     runs-on: ubuntu-latest
+
+    needs: [env_setup]
 
     concurrency:
       group: preview-${{ github.event.number }}
@@ -25,6 +39,9 @@ jobs:
     environment:
       name: preview-${{ github.event.number }}
       url: ${{ steps.deploy.outputs.url }}
+
+    env:
+      prefix: ${{ needs.env_setup.outputs.slug }}
     
     steps:
       - uses: actions/checkout@v2
@@ -34,29 +51,29 @@ jobs:
         with:
           update: false # don't redeploy when PR is updated
           path: search
-          name: preview-${{ github.event.number }}-meilisearch
+          name: ${{ env.prefix }}-meilisearch
       
       - name: Deploy backend
         uses: superfly/fly-pr-review-apps@1.0.0
         with:
           path: backend
-          name: preview-${{ github.event.number }}-django
+          name: ${{ env.prefix }}-django
           postgres: ${{ secrets.DEV_DB_APP_NAME }}
 
       - name: Deploy frontend
         uses: superfly/fly-pr-review-apps@1.0.0
         with:
           path: frontend
-          name: preview-${{ github.event.number }}-frontend
+          name: ${{ env.prefix }}-frontend
   
   teardown_on_failure:
     if: ${{ failure() }}
-    needs: [preview_deploy]
+    needs: [env_setup, preview_deploy]
     runs-on: ubuntu-latest
     steps:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - env:
-          ENV_NAME: preview-${{ github.event.number }}
+          ENV_NAME: ${{ needs.env_setup.outputs.slug }}
         run: |
           flyctl apps destroy -y $ENV_NAME-meilisearch; \
           flyctl apps destroy -y $ENV_NAME-django; \
