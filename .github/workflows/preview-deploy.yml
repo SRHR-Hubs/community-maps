@@ -9,17 +9,17 @@ env:
   FLY_REGION: yyz
   FLY_ORG: personal
 
-  ENV_NAME: preview-${{ github.event.number }}
+  # env-name template: preview-${{ github.event.number }}
 
 jobs:
   preview_deploy:
     runs-on: ubuntu-latest
 
     concurrency:
-      group: ${{ env.ENV_NAME }}
+      group: preview-${{ github.event.number }}
 
     environment:
-      name: ${{ env.ENV_NAME }}
+      name: preview-${{ github.event.number }}
       url: ${{ steps.deploy.outputs.url }}
     
     steps:
@@ -30,24 +30,24 @@ jobs:
         with:
           update: false # don't redeploy when PR is updated
           path: search
-          name: ${{ env.ENV_NAME }}-meilisearch
+          name: preview-${{ github.event.number }}-meilisearch
       
       - name: Deploy backend
         uses: superfly/fly-pr-review-apps@1.0.0
         with:
           path: backend
-          name: ${{ env.ENV_NAME }}-django
+          name: preview-${{ github.event.number }}-django
           postgres: ${{ secrets.DEV_DB_APP_NAME }}
 
       - name: Deploy frontend
         uses: superfly/fly-pr-review-apps@1.0.0
         with:
           path: frontend
-          name: ${{ env.ENV_NAME }}-frontend
+          name: preview-${{ github.event.number }}-frontend
 
       - name: Clean up environment on PR close
         if: ${{ github.event.action == 'closed' }}
         uses: strumwolf/delete-deployment-environment@v2.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          environment: ${{ env.ENV_NAME }}
+          environment: preview-${{ github.event.number }}
