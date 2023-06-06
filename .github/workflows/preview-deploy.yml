@@ -24,8 +24,9 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.number }}
           BRANCH_NAME: ${{ github.head_ref }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
-          echo "PREVIEW_SLUG=${PR_NUMBER}-${BRANCH_NAME/\//-}" >> ${GITHUB_OUTPUT}
+          echo "PREVIEW_SLUG=${PR_NUMBER}-${BRANCH_NAME/\//-}-${COMMIT_SHA:0:8}" >> ${GITHUB_OUTPUT}
     outputs:
       slug: ${{ steps.preview_slug.outputs.PREVIEW_SLUG }}
 
