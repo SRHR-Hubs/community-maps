@@ -2,6 +2,8 @@ name: Deploy Preview App
 on:
   pull_request:
     types: [opened, reopened, synchronize, closed]
+    branches:
+      - beta
 
 
 env:
@@ -12,6 +14,8 @@ env:
   # env-name template: preview-${{ github.event.number }}
 
 jobs:
+  # TODO: would https://github.com/dorny/paths-filter#conditional-execution
+  # cause desync/unknown variables?
   preview_deploy:
     runs-on: ubuntu-latest
 
@@ -23,7 +27,6 @@ jobs:
       url: ${{ steps.deploy.outputs.url }}
     
     steps:
-      - run: "exit 1" # intentionally error out
       - uses: actions/checkout@v2
 
       - name: Deploy Meilisearch
