@@ -23,6 +23,7 @@ jobs:
       url: ${{ steps.deploy.outputs.url }}
     
     steps:
+      - run: "exit 1" # intentionally error out
       - uses: actions/checkout@v2
 
       - name: Deploy Meilisearch
@@ -47,6 +48,7 @@ jobs:
   
   teardown_on_failure:
     if: ${{ failure() }}
+    needs: [preview_deploy]
     runs-on: ubuntu-latest
     steps:
       - uses: superfly/flyctl-actions/setup-flyctl@master
@@ -60,6 +62,7 @@ jobs:
   # Clean up environment on PR close
   cleanup_environment:
     if: ${{ always() && github.event.action == 'closed' }}
+    needs: [preview_deploy, teardown_on_failure]
     runs-on: ubuntu-latest
     steps:
     - uses: strumwolf/delete-deployment-environment@v2.3.0
