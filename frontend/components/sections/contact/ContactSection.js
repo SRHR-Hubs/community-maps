@@ -1,24 +1,6 @@
 import { Trans } from "next-i18next";
 import Link from "next/link";
-
-const jotforms = [
-  {
-    key: "add-service",
-    link: "https://form.jotform.com/230260611235240",
-  },
-  {
-    key: "request-changes",
-    link: "https://form.jotform.com/230269168149260",
-  },
-  {
-    key: "contact-us",
-    link: "https://form.jotform.com/230395487928269",
-  },
-  {
-    key: "website-feedback",
-    link: "https://form.jotform.com/230271104656246",
-  },
-];
+import FORMS from "../../../config/forms";
 
 const ContactSection = () => (
   <section id="contact">
@@ -36,13 +18,23 @@ const ContactSection = () => (
       </Trans>
     </p>
     <div className="columns button-list">
-      {jotforms.map(({ key, link }) => (
+      {Object.keys(FORMS).map((key) => (
         <div className="column col-auto" key={key}>
-          <Link href={link} target="_blank">
+          {/* IMPORTANT!
+            Using <Link> here causes the Cognito script
+            to only load once, making the same form render
+            on every contact page if you use these buttons
+            to navigate between them consecutively.
+            It's stupid, but a known issue:
+            https://github.com/vercel/next.js/discussions/17919
+          */}
+          <a href={`/contact/${key}`}>
             <button className="btn btn-secondary">
-              <Trans i18nKey={`pages.common.sections.contact.form-button.${key}`} />
+              <Trans
+                i18nKey={`pages.common.sections.contact.form-button.${key}`}
+              />
             </button>
-          </Link>
+          </a>
         </div>
       ))}
     </div>
