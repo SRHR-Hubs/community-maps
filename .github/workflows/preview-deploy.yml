@@ -47,12 +47,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Deploy Meilisearch
-        uses: superfly/fly-pr-review-apps@1.0.0
-        with:
-          update: false # don't redeploy when PR is updated
-          path: search
-          name: ${{ env.prefix }}-meilisearch
+      # - name: Deploy Meilisearch
+      #   uses: superfly/fly-pr-review-apps@1.0.0
+      #   with:
+      #     update: false # don't redeploy when PR is updated
+      #     path: search
+      #     name: ${{ env.prefix }}-meilisearch
       
       - name: Deploy backend
         uses: superfly/fly-pr-review-apps@1.0.0
@@ -76,9 +76,9 @@ jobs:
       - env:
           prefix: ${{ needs.env_setup.outputs.slug }}
         run: |
-          flyctl apps destroy -y $prefix-meilisearch || true; \
           flyctl apps destroy -y $prefix-django || true; \
           flyctl apps destroy -y $prefix-frontend || true
+      #flyctl apps destroy -y $prefix-meilisearch || true; \
 
   # Clean up environment on PR close
   cleanup_environment:
