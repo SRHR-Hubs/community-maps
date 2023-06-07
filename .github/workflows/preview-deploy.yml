@@ -11,7 +11,6 @@ env:
   FLY_REGION: yyz
   FLY_ORG: personal
 
-  # env-name template: preview-${{ github.event.number }}
 
 jobs:
   # TODO: would https://github.com/dorny/paths-filter#conditional-execution
@@ -35,6 +34,7 @@ jobs:
 
     needs: [env_setup]
 
+    # env-name template: preview-${{ github.event.number }}
     concurrency:
       group: preview-${{ github.event.number }}
 
@@ -75,11 +75,11 @@ jobs:
     steps:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - env:
-          ENV_NAME: ${{ needs.env_setup.outputs.slug }}
+          prefix: ${{ needs.env_setup.outputs.slug }}
         run: |
-          flyctl apps destroy -y $ENV_NAME-meilisearch; \
-          flyctl apps destroy -y $ENV_NAME-django; \
-          flyctl apps destroy -y $ENV_NAME-frontend
+          flyctl apps destroy -y $prefix-meilisearch; \
+          flyctl apps destroy -y $prefix-django; \
+          flyctl apps destroy -y $prefix-frontend
 
   # Clean up environment on PR close
   cleanup_environment:
