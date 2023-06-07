@@ -76,9 +76,9 @@ jobs:
       - env:
           prefix: ${{ needs.env_setup.outputs.slug }}
         run: |
-          flyctl apps destroy -y $prefix-meilisearch; \
-          flyctl apps destroy -y $prefix-django; \
-          flyctl apps destroy -y $prefix-frontend
+          flyctl apps destroy -y $prefix-meilisearch || true; \
+          flyctl apps destroy -y $prefix-django || true; \
+          flyctl apps destroy -y $prefix-frontend || true
 
   # Clean up environment on PR close
   cleanup_environment:
