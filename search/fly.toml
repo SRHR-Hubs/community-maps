@@ -3,8 +3,8 @@ kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
 
-#[build]
-#  image = "getmeili/meilisearch"
+[build]
+  image = "getmeili/meilisearch:v.1.2.0"
 
 [env]
   MEILI_NO_ANALYTICS="true"
