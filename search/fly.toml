@@ -4,7 +4,7 @@ kill_timeout = 5
 processes = []
 
 [build]
-  image = "getmeili/meilisearch:v.1.2.0"
+  image = "getmeili/meilisearch:v1.2.0"
 
 [env]
   MEILI_NO_ANALYTICS="true"
