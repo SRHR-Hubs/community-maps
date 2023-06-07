@@ -109,11 +109,9 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+DATABASE_URL = getenv('DATABASE_URL')
 DATABASES = {
-    "default": dj_database_url.parse(
-        getenv('DATABASE_URL'),
-        conn_max_age=0,
-    ),
+    "default": dj_database_url.config()
 }
 
 
