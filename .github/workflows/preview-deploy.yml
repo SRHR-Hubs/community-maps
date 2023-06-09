@@ -46,6 +46,15 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy Meilisearch
+        run: |
+          flyctl deploy --remote-only \
+            --app ${prefix}-meilisearch \
+            --config search/config.toml \
+            --remote-only
+            --region $FLY_REGION
+            --org $FLY_ORG
 
       # - name: Deploy Meilisearch
       #   uses: superfly/fly-pr-review-apps@1.0.0
@@ -54,18 +63,18 @@ jobs:
       #     path: search
       #     name: ${{ env.prefix }}-meilisearch
       
-      - name: Deploy backend
-        uses: superfly/fly-pr-review-apps@1.0.0
-        with:
-          path: backend
-          name: ${{ env.prefix }}-django
-          postgres: ${{ secrets.DEV_DB_APP_NAME }}
+      # - name: Deploy backend
+      #   uses: superfly/fly-pr-review-apps@1.0.0
+      #   with:
+      #     path: backend
+      #     name: ${{ env.prefix }}-django
+      #     postgres: ${{ secrets.DEV_DB_APP_NAME }}
 
-      - name: Deploy frontend
-        uses: superfly/fly-pr-review-apps@1.0.0
-        with:
-          path: frontend
-          name: ${{ env.prefix }}-frontend
+      # - name: Deploy frontend
+      #   uses: superfly/fly-pr-review-apps@1.0.0
+      #   with:
+      #     path: frontend
+      #     name: ${{ env.prefix }}-frontend
   
   teardown_on_failure:
     if: ${{ failure() }}
@@ -83,7 +92,7 @@ jobs:
   # Clean up environment on PR close
   cleanup_environment:
     if: ${{ always() && github.event.action == 'closed' }}
-    needs: [env_setup, preview_deploy, teardown_on_failure]
+    needs: [env_setup, preview_deploy]
     runs-on: ubuntu-latest
     steps:
     - uses: strumwolf/delete-deployment-environment@v2.3.0
