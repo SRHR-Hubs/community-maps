@@ -64,9 +64,7 @@ jobs:
             --config fly.toml \
             --remote-only \
             --strategy immediate \
-            --region $FLY_REGION \
-            --org $FLY_ORG
-
+            --region $FLY_REGION
           cd ..
 
       # - name: Deploy Meilisearch
