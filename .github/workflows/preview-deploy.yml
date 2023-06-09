@@ -10,7 +10,6 @@ env:
   FLY_REGION: yyz
   FLY_ORG: personal
 
-
 jobs:
   # TODO: would https://github.com/dorny/paths-filter#conditional-execution
   # cause desync/unknown variables?
@@ -43,18 +42,32 @@ jobs:
 
     env:
       prefix: ${{ needs.env_setup.outputs.slug }}
-    
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy Meilisearch
         run: |
-          flyctl deploy --remote-only \
-            --app ${prefix}-meilisearch \
-            --config search/config.toml \
-            --remote-only
-            --region $FLY_REGION
+          cd search
+          flyctl launch \
+            --name ${prefix}-meilisearch \
+            --no-deploy \
+            --copy-config \
+            --now \
+            --no-deploy \
+            --remote-only \
+            --region $FLY_REGION \
             --org $FLY_ORG
+            
+          flyctl deploy \
+            --app ${prefix}-meilisearch \
+            --config fly.toml \
+            --remote-only \
+            --strategy immediate \
+            --region $FLY_REGION \
+            --org $FLY_ORG
+
+          cd ..
 
       # - name: Deploy Meilisearch
       #   uses: superfly/fly-pr-review-apps@1.0.0
@@ -62,7 +75,7 @@ jobs:
       #     update: false # don't redeploy when PR is updated
       #     path: search
       #     name: ${{ env.prefix }}-meilisearch
-      
+
       # - name: Deploy backend
       #   uses: superfly/fly-pr-review-apps@1.0.0
       #   with:
@@ -75,7 +88,7 @@ jobs:
       #   with:
       #     path: frontend
       #     name: ${{ env.prefix }}-frontend
-  
+
   teardown_on_failure:
     if: ${{ failure() }}
     needs: [env_setup, preview_deploy]
@@ -95,7 +108,7 @@ jobs:
     needs: [env_setup, preview_deploy]
     runs-on: ubuntu-latest
     steps:
-    - uses: strumwolf/delete-deployment-environment@v2.3.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        environment: preview-${{ github.event.number }}
+      - uses: strumwolf/delete-deployment-environment@v2.3.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: preview-${{ github.event.number }}
