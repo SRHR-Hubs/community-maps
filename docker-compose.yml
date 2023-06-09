@@ -12,9 +12,6 @@ services:
       target: base
     depends_on:
       - backend
-      - meilisearch
-    networks:
-      - bridge-network
     volumes:
       - ./frontend:/app
     env_file: frontend/.env.local
@@ -29,8 +26,6 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./backend:/code
-    networks:
-      - bridge-network
     depends_on:
       - db
     command: python3 manage.py runserver 0.0.0.0:8000
@@ -47,8 +42,6 @@ services:
       dockerfile: Dockerfile
     volumes:
       - /meili_data:/meili_data
-    networks:
-      - bridge-network
 
   db:
     image: postgres:14-bullseye
@@ -56,8 +49,6 @@ services:
     restart: always
     ports:
       - 5432:5432
-    networks:
-      - bridge-network
     volumes:
       - postgres:/var/lib/postgresql/data
 
@@ -66,5 +57,5 @@ volumes:
     name: postgres-db
 
 networks:
-  bridge-network:
+  default:
     driver: bridge
