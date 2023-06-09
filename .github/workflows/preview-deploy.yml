@@ -66,6 +66,35 @@ jobs:
             --strategy immediate \
             --region $FLY_REGION
           cd ..
+      - name: Deploy Django
+        env:
+          db: ${{ secrets.DEV_DB_APP_NAME }}
+        run: |
+          cd backend
+          flyctl launch \
+            --name ${prefix}-django \
+            --no-deploy \
+            --copy-config \
+            --now \
+            --no-deploy \
+            --remote-only \
+            --region $FLY_REGION \
+            --org $FLY_ORG
+          
+          flyctl postgres attach \
+            $db
+            --app ${prefix}-django \ 
+
+          flyctl deploy \
+            --app ${prefix}-meilisearch \
+            --config fly.toml \
+            --remote-only \
+            --strategy immediate \
+            --region $FLY_REGION
+
+          cd ..
+
+      - run: exit 1
 
       # - name: Deploy Meilisearch
       #   uses: superfly/fly-pr-review-apps@1.0.0
