@@ -75,6 +75,7 @@ jobs:
         env:
           db: ${{ secrets.DEV_DB_APP_NAME }}
           appname: ${{ env.prefix }}-django
+          db_name: django-staging-${{ env.prefix }}
         run: |
           cd backend
           flyctl launch \
@@ -92,7 +93,8 @@ jobs:
           flyctl postgres attach \
             $db \
             --app $appname \
-            --database-user django
+            --database-user "$appname"
+            --database-name "$appname"
 
           flyctl deploy \
             --app $appname \
