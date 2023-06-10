@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -17,9 +16,3 @@ assert load_dotenv(
 from .base import *
 
 SECRET_KEY = getenv('INSECURE_LOCAL_KEY')
-
-ALLOWED_HOSTS += [
-    'localhost',
-    '127.0.0.1',
-    '[::1]'
-]

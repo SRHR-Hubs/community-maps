@@ -22,7 +22,8 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
-ALLOWED_HOSTS = _to_list('ALLOWED_HOSTS')
+ALLOWED_HOSTS = _to_list('ALLOWED_HOSTS') + \
+    ['localhost', '127.0.0.1']
 
 CSRF_TRUSTED_ORIGINS =_to_list('CSRF_TRUSTED_ORIGINS')
 
@@ -138,6 +139,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'data/mediafiles'
 
+# TODO: cloudinary?
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
@@ -158,7 +160,7 @@ REST_FRAMEWORK = {
 # meilisearch
 MEILISEARCH = {
     'HOST': getenv('MEILISEARCH_HOST'),
-    'KEY': getenv('MEILISEARCH_KEY', SECRET_KEY)
+    'KEY': getenv('MEILISEARCH_KEY')
 }
 
 # dj3-cloudinary-storage

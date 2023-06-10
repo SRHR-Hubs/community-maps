@@ -42,6 +42,7 @@ jobs:
 
     env:
       prefix: ${{ needs.env_setup.outputs.slug }}
+      meili_key: ${{ needs.env_setup.outputs.slug}}-staging-meili-key
 
     steps:
       - uses: actions/checkout@v3
@@ -57,7 +58,9 @@ jobs:
             --no-deploy \
             --remote-only \
             --region $FLY_REGION \
-            --org $FLY_ORG
+            --org $FLY_ORG \
+            --build-arg MEILI_MASTER_KEY=${meili_key}
+            --build-arg MEILI_HTTP_ADDR=fly-local-6pn:7700
             
           flyctl deploy \
             --app ${prefix}-meilisearch \
@@ -69,17 +72,23 @@ jobs:
       - name: Deploy Django
         env:
           db: ${{ secrets.DEV_DB_APP_NAME }}
+          appname: ${{ env.prefix }}-django
         run: |
           cd backend
           flyctl launch \
-            --name ${prefix}-django \
+            --name $appname \
             --no-deploy \
             --copy-config \
             --now \
             --no-deploy \
             --remote-only \
             --region $FLY_REGION \
-            --org $FLY_ORG
+            --org $FLY_ORG \
+            --build-arg DJANGO_SETTINGS_MODULE=api.settings.staging \
+            --build-arg ALLOWED_HOSTS=${appname}.fly.dev \
+            --build-arg CSRF_TRUSTED_ORIGINS=https://${appname}.fly.dev \
+            --build-arg MEILISEARCH_HOST=${prefix}-meilisearch.internal
+            --build-arg MEILISEARCH_KEY=${meili_key}
           
           flyctl postgres attach \
             $db
@@ -93,8 +102,6 @@ jobs:
             --region $FLY_REGION
 
           cd ..
-
-      - run: exit 1
 
       # - name: Deploy Meilisearch
       #   uses: superfly/fly-pr-review-apps@1.0.0
