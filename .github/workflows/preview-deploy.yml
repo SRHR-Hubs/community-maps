@@ -63,7 +63,8 @@ jobs:
             --no-deploy \
             --remote-only \
             --region $FLY_REGION \
-            --org $FLY_ORG
+            --org $FLY_ORG \
+            ;
             
           flyctl deploy \
             --app ${prefix}-meilisearch \
@@ -71,8 +72,9 @@ jobs:
             --remote-only \
             --strategy immediate \
             --region $FLY_REGION \
-            --env MEILI_MASTER_KEY=${meili_key}
-            # --env MEILI_HTTP_ADDR=fly-local-6pn:7700 \
+            --env MEILI_MASTER_KEY=${meili_key} \
+            --env MEILI_HTTP_ADDR=fly-local-6pn:7700 \
+            ;
             
           cd ..
 
@@ -106,7 +108,8 @@ jobs:
             --no-deploy \
             --remote-only \
             --region $FLY_REGION \
-            --org $FLY_ORG
+            --org $FLY_ORG \
+            ;
           echo "::endgroup::"
 
           echo "::group::Attach to postgres"
@@ -116,7 +119,8 @@ jobs:
             --database-user "user_${appname//-/_}" \
             --database-name "community_maps_django" \
             --verbose \
-            --yes
+            --yes \
+            ;
           echo "::endgroup::"
 
           echo "::group::Deploy and release"
@@ -130,7 +134,8 @@ jobs:
             --env ALLOWED_HOSTS=${appname}.fly.dev \
             --env CSRF_TRUSTED_ORIGINS=https://${appname}.fly.dev \
             --env MEILISEARCH_HOST=http://top2.nearest.of.${prefix}-meilisearch.internal:7700 \
-            --env MEILISEARCH_KEY=${meili_key}
+            --env MEILISEARCH_KEY=${meili_key} \
+            ;
           echo "::endgroup::"
 
           cd ..
@@ -152,7 +157,10 @@ jobs:
             --env API_HOST=http://top2.nearest.of.${prefix}-django.internal:8000 \
             --env NEXT_PUBLIC_MEILISEARCH_HOST=http://top2.nearest.of.${prefix}-meilisearch.internal:7700 \
             --env NEXT_PUBLIC_HOST=https://${prefix}.fly.dev \
-            --env NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoic3Jocm1hcHMiLCJhIjoiY2xlMTNocmpiMWg0ZjNxb2wxb3liZHNuZCJ9.EKK0oNxaeqoqyltOxKWLyg
+            --env NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoic3Jocm1hcHMiLCJhIjoiY2xlMTNocmpiMWg0ZjNxb2wxb3liZHNuZCJ9.EKK0oNxaeqoqyltOxKWLyg \
+            ;
+        
+          cd ..
 
   teardown_on_failure:
     if: ${{ failure() }}
@@ -167,7 +175,7 @@ jobs:
           flyctl apps destroy -y $prefix-meilisearch || true
           flyctl apps destroy -y $db_name || true
           flyctl apps destroy -y $prefix-django || true
-          flyctl apps destroy -y $prefix-frontend || true
+          flyctl apps destroy -y $prefix || true
 
   # Clean up environment on PR close
   cleanup_environment:
