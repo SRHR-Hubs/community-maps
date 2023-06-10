@@ -86,12 +86,9 @@ jobs:
             
           cd ..
 
-      - name: (Re)start Postgres cluster
+      - name: Provision Postgres cluster
         run: |
-          if flyctl status --app $db_name > /dev/null; then
-            flyctl apps destroy $db_name --yes
-          fi
-
+          if ! flyctl status --app $db_name > /dev/null; then
           flyctl postgres create \
             --name $db_name \
             --fork-from community-maps-db \
@@ -99,7 +96,12 @@ jobs:
             --volume-size 1 \
             --initial-cluster-size 1 \
             --region $FLY_REGION \
-            --org $FLY_ORG
+            --org $FLY_ORG \
+            | while read -r line ; do
+              echo $line
+              if [[ "$line" =~ "^Postgres cluster" ]]; then break; fi
+              done
+          fi
 
         
       - name: Deploy Django
