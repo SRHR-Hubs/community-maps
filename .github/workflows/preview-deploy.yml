@@ -91,7 +91,7 @@ jobs:
           echo "attaching"
           flyctl postgres attach \
             $db \
-            --app $appname \ 
+            --app $appname
 
           flyctl deploy \
             --app $appname \
