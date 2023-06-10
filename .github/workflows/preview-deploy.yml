@@ -124,7 +124,9 @@ jobs:
             $db_name \
             --app $appname \
             --database-user $clean_branch \
-            --database-name $clean_branch
+            --database-name $clean_branch \
+            --verbose \
+            --yes
 
           flyctl deploy \
             --app $appname \
