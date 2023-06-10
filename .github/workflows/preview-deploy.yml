@@ -73,7 +73,7 @@ jobs:
             --strategy immediate \
             --region $FLY_REGION \
             --env MEILI_MASTER_KEY=${meili_key} \
-            --env MEILI_HTTP_ADDR=fly-local-6pn:7700 \
+            --env MEILI_HTTP_ADDR=localhost:7700 \
             ;
             
           cd ..
@@ -133,7 +133,7 @@ jobs:
             --env DJANGO_SETTINGS_MODULE=api.settings.staging \
             --env ALLOWED_HOSTS=${appname}.fly.dev \
             --env CSRF_TRUSTED_ORIGINS=https://${appname}.fly.dev \
-            --env MEILISEARCH_HOST=http://top2.nearest.of.${prefix}-meilisearch.internal:7700 \
+            --env MEILISEARCH_HOST=https://${prefix}-meilisearch.fly.dev:7700 \
             --env MEILISEARCH_KEY=${meili_key} \
             ;
           echo "::endgroup::"
@@ -154,8 +154,8 @@ jobs:
             --strategy immediate \
             --region $FLY_REGION \
             --org $FLY_ORG \
-            --env API_HOST=http://top2.nearest.of.${prefix}-django.internal:8000 \
-            --env NEXT_PUBLIC_MEILISEARCH_HOST=http://top2.nearest.of.${prefix}-meilisearch.internal:7700 \
+            --env API_HOST=${prefix}-django.fly.dev:8000 \
+            --env NEXT_PUBLIC_MEILISEARCH_HOST=https://${prefix}-meilisearch.fly.dev:7700 \
             --env NEXT_PUBLIC_HOST=https://${prefix}.fly.dev \
             --env NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoic3Jocm1hcHMiLCJhIjoiY2xlMTNocmpiMWg0ZjNxb2wxb3liZHNuZCJ9.EKK0oNxaeqoqyltOxKWLyg \
             ;
