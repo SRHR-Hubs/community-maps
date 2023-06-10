@@ -88,9 +88,10 @@ jobs:
             --region $FLY_REGION \
             --org $FLY_ORG
           
+          echo "attaching"
           flyctl postgres attach \
-            $db
-            --app ${prefix}-django \ 
+            $db \
+            --app $appname \ 
 
           flyctl deploy \
             --app $appname \
