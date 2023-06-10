@@ -93,7 +93,7 @@ jobs:
 
           flyctl postgres create \
             --name $db_name \
-            --form-from community-maps-db \
+            --fork-from community-maps-db \
             --region $FLY_REGION \
             --org $FLY_ORG
 
