@@ -154,8 +154,8 @@ jobs:
             --strategy immediate \
             --region $FLY_REGION \
             --org $FLY_ORG \
-            --env API_HOST=${prefix}-django.fly.dev:8000 \
-            --env NEXT_PUBLIC_MEILISEARCH_HOST=https://${prefix}-meilisearch.fly.dev:7700 \
+            --env API_HOST=http://top2.nearest.of.${prefix}-django.internal:8000 \
+            --env NEXT_PUBLIC_MEILISEARCH_HOST=https://${prefix}-meilisearch.fly.dev \
             --env NEXT_PUBLIC_HOST=https://${prefix}.fly.dev \
             --env NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoic3Jocm1hcHMiLCJhIjoiY2xlMTNocmpiMWg0ZjNxb2wxb3liZHNuZCJ9.EKK0oNxaeqoqyltOxKWLyg \
             ;
