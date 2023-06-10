@@ -27,4 +27,4 @@ COPY . /code/
 EXPOSE 8000
 
 # replace demo.wsgi with <project_name>.wsgi
-CMD ["gunicorn", "--bind", "[::]:8000", "--workers", "2", "api.wsgi"]
+CMD ["gunicorn", "--bind", "[::]:8000", "--bind", "fly-local-6pn:8000", "--workers", "2", "api.wsgi"]

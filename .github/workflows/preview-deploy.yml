@@ -30,16 +30,6 @@ jobs:
       clean_branch: ${{ steps.preview_slug.outputs.CLEAN_BRANCH }}
       slug: ${{ steps.preview_slug.outputs.PREVIEW_SLUG }}
 
-  # teardown_on_sync:
-  #   if: ${{ github.event.action == 'synchronize' }}
-  #   runs-on: ubuntu-latest
-
-  #   needs: [env_setup]
-
-  #   steps:
-  #     - uses: superfly/flyctl-actions/setup-flyctl@master
-  #     - uses: 
-
   preview_deploy:
     runs-on: ubuntu-latest
 
@@ -100,13 +90,12 @@ jobs:
             | awk '1;/Postgres cluster/{exit}'
           fi
 
-        
       - name: Deploy Django
         env:
           appname: ${{ env.prefix }}-django
         run: |
           cd backend
-          
+
           echo "::group::Launch and build app"
           flyctl launch \
             --name $appname \
@@ -140,31 +129,30 @@ jobs:
             --env DJANGO_SETTINGS_MODULE=api.settings.staging \
             --env ALLOWED_HOSTS=${appname}.fly.dev \
             --env CSRF_TRUSTED_ORIGINS=https://${appname}.fly.dev \
-            --env MEILISEARCH_HOST=https://${prefix}-meilisearch.fly.dev:7700 \
+            --env MEILISEARCH_HOST=http://top2.nearest.of.${prefix}-meilisearch.internal:7700 \
             --env MEILISEARCH_KEY=${meili_key}
           echo "::endgroup::"
 
           cd ..
 
-      # - name: Deploy Meilisearch
-      #   uses: superfly/fly-pr-review-apps@1.0.0
-      #   with:
-      #     update: false # don't redeploy when PR is updated
-      #     path: search
-      #     name: ${{ env.prefix }}-meilisearch
+      - name: Deploy Next
+        env:
+          appname: ${{ env.prefix }}
+        run: |
+          cd frontend
 
-      # - name: Deploy backend
-      #   uses: superfly/fly-pr-review-apps@1.0.0
-      #   with:
-      #     path: backend
-      #     name: ${{ env.prefix }}-django
-      #     postgres: ${{ secrets.DEV_DB_APP_NAME }}
-
-      # - name: Deploy frontend
-      #   uses: superfly/fly-pr-review-apps@1.0.0
-      #   with:
-      #     path: frontend
-      #     name: ${{ env.prefix }}-frontend
+          flyctl launch \
+            --name $appname \
+            --copy-config \
+            --now \
+            --remote-only \
+            --strategy immediate \
+            --region $FLY_REGION \
+            --org $FLY_ORG \
+            --env API_HOST=http://top2.nearest.of.${prefix}-django.internal:8000 \
+            --env NEXT_PUBLIC_MEILISEARCH_HOST=http://top2.nearest.of.${prefix}-meilisearch.internal:7700 \
+            --env NEXT_PUBLIC_HOST=https://${prefix}.fly.dev \
+            --env NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoic3Jocm1hcHMiLCJhIjoiY2xlMTNocmpiMWg0ZjNxb2wxb3liZHNuZCJ9.EKK0oNxaeqoqyltOxKWLyg
 
   teardown_on_failure:
     if: ${{ failure() }}
