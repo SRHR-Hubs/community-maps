@@ -23,7 +23,7 @@ jobs:
           BRANCH_NAME: ${{ github.head_ref }}
           COMMIT_SHA: ${{ github.sha }}
         run: |
-          echo "PREVIEW_SLUG=${PR_NUMBER}-${BRANCH_NAME/\//-}-${COMMIT_SHA:0:8}" >> ${GITHUB_OUTPUT}
+          echo "PREVIEW_SLUG=${PR_NUMBER}-${BRANCH_NAME//\//-}-${COMMIT_SHA:0:8}" >> ${GITHUB_OUTPUT}
     outputs:
       slug: ${{ steps.preview_slug.outputs.PREVIEW_SLUG }}
 
@@ -75,7 +75,6 @@ jobs:
         env:
           db: ${{ secrets.DEV_DB_APP_NAME }}
           appname: ${{ env.prefix }}-django
-          db_name: django-staging-${{ env.prefix }}
         run: |
           cd backend
           flyctl launch \
@@ -89,12 +88,11 @@ jobs:
             --region $FLY_REGION \
             --org $FLY_ORG
           
-          echo "attaching"
           flyctl postgres attach \
             $db \
             --app $appname \
-            --database-user "django_staging" \
-            --database-name "django_staging"
+            --database-user "django_staging_${prefix//-/_}" \
+            --database-name "django_staging_${prefix//-/_}"
 
           flyctl deploy \
             --app $appname \

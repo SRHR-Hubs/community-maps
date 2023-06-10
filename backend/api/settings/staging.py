@@ -13,3 +13,5 @@ load_dotenv(
 )
 
 from .base import *
+
+DEBUG = True
