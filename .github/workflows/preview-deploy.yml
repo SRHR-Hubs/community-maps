@@ -56,6 +56,7 @@ jobs:
     env:
       prefix: ${{ needs.env_setup.outputs.slug }}
       meili_key: ${{ needs.env_setup.outputs.slug}}-staging-meili-key
+      db_name: ${{ needs.env_setup.outputs.clean_branch }}-staging
 
     steps:
       - uses: actions/checkout@v3
@@ -84,9 +85,21 @@ jobs:
             # --env MEILI_HTTP_ADDR=fly-local-6pn:7700 \
             
           cd ..
+
+      - name: (Re)start Postgres cluster
+        run: |
+          flyctl status --app $db_name > /dev/null \
+          && flyctl apps destroy $db_name --yes
+
+          flyctl postgres create \
+            --name $db_name \
+            --form-from community-maps-db \
+            --region $FLY_REGION \
+            --org $FLY_ORG
+
+        
       - name: Deploy Django
         env:
-          db: ${{ secrets.DEV_DB_APP_NAME }}
           appname: ${{ env.prefix }}-django
         run: |
           cd backend
@@ -102,10 +115,10 @@ jobs:
             --org $FLY_ORG
           
           flyctl postgres attach \
-            $db \
+            $db_name \
             --app $appname \
-            --database-user "django_staging_${prefix//-/_}" \
-            --database-name "django_staging_${prefix//-/_}"
+            --database-user $clean_branch \
+            --database-name $clean_branch
 
           flyctl deploy \
             --app $appname \
@@ -149,9 +162,11 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - env:
           prefix: ${{ needs.env_setup.outputs.slug }}
+          db_name: ${{ needs.env_setup.outputs.clean_branch }}-staging
         run: |
-          flyctl apps destroy -y $prefix-meilisearch || true; \
-          flyctl apps destroy -y $prefix-django || true; \
+          flyctl apps destroy -y $prefix-meilisearch || true
+          flyctl apps destroy -y $db_name || true
+          flyctl apps destroy -y $prefix-django || true
           flyctl apps destroy -y $prefix-frontend || true
 
   # Clean up environment on PR close
