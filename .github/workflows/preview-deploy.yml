@@ -124,8 +124,8 @@ jobs:
           flyctl postgres attach \
             $db_name \
             --app $appname \
-            --database-user ${appname//-/_} \
-            --database-name community_maps_django \
+            --database-user "user_${appname//-/_}" \
+            --database-name "community_maps_django" \
             --verbose \
             --yes
           echo "::endgroup::"
