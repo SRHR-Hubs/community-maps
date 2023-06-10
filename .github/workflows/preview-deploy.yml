@@ -59,7 +59,7 @@ jobs:
             --remote-only \
             --region $FLY_REGION \
             --org $FLY_ORG \
-            --build-arg MEILI_MASTER_KEY=${meili_key}
+            --build-arg MEILI_MASTER_KEY=${meili_key} \
             --build-arg MEILI_HTTP_ADDR=fly-local-6pn:7700
             
           flyctl deploy \
@@ -87,7 +87,7 @@ jobs:
             --build-arg DJANGO_SETTINGS_MODULE=api.settings.staging \
             --build-arg ALLOWED_HOSTS=${appname}.fly.dev \
             --build-arg CSRF_TRUSTED_ORIGINS=https://${appname}.fly.dev \
-            --build-arg MEILISEARCH_HOST=${prefix}-meilisearch.internal
+            --build-arg MEILISEARCH_HOST=${prefix}-meilisearch.internal \
             --build-arg MEILISEARCH_KEY=${meili_key}
           
           flyctl postgres attach \
