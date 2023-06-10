@@ -58,16 +58,17 @@ jobs:
             --no-deploy \
             --remote-only \
             --region $FLY_REGION \
-            --org $FLY_ORG \
-            --build-arg MEILI_MASTER_KEY=${meili_key} \
-            --build-arg MEILI_HTTP_ADDR=fly-local-6pn:7700
+            --org $FLY_ORG
             
           flyctl deploy \
             --app ${prefix}-meilisearch \
             --config fly.toml \
             --remote-only \
             --strategy immediate \
-            --region $FLY_REGION
+            --region $FLY_REGION \
+            --env MEILI_MASTER_KEY=${meili_key} \
+            --env MEILI_HTTP_ADDR=fly-local-6pn:7700 
+            
           cd ..
       - name: Deploy Django
         env:
@@ -83,12 +84,7 @@ jobs:
             --no-deploy \
             --remote-only \
             --region $FLY_REGION \
-            --org $FLY_ORG \
-            --build-arg DJANGO_SETTINGS_MODULE=api.settings.staging \
-            --build-arg ALLOWED_HOSTS=${appname}.fly.dev \
-            --build-arg CSRF_TRUSTED_ORIGINS=https://${appname}.fly.dev \
-            --build-arg MEILISEARCH_HOST=${prefix}-meilisearch.internal \
-            --build-arg MEILISEARCH_KEY=${meili_key}
+            --org $FLY_ORG
           
           flyctl postgres attach \
             $db
@@ -99,7 +95,12 @@ jobs:
             --config fly.toml \
             --remote-only \
             --strategy immediate \
-            --region $FLY_REGION
+            --region $FLY_REGION \
+            --env DJANGO_SETTINGS_MODULE=api.settings.staging \
+            --env ALLOWED_HOSTS=${appname}.fly.dev \
+            --env CSRF_TRUSTED_ORIGINS=https://${appname}.fly.dev \
+            --env MEILISEARCH_HOST=${prefix}-meilisearch.internal \
+            --env MEILISEARCH_KEY=${meili_key}
 
           cd ..
 
