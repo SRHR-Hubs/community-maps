@@ -91,7 +91,7 @@ jobs:
             --app ${prefix}-django \ 
 
           flyctl deploy \
-            --app ${prefix}-meilisearch \
+            --app $appname \
             --config fly.toml \
             --remote-only \
             --strategy immediate \
