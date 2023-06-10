@@ -106,6 +106,8 @@ jobs:
           appname: ${{ env.prefix }}-django
         run: |
           cd backend
+          
+          echo "::group::Launch and build app"
           flyctl launch \
             --name $appname \
             --no-deploy \
@@ -116,15 +118,19 @@ jobs:
             --remote-only \
             --region $FLY_REGION \
             --org $FLY_ORG
-          
+          echo "::endgroup::"
+
+          echo "::group::Attach to postgres"
           flyctl postgres attach \
             $db_name \
             --app $appname \
-            --database-user $clean_branch \
-            --database-name $clean_branch \
+            --database-user "$clean_branch" \
+            --database-name "$clean_branch" \
             --verbose \
             --yes
+          echo "::endgroup::"
 
+          echo "::group::Deploy and release"
           flyctl deploy \
             --app $appname \
             --config fly.toml \
@@ -136,6 +142,7 @@ jobs:
             --env CSRF_TRUSTED_ORIGINS=https://${appname}.fly.dev \
             --env MEILISEARCH_HOST=https://${prefix}-meilisearch.fly.dev:7700 \
             --env MEILISEARCH_KEY=${meili_key}
+          echo "::endgroup::"
 
           cd ..
 
