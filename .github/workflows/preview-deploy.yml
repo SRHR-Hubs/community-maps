@@ -95,6 +95,9 @@ jobs:
           flyctl postgres create \
             --name $db_name \
             --fork-from community-maps-db \
+            --vm-size shared-cpu-1x \
+            --volume-size 1 \
+            --initial-cluster-size 1 \
             --region $FLY_REGION \
             --org $FLY_ORG
 
