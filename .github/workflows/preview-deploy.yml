@@ -53,6 +53,7 @@ jobs:
           flyctl launch \
             --name ${prefix}-meilisearch \
             --no-deploy \
+            --build-only \
             --copy-config \
             --now \
             --no-deploy \
@@ -79,6 +80,7 @@ jobs:
           flyctl launch \
             --name $appname \
             --no-deploy \
+            --build-only \
             --copy-config \
             --now \
             --no-deploy \
