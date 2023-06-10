@@ -88,7 +88,7 @@ jobs:
 
       - name: Provision Postgres cluster
         run: |
-          if ! flyctl status --app $db_name > /dev/null; then
+          if ! flyctl status --app $db_name &> /dev/null; then
           flyctl postgres create \
             --name $db_name \
             --fork-from community-maps-db \
@@ -97,10 +97,7 @@ jobs:
             --initial-cluster-size 1 \
             --region $FLY_REGION \
             --org $FLY_ORG \
-            | while read -r line ; do
-              echo $line
-              if [[ "$line" =~ "^Postgres cluster" ]]; then break; fi
-              done
+            | awk '1;/Postgres cluster/{exit}'
           fi
 
         
