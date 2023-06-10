@@ -92,7 +92,7 @@ jobs:
           flyctl postgres attach \
             $db \
             --app $appname \
-            --database-user postgres
+            --database-user django
 
           flyctl deploy \
             --app $appname \
