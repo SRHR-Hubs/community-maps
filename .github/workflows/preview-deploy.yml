@@ -23,9 +23,20 @@ jobs:
           BRANCH_NAME: ${{ github.head_ref }}
           COMMIT_SHA: ${{ github.sha }}
         run: |
-          echo "PREVIEW_SLUG=${PR_NUMBER}-${BRANCH_NAME//\//-}-${COMMIT_SHA:0:8}" >> ${GITHUB_OUTPUT}
+          CLEAN_BRANCH=${BRANCH_NAME//\//-}
+          echo "CLEAN_BRANCH=${CLEAN_BRANCH}" >> ${GITHUB_OUTPUT}
+          echo "PREVIEW_SLUG=${PR_NUMBER}-${CLEAN_BRANCH}-${COMMIT_SHA:0:8}" >> ${GITHUB_OUTPUT}
     outputs:
+      clean_branch: ${{ steps.preview_slug.outputs.CLEAN_BRANCH }}
       slug: ${{ steps.preview_slug.outputs.PREVIEW_SLUG }}
+
+  teardown_on_sync:
+    runs-on: ubuntu-latest
+
+    needs: [env_setup]
+
+    steps:
+      - uses: 
 
   preview_deploy:
     runs-on: ubuntu-latest

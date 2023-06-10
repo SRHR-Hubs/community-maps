@@ -21,6 +21,7 @@ admin/keystone.db
 
 # other dev stuff
 .env*
+.github/.local
 
 # backend
 backend/db*
