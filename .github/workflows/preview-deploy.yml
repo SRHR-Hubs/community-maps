@@ -88,8 +88,9 @@ jobs:
 
       - name: (Re)start Postgres cluster
         run: |
-          flyctl status --app $db_name > /dev/null \
-          && flyctl apps destroy $db_name --yes
+          if flyctl status --app $db_name > /dev/null; then
+            flyctl apps destroy $db_name --yes
+          fi
 
           flyctl postgres create \
             --name $db_name \
