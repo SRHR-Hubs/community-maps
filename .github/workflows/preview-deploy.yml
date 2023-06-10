@@ -66,8 +66,8 @@ jobs:
             --remote-only \
             --strategy immediate \
             --region $FLY_REGION \
-            --env MEILI_MASTER_KEY=${meili_key} \
-            --env MEILI_HTTP_ADDR=fly-local-6pn:7700 
+            --env MEILI_MASTER_KEY=${meili_key}
+            # --env MEILI_HTTP_ADDR=fly-local-6pn:7700 \
             
           cd ..
       - name: Deploy Django
@@ -99,7 +99,7 @@ jobs:
             --env DJANGO_SETTINGS_MODULE=api.settings.staging \
             --env ALLOWED_HOSTS=${appname}.fly.dev \
             --env CSRF_TRUSTED_ORIGINS=https://${appname}.fly.dev \
-            --env MEILISEARCH_HOST=${prefix}-meilisearch.internal \
+            --env MEILISEARCH_HOST=https://${prefix}-meilisearch.fly.dev:7700 \
             --env MEILISEARCH_KEY=${meili_key}
 
           cd ..
