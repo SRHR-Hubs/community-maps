@@ -166,7 +166,7 @@ jobs:
             --build-arg CLOUDINARY_API_SECRET=$CLOUDINARY_API_SECRET \
             --env NEXT_PUBLIC_MEILISEARCH_HOST=$meili_host \
             --env NEXT_PUBLIC_HOST=$host \
-            --env NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoic3Jocm1hcHMiLCJhIjoiY2xpcXJ1bmpzMGEwcDNmcGk3ZjdpNDMydyJ9.WCTvtUC2zCBs-xz0p8QOeg
+            --env NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoic3Jocm1hcHMiLCJhIjoiY2xpcXJ1bmpzMGEwcDNmcGk3ZjdpNDMydyJ9.WCTvtUC2zCBs-xz0p8QOeg \
             ;
         
           cd ..
