@@ -143,6 +143,8 @@ jobs:
       - name: Deploy Next
         env:
           appname: ${{ env.prefix }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
         run: |
           cd frontend
           
@@ -160,7 +162,8 @@ jobs:
             --org $FLY_ORG \
             --build-arg API_HOST=$api_host \
             --build-arg CLOUDINARY_CLOUD_NAME=drk1rc6ld \
-            --build-arg 548612221155546 \
+            --build-arg CLOUDINARY_API_KEY=$CLOUDINARY_API_KEY \
+            --build-arg CLOUDINARY_API_SECRET=$CLOUDINARY_API_SECRET \
             --env NEXT_PUBLIC_MEILISEARCH_HOST=$meili_host \
             --env NEXT_PUBLIC_HOST=$host \
             --env NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoic3Jocm1hcHMiLCJhIjoiY2xpcXJ1bmpzMGEwcDNmcGk3ZjdpNDMydyJ9.WCTvtUC2zCBs-xz0p8QOeg
