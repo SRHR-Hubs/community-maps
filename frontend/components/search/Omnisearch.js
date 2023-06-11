@@ -74,7 +74,6 @@ const Omnisearch = ({ on }) => {
     }
 
     (async () => {
-      console.log('this thing running')
       const serviceResults = await services.search(searchTerm, {
         attributesToHighlight: ["name"],
         highlightPreTag: "<mark>",
