@@ -158,11 +158,11 @@ jobs:
             --strategy immediate \
             --region $FLY_REGION \
             --org $FLY_ORG \
-            --env API_HOST=$api_host \
+            --build-arg API_HOST=$api_host \
             --env NEXT_PUBLIC_MEILISEARCH_HOST=$meili_host \
             --env NEXT_PUBLIC_HOST=$host \
             --env NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoic3Jocm1hcHMiLCJhIjoiY2xlMTNocmpiMWg0ZjNxb2wxb3liZHNuZCJ9.EKK0oNxaeqoqyltOxKWLyg \
-            ;
+            || true;
         
           cd ..
 
