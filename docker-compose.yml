@@ -14,7 +14,6 @@ services:
       - backend
     volumes:
       - ./frontend:/app
-    env_file: frontend/.env.local
     command: bash -c "npm run dev"
 
   backend:
