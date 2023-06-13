@@ -41,14 +41,11 @@ jobs:
     needs: [setup_env]
     
     env:
-      $app_name: ${{ needs.setup_env.outputs.slug }}-meilisearch
-      $master_key: ${{ needs.setup_env.outputs.slug }}-staging-meili-key
+      app_name: ${{ needs.setup_env.outputs.slug }}-meilisearch
+      master_key: ${{ needs.setup_env.outputs.slug }}-staging-meili-key
     
     steps:
       - uses: actions/checkout@v3
-        with:
-          sparse-checkout: |
-            search
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Launch app
         working-directory: search
