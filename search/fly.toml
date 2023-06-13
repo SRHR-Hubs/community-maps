@@ -10,13 +10,7 @@ processes = []
   MEILI_NO_ANALYTICS="true"
 
 [deploy]
-  release_command = """
-    apk add jq && \
-    curl -sX GET \
-    "$MEILI_HTTP_ADDR/keys" \
-    -H "Authorization: Bearer $MEILI_MASTER_KEY" \
-    | jq '.results[] | select(.name == "Default Admin API Key") | .key'
-  """
+  release_command = "sh /release.sh"
 
 [experimental]
   allowed_public_ports = []
