@@ -92,8 +92,8 @@ jobs:
             curl -s \
               -X GET "${url}/keys" \
               -H "Authorization: Bearer $master_key" \
-            | jq -r '.results | select(.name == "Default Admin API Key") | .key'
-            \)
+            | jq -r '.results | select(.name == "Default Admin API Key") | .key' \
+          )
           echo "::add-mask::$output"
           echo "key=$output" >> $GITHUB_OUTPUT
     outputs:
