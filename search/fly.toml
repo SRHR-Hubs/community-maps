@@ -9,9 +9,6 @@ processes = []
 [env]
   MEILI_NO_ANALYTICS="true"
 
-[deploy]
-  release_command = "sh /release.sh"
-
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
