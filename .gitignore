@@ -22,8 +22,6 @@ admin/keystone.db
 
 # Next
 .next
-!frontend/.env.development
-!frontend/.env.production
 
 # backend
 backend/db*
