@@ -35,9 +35,9 @@ jobs:
       slug: ${{ steps.generate_slugs.outputs.slug }}
 
   deploy_meilisearch:
+    name: Deploy Meilisearch
     runs-on: ubuntu-latest
     environment: staging
-    name: Deploy Meilisearch
     needs: [setup_env]
     
     env:
@@ -62,6 +62,7 @@ jobs:
               --org $FLY_ORG \
               ;
       - name: Deploy app
+        id: deploy
         working-directory: search
         run: |
           flyctl deploy \
@@ -72,10 +73,98 @@ jobs:
             --region $FLY_REGION \
             --env MEILI_MASTER_KEY=${master_key} \
             --env MEILI_HTTP_ADDR=localhost:7700 \
-            ;
+            | while IFS= read -r line; do
+              if grep -q '^Visit your newly deployed app' <<< $line; then
+                echo $line | awk '{print "url="$NF}' >> $GITHUB_OUTPUT
+              fi
+              echo $line
+              done
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+  
+  provision_postgres:
+    name: Provision Postgres cluster
+    runs-on: [ubuntu-latest]
+    environment: staging
+    needs: [setup_env]
 
-    
-      
+    env:
+      app_name: ${{ needs.setup_env.outputs.clean_branch }}-staging
+
+    steps:
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Launch app if doesn't exist
+        id: launch
+        run: |
+          if ! flyctl status --app $app_name &> /dev/null; then
+            flyctl postgres create \
+              --name $db_name \
+              --fork-from community-maps-db \
+              --vm-size shared-cpu-1x \
+              --volume-size 1 \
+              --initial-cluster-size 1 \
+              --region $FLY_REGION \
+              --org $FLY_ORG \
+              | while IFS= read -r line; do
+                if grep -q '^Postgres cluster' <<< $line; then
+                  break
+                fi
+                echo $line
+              done
+          fi
+          echo "app_name=$app_name" >> $GITHUB_OUTPUT
+    outputs:
+      app_name: ${{ steps.launch.outputs.app_name }}
+
+  
+  deploy_django:
+    name: Deploy Django
+    runs-on: [ubuntu-latest]
+    environment: staging
+    needs: [setup_env, deploy_meilisearch, provision_postgres]
+
+    env:
+      app_name: ${{ needs.setup_env.outputs.slug }}-django
+      meili_host: ${{ needs.deploy_meilisearch.outputs.url }}
+      # meili_key: ${{ env. }}
+      postgres_app: ${{ needs.provision_postgres.outputs.app_name }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Launch app
+        working-directory: backend
+        run: |
+          flyctl launch \
+            --name $app_name \
+            --no-deploy \
+            --build-only \
+            --copy-config \
+            --now \
+            --no-deploy \
+            --remote-only \
+            --region $FLY_REGION \
+            --org $FLY_ORG \
+            ;
+      - name: Attach to Postgres
+        run: |
+          flyctl postgres attach $postgres_app \
+            --app $app_name \
+            --database-user "user_${app_name//-/_}" \
+            --database-name "community_maps_django" \
+            --yes \
+            ;
+      # - name: Deploy app
+      #   id: deploy
+      #   working-directory: backend
+      #   run: |
+      #     flyctl deploy \
+      #       --app $app_name \
+      #       --config fly.toml \
+      #       --remote-only \
+      #       --strategy immediate \
+      #       --region $FLY_REGION \
+      #       --env
 
 
 # jobs:
