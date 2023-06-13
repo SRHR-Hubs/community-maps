@@ -11,10 +11,9 @@ env:
   FLY_ORG: personal
 
 jobs:
-  defaults:
-    environment: staging
   setup_env:
     runs-on: ubuntu-latest
+    environment: staging
     name: Set up workflow environment
     steps:
       - name: Generate deploy slugs
@@ -30,19 +29,20 @@ jobs:
           echo "clean_branch=${clean_branch}" >> $GITHUB_OUTPUT
           echo "short_commit=${short_commit}" >> $GITHUB_OUTPUT
           echo "slug=${pr_number}-${clean_branch}-${short_commit}" >> $GITHUB_OUTPUT
-        outputs:
-          clean_branch: ${{ steps.generate_slugs.outputs.clean_branch}}
-          short_commit: ${{ steps.generate_slugs.outputs.short_commit}}
-          slug: ${{ steps.generate_slugs.outputs.slug}
+    outputs:
+      clean_branch: ${{ steps.generate_slugs.outputs.clean_branch}}
+      short_commit: ${{ steps.generate_slugs.outputs.short_commit}}
+      slug: ${{ steps.generate_slugs.outputs.slug }}
 
   deploy_meilisearch:
     runs-on: ubuntu-latest
+    environment: staging
     name: Deploy Meilisearch
     needs: [setup_env]
     
     env:
       $app_name: ${{ needs.setup_env.outputs.slug }}-meilisearch
-      $master_key: ${{ needs.setup_env.output.slug }}-staging-meili-key
+      $master_key: ${{ needs.setup_env.outputs.slug }}-staging-meili-key
     
     steps:
       - uses: actions/checkout@v3
@@ -81,25 +81,25 @@ jobs:
       
 
 
-jobs:
-  # TODO: would https://github.com/dorny/paths-filter#conditional-execution
-  # cause desync/unknown variables?
-  env_setup:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create preview slug
-        id: preview_slug
-        env:
-          PR_NUMBER: ${{ github.event.number }}
-          BRANCH_NAME: ${{ github.head_ref }}
-          COMMIT_SHA: ${{ github.sha }}
-        run: |
-          CLEAN_BRANCH=${BRANCH_NAME//\//-}
-          echo "CLEAN_BRANCH=${CLEAN_BRANCH}" >> ${GITHUB_OUTPUT}
-          echo "PREVIEW_SLUG=${PR_NUMBER}-${CLEAN_BRANCH}-${COMMIT_SHA:0:8}" >> ${GITHUB_OUTPUT}
-    outputs:
-      clean_branch: ${{ steps.preview_slug.outputs.CLEAN_BRANCH }}
-      slug: ${{ steps.preview_slug.outputs.PREVIEW_SLUG }}
+# jobs:
+#   # TODO: would https://github.com/dorny/paths-filter#conditional-execution
+#   # cause desync/unknown variables?
+#   env_setup:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Create preview slug
+#         id: preview_slug
+#         env:
+#           PR_NUMBER: ${{ github.event.number }}
+#           BRANCH_NAME: ${{ github.head_ref }}
+#           COMMIT_SHA: ${{ github.sha }}
+#         run: |
+#           CLEAN_BRANCH=${BRANCH_NAME//\//-}
+#           echo "CLEAN_BRANCH=${CLEAN_BRANCH}" >> ${GITHUB_OUTPUT}
+#           echo "PREVIEW_SLUG=${PR_NUMBER}-${CLEAN_BRANCH}-${COMMIT_SHA:0:8}" >> ${GITHUB_OUTPUT}
+#     outputs:
+#       clean_branch: ${{ steps.preview_slug.outputs.CLEAN_BRANCH }}
+#       slug: ${{ steps.preview_slug.outputs.PREVIEW_SLUG }}
 
   # preview_deploy:
   #   runs-on: ubuntu-latest
