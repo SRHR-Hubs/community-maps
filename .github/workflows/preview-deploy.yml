@@ -79,12 +79,15 @@ jobs:
               fi
               echo $line
               done
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install jq
       - name: Retrieve admin key
         id: admin
         env:
           url: ${{ steps.deploy.outputs.url }}
         run: |
-          apt-get install jq
           output=$(\
             curl -s \
               -X GET "${url}/keys" \
