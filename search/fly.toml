@@ -7,7 +7,8 @@ processes = []
   image = "getmeili/meilisearch:v1.2.0"
 
 [env]
-  MEILI_NO_ANALYTICS="true"
+  MEILI_NO_ANALYTICS = "true"
+  TINI_SUBREAPER = "true"
 
 [experimental]
   allowed_public_ports = []
@@ -18,7 +19,6 @@ processes = []
   destination = "/meili_data"
 
 [[services]]
-  http_checks = []
   internal_port = 7700
   processes = ["app"]
   protocol = "tcp"
@@ -36,6 +36,16 @@ processes = []
   [[services.ports]]
     handlers = ["tls", "http"]
     port = 443
+
+  [[services.http_checks]]
+    interval = "15s"
+    grace_period = "5s"
+    method = "get"
+    path = "/health"
+    protocol = "http"
+    restart_limit = 0
+    timeout = 2000
+    tls_skip_verify = false
 
   [[services.tcp_checks]]
     grace_period = "1s"
