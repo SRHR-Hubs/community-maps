@@ -15,6 +15,9 @@ RUN npm ci --only-production
 FROM base as build
 WORKDIR /app
 
+ARG API_HOST
+ENV API_HOST=$API_HOST
+
 COPY --from=base /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
@@ -22,6 +25,7 @@ RUN npm run build
 # prod deploy
 FROM base as prod
 ENV NODE_ENV=production
+
 ENV NODE_OPTIONS='--max-old-space-size=1024'
 ENV LD_PRELOAD='/usr/lib/x86_64-linux-gnu/libjemalloc.so.2'
 
