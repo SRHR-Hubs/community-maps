@@ -117,7 +117,7 @@ jobs:
         run: |
           if ! flyctl status --app $app_name &> /dev/null; then
             flyctl postgres create \
-              --name $db_name \
+              --name $app_name \
               --fork-from community-maps-db \
               --vm-size shared-cpu-1x \
               --volume-size 1 \
@@ -244,6 +244,6 @@ jobs:
        - uses: superfly/flyctl-actions/setup-flyctl@master
        - run: |
           flyctl apps list \
-          | grep "^(${slug}|${db_name})" \
+          | grep "(${slug}|${db_name})" \
           | awk '{print $1}' \
           | xargs -n1 flyctl apps destroy --yes
