@@ -77,12 +77,14 @@ jobs:
               fi
               echo $line
               done
+      - name: Install and cache jq
+        uses: awalsh128/cache-apt-pkgs-action@latest
+          with:
+            packages: jq
+            version: 1.0
       - name: Obtain keys
         id: keys
         run: |
-          sudo apt-get update
-          sudo apt-get install jq
-
           output=$(\
             flyctl ssh console \
               --app $app_name \
@@ -221,11 +223,11 @@ jobs:
             --remote-only \
             --region $FLY_REGION \
             --org $FLY_ORG \
-            --build-arg API_HOST=${api_host} \
+            --build-arg API_HOST=${api_host::-1} \
             --build-arg CLOUDINARY_CLOUD_NAME=${{ vars.CLOUDINARY_CLOUD_NAME }} \
             --build-arg CLOUDINARY_API_KEY=${{ vars.CLOUDINARY_API_KEY }} \
             --env NEXT_PUBLIC_HOST=https://${app_name}.fly.dev \
-            --env NEXT_PUBLIC_MEILISEARCH_HOST=${meili_host} \
+            --env NEXT_PUBLIC_MEILISEARCH_HOST=${meili_host::-1} \
             --env NEXT_PUBLIC_MEILISEARCH_KEY=${meili_key} \
             --env NEXT_PUBLIC_MAPBOX_TOKEN=${{ vars.MAPBOX_TOKEN }} \
           ;
