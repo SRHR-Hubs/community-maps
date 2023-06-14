@@ -226,10 +226,11 @@ jobs:
             --build-arg API_HOST=${api_host::-1} \
             --build-arg CLOUDINARY_CLOUD_NAME=${{ vars.CLOUDINARY_CLOUD_NAME }} \
             --build-arg CLOUDINARY_API_KEY=${{ vars.CLOUDINARY_API_KEY }} \
-            --env NEXT_PUBLIC_HOST=https://${app_name}.fly.dev \
-            --env NEXT_PUBLIC_MEILISEARCH_HOST=${meili_host::-1} \
-            --env NEXT_PUBLIC_MEILISEARCH_KEY=${meili_key} \
-            --env NEXT_PUBLIC_MAPBOX_TOKEN=${{ vars.MAPBOX_TOKEN }} \
+            --build-arg NEXT_PUBLIC_HOST=https://${app_name}.fly.dev \
+            --build-arg NEXT_PUBLIC_MEILISEARCH_HOST=${meili_host::-1} \
+            --build-arg NEXT_PUBLIC_MEILISEARCH_KEY=${meili_key} \
+            --build-arg NEXT_PUBLIC_MAPBOX_TOKEN=${{ vars.MAPBOX_TOKEN }} \
+            --build-arg NEXT_PUBLIC_COGNITO_KEY=${{ vars.COGNITO_KEY }}
           ;
 
   teardown:
