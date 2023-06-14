@@ -73,7 +73,7 @@ jobs:
             --env MEILI_MASTER_KEY=${master_key} \
             | while IFS= read -r line; do
               if grep -q '^Visit your newly deployed app' <<< $line; then
-                echo $line | awk '{print "url="$NF}' | tee --append $GITHUB_OUTPUT $GITHUB_ENV
+                echo ${line%/*} | awk '{print "url="$NF}' | tee --append $GITHUB_OUTPUT $GITHUB_ENV
               fi
               echo $line
               done
@@ -186,11 +186,11 @@ jobs:
             --env DJANGO_SETTINGS_MODULE=api.settings.staging \
             --env ALLOWED_HOSTS=${app_name}.fly.dev \
             --env CSRF_TRUSTED_ORIGINS=https://${next_host} \
-            --env MEILISEARCH_HOST=${meili_host::-1} \
+            --env MEILISEARCH_HOST=${meili_host} \
             --env MEILISEARCH_KEY=${meili_key} \
           | while IFS= read -r line; do
               if grep -q '^Visit your newly deployed app' <<< $line; then
-                echo $line | awk '{print "url="$NF}' >> $GITHUB_OUTPUT
+                echo ${line%/*} | awk '{print "url="$NF}' >> $GITHUB_OUTPUT
               fi
               echo $line
               done
@@ -213,6 +213,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Mount .env file
+        uses: skiddph/actions-env@v1.0.3
+        with:
+          file: frontend/.env
+          prefix: 'ENV_'
+        env:
+          ENV_API_HOST: ${{ env.api_host }} \
+          ENV_CLOUDINARY_CLOUD_NAME: ${{ vars.CLOUDINARY_CLOUD_NAME }} \
+          ENV_CLOUDINARY_API_KEY: ${{ vars.CLOUDINARY_API_KEY }} \
+          ENV_NEXT_PUBLIC_HOST: https://${{ env.app_name }}.fly.dev \
+          ENV_NEXT_PUBLIC_MEILISEARCH_HOST: ${{ env.meili_host }} \
+          ENV_NEXT_PUBLIC_MEILISEARCH_KEY: ${{ env.meili_key }} \
+          ENV_NEXT_PUBLIC_MAPBOX_TOKEN: ${{ vars.MAPBOX_TOKEN }} \
+          ENV_NEXT_PUBLIC_COGNITO_KEY: ${{ vars.COGNITO_KEY }} \
       - name: Launch app
         working-directory: frontend
         run: |
@@ -223,14 +237,6 @@ jobs:
             --remote-only \
             --region $FLY_REGION \
             --org $FLY_ORG \
-            --build-arg API_HOST=${api_host::-1} \
-            --build-arg CLOUDINARY_CLOUD_NAME=${{ vars.CLOUDINARY_CLOUD_NAME }} \
-            --build-arg CLOUDINARY_API_KEY=${{ vars.CLOUDINARY_API_KEY }} \
-            --build-arg NEXT_PUBLIC_HOST=https://${app_name}.fly.dev \
-            --build-arg NEXT_PUBLIC_MEILISEARCH_HOST=${meili_host::-1} \
-            --build-arg NEXT_PUBLIC_MEILISEARCH_KEY=${meili_key} \
-            --build-arg NEXT_PUBLIC_MAPBOX_TOKEN=${{ vars.MAPBOX_TOKEN }} \
-            --build-arg NEXT_PUBLIC_COGNITO_KEY=${{ vars.COGNITO_KEY }} \
           ;
 
   teardown:
