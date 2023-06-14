@@ -202,13 +202,14 @@ jobs:
     name: Deploy Next
     runs-on: ubuntu-latest
     environment: staging
-    needs: [setup_env, deploy_meilisearch, deploy_django]
+    # needs: [setup_env, deploy_meilisearch, deploy_django]
+    needs: [setup_env]
 
     env:
       app_name: ${{ needs.setup_env.outputs.slug }}
-      meili_host: ${{ needs.deploy_meilisearch.outputs.url }}
-      meili_key: ${{ needs.deploy_meilisearch.outputs.public_key }}
-      api_host: ${{ needs.deploy_django.outputs.url }}
+      meili_host: https://${{ needs.setup_env.outputs.slug }}-meilisearch.fly.dev # ${{ needs.deploy_meilisearch.outputs.url }}
+      meili_key: wgaf lol #${{ needs.deploy_meilisearch.outputs.public_key }}
+      api_host: https://${{ needs.setup_env.outputs.slug }}-django.fly.dev # ${{ needs.deploy_django.outputs.url }}
 
     steps:
       - uses: actions/checkout@v3
@@ -230,7 +231,7 @@ jobs:
       - name: Launch app
         working-directory: frontend
         run: |
-          ls
+          ls -a
           flyctl launch \
             --name $app_name \
             --copy-config \
