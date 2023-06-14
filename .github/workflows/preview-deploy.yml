@@ -69,7 +69,6 @@ jobs:
             --app $app_name \
             --config fly.toml \
             --remote-only \
-            --strategy immediate \
             --region $FLY_REGION \
             --env MEILI_MASTER_KEY=${master_key} \
             | while IFS= read -r line; do
@@ -175,7 +174,6 @@ jobs:
             --app $app_name \
             --config fly.toml \
             --remote-only \
-            --strategy immediate \
             --region $FLY_REGION \
             --env DJANGO_SETTINGS_MODULE=api.settings.staging \
             --env ALLOWED_HOSTS=${app_name}.fly.dev \
