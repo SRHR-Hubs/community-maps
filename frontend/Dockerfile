@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install \
     -y
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .env* ./
 
 RUN npm install -g npm@9.4.2
 RUN npm ci --only-production
@@ -16,10 +16,8 @@ FROM base as build
 WORKDIR /app
 
 
-# only if mounted .env file exists
-COPY .env ./
-
 COPY --from=base /app/node_modules ./node_modules
+# COPY --from=base /app/.env* ./
 COPY . .
 RUN npm run build
 
