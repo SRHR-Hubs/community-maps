@@ -16,11 +16,12 @@ admin/keystone.db
 **/package-lock.json
 ./package.json
 
-# Next
-.next
-
 # other dev stuff
 .env*
+.github/.local
+
+# Next
+.next
 
 # backend
 backend/db*

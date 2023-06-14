@@ -5,7 +5,7 @@ kill_timeout = 5
 processes = []
 
 [env]
-  DJANGO_SETTINGS_MODULE = "api.settings"
+  DJANGO_SETTINGS_MODULE = "api.settings.production"
   PORT = "8000"
 
 [experimental]

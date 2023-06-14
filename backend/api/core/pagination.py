@@ -1,6 +1,5 @@
 from rest_framework import pagination
 from rest_framework.response import Response
-from api.settings import REST_FRAMEWORK as settings
 
 
 class CustomPagination(pagination.PageNumberPagination):

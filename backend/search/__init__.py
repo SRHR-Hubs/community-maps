@@ -1,10 +1,9 @@
-from urllib import response
 import meilisearch
-from api.settings import MEILISEARCH as settings
+from django.conf import settings
 
 client = meilisearch.client.Client(
-    settings['HOST'],
-    settings['KEY']
+    settings.MEILISEARCH['HOST'],
+    settings.MEILISEARCH['KEY']
 )
 
 
