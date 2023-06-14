@@ -17,7 +17,7 @@ WORKDIR /app
 
 
 COPY --from=base /app/node_modules ./node_modules
-# COPY --from=base /app/.env* ./
+COPY --from=base /app/.env* ./
 COPY . .
 RUN npm run build
 
