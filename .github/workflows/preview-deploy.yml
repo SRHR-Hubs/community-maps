@@ -72,33 +72,32 @@ jobs:
             --strategy immediate \
             --region $FLY_REGION \
             --env MEILI_MASTER_KEY=${master_key} \
-            --env MEILI_HTTP_ADDR=localhost:7700 \
             | while IFS= read -r line; do
               if grep -q '^Visit your newly deployed app' <<< $line; then
                 echo $line | awk '{print "url="$NF}' >> $GITHUB_OUTPUT
               fi
               echo $line
               done
-      - name: Install jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install jq
-      - name: Retrieve admin key
-        id: admin
-        env:
-          url: ${{ steps.deploy.outputs.url }}
-        run: |
-          output=$(\
-            curl -s \
-              -X GET "${url}/keys" \
-              -H "Authorization: Bearer $master_key" \
-            | jq -r '.results | select(.name == "Default Admin API Key") | .key' \
-          )
-          echo "::add-mask::$output"
-          echo "key=$output" >> $GITHUB_OUTPUT
+      # - name: Install jq
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install jq
+      # - name: Retrieve admin key
+      #   id: admin
+      #   env:
+      #     url: ${{ steps.deploy.outputs.url }}
+      #   run: |
+      #     output=$(\
+      #       curl -s \
+      #         -X GET "${url}/keys" \
+      #         -H "Authorization: Bearer $master_key" \
+      #       | jq -r '.results | select(.name == "Default Admin API Key") | .key' \
+      #     )
+      #     echo "::add-mask::$output"
+      #     echo "key=$output" >> $GITHUB_OUTPUT
     outputs:
       url: ${{ steps.deploy.outputs.url }}
-      admin_key: ${{ steps.admin.outputs.key }}
+      # admin_key: ${{ steps.admin.outputs.key }}
   
   provision_postgres:
     name: Provision Postgres cluster
