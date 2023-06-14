@@ -232,18 +232,18 @@ jobs:
             --env NEXT_PUBLIC_MAPBOX_TOKEN=${{ vars.MAPBOX_TOKEN }} \
           ;
 
-teardown:
-  name: Tear down all apps with this name
-  if: ${{ failure() || github.event.action == 'closed' }}
-  runs-on: ubuntu-latest
-  needs: [setup_env, deploy_meilisearch, deploy_django, deploy_next]
-  env:
-    slug: ${{ needs.setup_env.outputs.slug }}
-    db_name: ${{ needs.setup_env.outputs.clean_branch }}-staging
-  steps:
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: |
-        flyctl apps list \
-        | grep "^(${slug}|${db_name})" \
-        | awk '{print $1}' \
-        | xargs -n1 flyctl apps destroy --yes
+  teardown:
+    name: Tear down all apps with this name
+    if: ${{ failure() || github.event.action == 'closed' }}
+    runs-on: ubuntu-latest
+    needs: [setup_env, deploy_meilisearch, deploy_django, deploy_next]
+    env:
+      slug: ${{ needs.setup_env.outputs.slug }}
+      db_name: ${{ needs.setup_env.outputs.clean_branch }}-staging
+    steps:
+       - uses: superfly/flyctl-actions/setup-flyctl@master
+       - run: |
+          flyctl apps list \
+          | grep "^(${slug}|${db_name})" \
+          | awk '{print $1}' \
+          | xargs -n1 flyctl apps destroy --yes
