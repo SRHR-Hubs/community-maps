@@ -77,8 +77,8 @@ jobs:
               fi
               echo $line
               done
-      - name: Obtain admin key
-        id: admin_key
+      - name: Obtain keys
+        id: keys
         run: |
           sudo apt-get update
           sudo apt-get install jq
@@ -88,15 +88,21 @@ jobs:
               --app $app_name \
               --quiet \
               --command 'sh -c "curl -s -X GET $MEILI_HTTP_ADDR/keys -H \"Authorization: Bearer $MEILI_MASTER_KEY\""')
-          key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
+          
+          admin_key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
+          public_key=$(echo $output | jq -r '.results[] | select(.name == "Default Search API Key") | .key')
 
-          echo $key
+          echo "::add-mask::$admin_key"
+          echo "admin_key=$admin_key" >> $GITHUB_OUTPUT
+          echo "public_key=$public_key" >> $GITHUB_OUTPUT
     outputs:
       url: ${{ steps.deploy.outputs.url }}
+      admin_key: ${{ steps.keys.outputs.admin_key }}
+      public_key: ${{ steps.keys.outputs.public_key }}
   
   provision_postgres:
     name: Provision Postgres cluster
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     environment: staging
     needs: [setup_env]
 
@@ -131,7 +137,7 @@ jobs:
   
   deploy_django:
     name: Deploy Django
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     environment: staging
     needs: [setup_env, deploy_meilisearch, provision_postgres]
 
@@ -139,6 +145,7 @@ jobs:
       app_name: ${{ needs.setup_env.outputs.slug }}-django
       next_host: ${{ needs.setup_env.outputs.slug }}.fly.dev
       meili_host: ${{ needs.deploy_meilisearch.outputs.url }}
+      meili_key: ${{ needs.deploy_meilisearch.outputs.admin_key }}
       postgres_app: ${{ needs.provision_postgres.outputs.app_name }}
 
     steps:
@@ -178,7 +185,7 @@ jobs:
             --env DJANGO_SETTINGS_MODULE=api.settings.staging \
             --env ALLOWED_HOSTS=${app_name}.fly.dev \
             --env CSRF_TRUSTED_ORIGINS=https://${next_host} \
-            --env MEILISEARCH_HOST=${meili_host} \
+            --env MEILISEARCH_HOST=${meili_host::-1} \
             --env MEILISEARCH_KEY=${meili_key} \
           | while IFS= read -r line; do
               if grep -q '^Visit your newly deployed app' <<< $line; then
@@ -188,191 +195,53 @@ jobs:
               done
     outputs:
       url: ${{ steps.deploy.outputs.url }}
+  
+  deploy_next:
+    name: Deploy Next
+    runs-on: ubuntu-latest
+    environment: staging
+    needs: [setup_env, deploy_meilisearch, deploy_django]
 
+    env:
+      app_name: ${{ needs.setup_env.outputs.slug }}
+      meili_host: ${{ needs.deploy_meilisearch.outputs.url }}
+      meili_key: ${{ needs.deploy_meilisearch.outputs.public_key }}
+      api_host: ${{ needs.deploy_django.outputs.url }}
 
-# jobs:
-#   # TODO: would https://github.com/dorny/paths-filter#conditional-execution
-#   # cause desync/unknown variables?
-#   env_setup:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Create preview slug
-#         id: preview_slug
-#         env:
-#           PR_NUMBER: ${{ github.event.number }}
-#           BRANCH_NAME: ${{ github.head_ref }}
-#           COMMIT_SHA: ${{ github.sha }}
-#         run: |
-#           CLEAN_BRANCH=${BRANCH_NAME//\//-}
-#           echo "CLEAN_BRANCH=${CLEAN_BRANCH}" >> ${GITHUB_OUTPUT}
-#           echo "PREVIEW_SLUG=${PR_NUMBER}-${CLEAN_BRANCH}-${COMMIT_SHA:0:8}" >> ${GITHUB_OUTPUT}
-#     outputs:
-#       clean_branch: ${{ steps.preview_slug.outputs.CLEAN_BRANCH }}
-#       slug: ${{ steps.preview_slug.outputs.PREVIEW_SLUG }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Launch app
+        working-directory: frontend
+        run: |
+          flyctl launch \
+            --name $app_name \
+            --copy-config \
+            --now \
+            --remote-only \
+            --region $FLY_REGION \
+            --org $FLY_ORG \
+            --build-arg API_HOST=${api_host} \
+            --build-arg CLOUDINARY_CLOUD_NAME=${{ vars.CLOUDINARY_CLOUD_NAME }} \
+            --build-arg CLOUDINARY_API_KEY=${{ vars.CLOUDINARY_API_KEY }} \
+            --env NEXT_PUBLIC_HOST=https://${app_name}.fly.dev \
+            --env NEXT_PUBLIC_MEILISEARCH_HOST=${meili_host} \
+            --env NEXT_PUBLIC_MEILISEARCH_KEY=${meili_key} \
+            --env NEXT_PUBLIC_MAPBOX_TOKEN=${{ vars.MAPBOX_TOKEN }} \
+          ;
 
-  # preview_deploy:
-  #   runs-on: ubuntu-latest
-
-  #   needs: [env_setup]
-
-  #   # env-name template: preview-${{ github.event.number }}
-  #   concurrency:
-  #     group: preview-${{ github.event.number }}
-
-  #   environment:
-  #     name: preview-${{ github.event.number }}
-  #     url: ${{ steps.deploy.outputs.url }}
-
-  #   env:
-  #     prefix: ${{ needs.env_setup.outputs.slug }}
-  #     meili_key: ${{ needs.env_setup.outputs.slug}}-staging-meili-key
-  #     db_name: ${{ needs.env_setup.outputs.clean_branch }}-staging
-
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: superfly/flyctl-actions/setup-flyctl@master
-  #     - name: Deploy Meilisearch
-  #       run: |
-  #         cd search
-  #         flyctl launch \
-  #           --name ${prefix}-meilisearch \
-  #           --no-deploy \
-  #           --build-only \
-  #           --copy-config \
-  #           --now \
-  #           --no-deploy \
-  #           --remote-only \
-  #           --region $FLY_REGION \
-  #           --org $FLY_ORG \
-  #           ;
-            
-  #         flyctl deploy \
-  #           --app ${prefix}-meilisearch \
-  #           --config fly.toml \
-  #           --remote-only \
-  #           --strategy immediate \
-  #           --region $FLY_REGION \
-  #           --env MEILI_MASTER_KEY=${meili_key} \
-  #           --env MEILI_HTTP_ADDR=localhost:7700 \
-  #           ;
-            
-  #         cd ..
-
-  #     - name: Provision Postgres cluster
-  #       run: |
-  #         if ! flyctl status --app $db_name &> /dev/null; then
-  #         flyctl postgres create \
-  #           --name $db_name \
-  #           --fork-from community-maps-db \
-  #           --vm-size shared-cpu-1x \
-  #           --volume-size 1 \
-  #           --initial-cluster-size 1 \
-  #           --region $FLY_REGION \
-  #           --org $FLY_ORG \
-  #           | awk '1;/Postgres cluster/{exit}'
-  #         fi
-
-  #     - name: Deploy Django
-  #       env:
-  #         appname: ${{ env.prefix }}-django
-  #       run: |
-  #         cd backend
-
-  #         echo "::group::Launch and build app"
-  #         flyctl launch \
-  #           --name $appname \
-  #           --no-deploy \
-  #           --build-only \
-  #           --copy-config \
-  #           --now \
-  #           --no-deploy \
-  #           --remote-only \
-  #           --region $FLY_REGION \
-  #           --org $FLY_ORG \
-  #           ;
-  #         echo "::endgroup::"
-
-  #         echo "::group::Attach to postgres"
-  #         flyctl postgres attach \
-  #           $db_name \
-  #           --app $appname \
-  #           --database-user "user_${appname//-/_}" \
-  #           --database-name "community_maps_django" \
-  #           --verbose \
-  #           --yes \
-  #           ;
-  #         echo "::endgroup::"
-
-  #         echo "::group::Deploy and release"
-  #         flyctl deploy \
-  #           --app $appname \
-  #           --config fly.toml \
-  #           --remote-only \
-  #           --strategy immediate \
-  #           --region $FLY_REGION \
-  #           --env DJANGO_SETTINGS_MODULE=api.settings.staging \
-  #           --env ALLOWED_HOSTS=${appname}.fly.dev \
-  #           --env CSRF_TRUSTED_ORIGINS=https://${appname}.fly.dev \
-  #           --env MEILISEARCH_HOST=https://${prefix}-meilisearch.fly.dev \
-  #           --env MEILISEARCH_KEY=${meili_key} \
-  #           ;
-  #         echo "::endgroup::"
-
-  #         cd ..
-
-  #     - name: Deploy Next
-  #       env:
-  #         appname: ${{ env.prefix }}
-  #         CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-  #         CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-  #       run: |
-  #         cd frontend
-          
-  #         api_host=https://${prefix}-django.fly.dev
-  #         meili_host=https://${prefix}-meilisearch.fly.dev
-  #         host=https://${prefix}.fly.dev
-
-  #         flyctl launch \
-  #           --name $appname \
-  #           --copy-config \
-  #           --now \
-  #           --remote-only \
-  #           --strategy immediate \
-  #           --region $FLY_REGION \
-  #           --org $FLY_ORG \
-  #           --build-arg API_HOST=$api_host \
-  #           --build-arg CLOUDINARY_CLOUD_NAME=drk1rc6ld \
-  #           --build-arg CLOUDINARY_API_KEY=$CLOUDINARY_API_KEY \
-  #           --build-arg CLOUDINARY_API_SECRET=$CLOUDINARY_API_SECRET \
-  #           --env NEXT_PUBLIC_MEILISEARCH_HOST=$meili_host \
-  #           --env NEXT_PUBLIC_HOST=$host \
-  #           --env NEXT_PUBLIC_MAPBOX_TOKEN=pk.eyJ1Ijoic3Jocm1hcHMiLCJhIjoiY2xpcXJ1bmpzMGEwcDNmcGk3ZjdpNDMydyJ9.WCTvtUC2zCBs-xz0p8QOeg \
-  #           ;
-        
-  #         cd ..
-
-  # teardown_on_failure:
-  #   if: ${{ failure() }}
-  #   needs: [env_setup, preview_deploy]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: superfly/flyctl-actions/setup-flyctl@master
-  #     - env:
-  #         prefix: ${{ needs.env_setup.outputs.slug }}
-  #         db_name: ${{ needs.env_setup.outputs.clean_branch }}-staging
-  #       run: |
-  #         flyctl apps destroy -y $prefix-meilisearch || true
-  #         flyctl apps destroy -y $db_name || true
-  #         flyctl apps destroy -y $prefix-django || true
-  #         flyctl apps destroy -y $prefix || true
-
-  # # Clean up environment on PR close
-  # cleanup_environment:
-  #   if: ${{ always() && github.event.action == 'closed' }}
-  #   needs: [env_setup, preview_deploy]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: strumwolf/delete-deployment-environment@v2.3.0
-  #       with:
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         environment: preview-${{ github.event.number }}
+  teardown:
+    name: Tear down all apps with this name
+    if: ${{ failure() || github.event.action == 'closed' }}
+    runs-on: ubuntu-latest
+    needs: [setup_env, deploy_meilisearch, deploy_django, deploy_next]
+    env:
+      slug: ${{ needs.setup_env.outputs.slug }}
+      db_name: ${{ needs.setup_env.outputs.clean_branch }}-staging
+    steps:
+       - uses: superfly/flyctl-actions/setup-flyctl@master
+       - run: |
+          flyctl apps list \
+          | grep "^(${slug}|${db_name})" \
+          | awk '{print $1}' \
+          | xargs -n1 fly apps destroy --yes
