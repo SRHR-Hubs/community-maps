@@ -230,7 +230,7 @@ jobs:
             --build-arg NEXT_PUBLIC_MEILISEARCH_HOST=${meili_host::-1} \
             --build-arg NEXT_PUBLIC_MEILISEARCH_KEY=${meili_key} \
             --build-arg NEXT_PUBLIC_MAPBOX_TOKEN=${{ vars.MAPBOX_TOKEN }} \
-            --build-arg NEXT_PUBLIC_COGNITO_KEY=${{ vars.COGNITO_KEY }}
+            --build-arg NEXT_PUBLIC_COGNITO_KEY=${{ vars.COGNITO_KEY }} \
           ;
 
   teardown:
@@ -239,12 +239,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [setup_env, deploy_meilisearch, deploy_django, deploy_next]
     env:
-      slug: ${{ needs.setup_env.outputs.slug }}
-      db_name: ${{ needs.setup_env.outputs.clean_branch }}-staging
+      clean_branch: ${{ needs.setup_env.outputs.clean_branch }}
     steps:
        - uses: superfly/flyctl-actions/setup-flyctl@master
        - run: |
           flyctl apps list \
-          | grep "(${slug}|${db_name})" \
+          | grep "${clean_branch}" \
           | awk '{print $1}' \
           | xargs -n1 flyctl apps destroy --yes
