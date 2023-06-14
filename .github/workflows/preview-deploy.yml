@@ -230,6 +230,7 @@ jobs:
       - name: Launch app
         working-directory: frontend
         run: |
+          ls
           flyctl launch \
             --name $app_name \
             --copy-config \
