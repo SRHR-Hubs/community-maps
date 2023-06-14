@@ -74,30 +74,24 @@ jobs:
             --env MEILI_MASTER_KEY=${master_key} \
             | while IFS= read -r line; do
               if grep -q '^Visit your newly deployed app' <<< $line; then
-                echo $line | awk '{print "url="$NF}' >> $GITHUB_OUTPUT
+                echo $line | awk '{print "url="$NF}' | tee --append $GITHUB_OUTPUT $GITHUB_ENV
               fi
               echo $line
               done
-      # - name: Install jq
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install jq
-      # - name: Retrieve admin key
-      #   id: admin
-      #   env:
-      #     url: ${{ steps.deploy.outputs.url }}
-      #   run: |
-      #     output=$(\
-      #       curl -s \
-      #         -X GET "${url}/keys" \
-      #         -H "Authorization: Bearer $master_key" \
-      #       | jq -r '.results | select(.name == "Default Admin API Key") | .key' \
-      #     )
-      #     echo "::add-mask::$output"
-      #     echo "key=$output" >> $GITHUB_OUTPUT
+      - name: Obtain admin key
+        id: admin_key
+        run: |
+          sudo apt-get update
+          sudo apt-get install jq
+
+          output=$(\
+            curl -X GET "${{ env.url }}keys" \
+            -H "Authorization: Bearer ${master_key}" \
+          )
+
+          echo $output
     outputs:
       url: ${{ steps.deploy.outputs.url }}
-      # admin_key: ${{ steps.admin.outputs.key }}
   
   provision_postgres:
     name: Provision Postgres cluster
@@ -144,7 +138,6 @@ jobs:
       app_name: ${{ needs.setup_env.outputs.slug }}-django
       next_host: ${{ needs.setup_env.outputs.slug }}.fly.dev
       meili_host: ${{ needs.deploy_meilisearch.outputs.url }}
-      meili_key: ${{ needs.deploy_meilisearch.outputs.admin_key }}
       postgres_app: ${{ needs.provision_postgres.outputs.app_name }}
 
     steps:
