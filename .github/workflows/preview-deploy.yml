@@ -94,7 +94,6 @@ jobs:
           admin_key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
           public_key=$(echo $output | jq -r '.results[] | select(.name == "Default Search API Key") | .key')
 
-          echo "::add-mask::$admin_key"
           echo "admin_key=$admin_key" >> $GITHUB_OUTPUT
           echo "public_key=$public_key" >> $GITHUB_OUTPUT
     outputs:
