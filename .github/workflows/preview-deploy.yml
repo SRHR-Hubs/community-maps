@@ -85,11 +85,13 @@ jobs:
           sudo apt-get install jq
 
           output=$(\
-            curl -X GET "${{ env.url }}keys" \
-            -H "Authorization: Bearer ${master_key}" \
-          )
+            flyctl ssh console \
+              --app $app_name \
+              --quiet \
+              --command 'sh -c "curl -s -X GET $MEILI_HTTP_ADDR/keys -H \"Authorization: Bearer $MEILI_MASTER_KEY\""')
+          key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
 
-          echo $output
+          echo $key
     outputs:
       url: ${{ steps.deploy.outputs.url }}
   
