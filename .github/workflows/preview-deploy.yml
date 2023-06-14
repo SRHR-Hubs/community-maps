@@ -246,4 +246,4 @@ teardown:
         flyctl apps list \
         | grep "^(${slug}|${db_name})" \
         | awk '{print $1}' \
-        | xargs -n1 flyctl apps destroy --yesname: Deploy Preview App
+        | xargs -n1 flyctl apps destroy --yes
