@@ -219,14 +219,14 @@ jobs:
           file: frontend/.env
           prefix: 'ENV_'
         env:
-          ENV_API_HOST: ${{ env.api_host }} \
-          ENV_CLOUDINARY_CLOUD_NAME: ${{ vars.CLOUDINARY_CLOUD_NAME }} \
-          ENV_CLOUDINARY_API_KEY: ${{ vars.CLOUDINARY_API_KEY }} \
-          ENV_NEXT_PUBLIC_HOST: https://${{ env.app_name }}.fly.dev \
-          ENV_NEXT_PUBLIC_MEILISEARCH_HOST: ${{ env.meili_host }} \
-          ENV_NEXT_PUBLIC_MEILISEARCH_KEY: ${{ env.meili_key }} \
-          ENV_NEXT_PUBLIC_MAPBOX_TOKEN: ${{ vars.MAPBOX_TOKEN }} \
-          ENV_NEXT_PUBLIC_COGNITO_KEY: ${{ vars.COGNITO_KEY }} \
+          ENV_API_HOST: ${{ env.api_host }}
+          ENV_CLOUDINARY_CLOUD_NAME: ${{ vars.CLOUDINARY_CLOUD_NAME }}
+          ENV_CLOUDINARY_API_KEY: ${{ vars.CLOUDINARY_API_KEY }}
+          ENV_NEXT_PUBLIC_HOST: https://${{ env.app_name }}.fly.dev
+          ENV_NEXT_PUBLIC_MEILISEARCH_HOST: ${{ env.meili_host }}
+          ENV_NEXT_PUBLIC_MEILISEARCH_KEY: ${{ env.meili_key }}
+          ENV_NEXT_PUBLIC_MAPBOX_TOKEN: ${{ vars.MAPBOX_TOKEN }}
+          ENV_NEXT_PUBLIC_COGNITO_KEY: ${{ vars.COGNITO_KEY }}
       - name: Launch app
         working-directory: frontend
         run: |
