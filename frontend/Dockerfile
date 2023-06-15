@@ -15,11 +15,10 @@ RUN npm ci --only-production
 FROM base as build
 WORKDIR /app
 
-ARG API_HOST
-ENV API_HOST=$API_HOST
 
 COPY --from=base /app/node_modules ./node_modules
 COPY . .
+COPY .env* ./
 RUN npm run build
 
 # prod deploy
