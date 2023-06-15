@@ -185,7 +185,7 @@ jobs:
             --region $FLY_REGION \
             --env DJANGO_SETTINGS_MODULE=api.settings.staging \
             --env ALLOWED_HOSTS=${app_name}.fly.dev \
-            --env CSRF_TRUSTED_ORIGINS=https://${next_host} \
+            --env CSRF_TRUSTED_ORIGINS=https://${app_name}.fly.dev \
             --env MEILISEARCH_HOST=${meili_host} \
             --env MEILISEARCH_KEY=${meili_key} \
           | while IFS= read -r line; do
