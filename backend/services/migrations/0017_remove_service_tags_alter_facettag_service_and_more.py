@@ -16,6 +16,16 @@ def rewrite_json_field(field):
             new_fld = [
                 {'key': k, 'value': v} for k, v in fld.items()
             ]
+
+            days_of_week = {x: i for i, x in enumerate([
+                'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+                'Friday', 'Saturday', 'Sunday'
+            ])}
+
+            new_fld.sort(key=lambda item: days_of_week.get(
+                item['key'], 7
+            ))
+
             setattr(service, field, new_fld)
             # service = hours
             service.save(update_fields=[field])
