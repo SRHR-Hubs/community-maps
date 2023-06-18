@@ -155,7 +155,7 @@ export async function getStaticProps({ params, locale }) {
 
   service.description = await serialize(service.description);
 
-  console.log(service.hours)
+  console.log(service.hours, process.env.API_HOST)
 
   return {
     props: {
