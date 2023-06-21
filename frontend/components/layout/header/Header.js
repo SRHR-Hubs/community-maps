@@ -102,8 +102,8 @@ const Header = ({ show, ...props }) => {
               <Link href="/map">Use the map</Link>
               <Link href="/">Home</Link>
               <Link href="/about">About us</Link>
-              {/* TODO */}
-              {/* <Link href='/contact'>Contact</Link> */}
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+              <a href="/contact/contact-us">Contact</a>
               <Link href={twitterInfo.site}>SRHR Hubs Twitter</Link>
               <Link href={instagramInfo.site}>SRHR Hubs Instagram</Link>
             </section>

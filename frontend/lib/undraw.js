@@ -18,8 +18,8 @@ export const useUndraw = (props = {}) => {
 };
 
 export const UndrawIcon = ({ name, alt, color, fallback }) => (
-  <Image
-    unoptimized
+  // eslint-disable-next-line @next/next/no-img-element
+  <img
     alt={alt || name}
     data-ujs-name={name}
     data-ujs-color={color}

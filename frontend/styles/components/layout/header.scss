@@ -102,6 +102,13 @@ header {
     .off-canvas-sidebar {
       background-color: colors.$teal-200;
       color: colors.$teal-400;
+      left: unset;
+      right: 0;
+      transform: translateX(+100%);
+    }
+
+    .off-canvas-overlay {
+      background-color: rgba(48, 55, 66, 0.6);
     }
     
     .off-canvas-content {
