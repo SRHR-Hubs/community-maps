@@ -2,6 +2,8 @@
 @use "../../colors";
 @use "../../mixins";
 
+@import "spectre.css/src/spectre-exp";
+
 header {
   z-index: 1;
   width: 100%;
@@ -72,6 +74,34 @@ header {
       @media not (prefers-reduced-motion) {
         transition: fill 0.1s linear;
       }
+    }
+  }
+
+  // mobile stuff
+  > .off-canvas {
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 .5rem;
+
+    .logo {
+      height: 3rem;
+    }
+
+    button {
+      background-color: colors.$teal-400;
+      color: colors.$white;
+      border: none;
+      font-size: 1rem;
+      &:hover, &:focus {
+        background-color: unset;
+        color: unset;
+        border: 3px solid colors.$white;
+      }
+    }
+
+    .off-canvas-sidebar {
+      background-color: colors.$teal-200;
+      color: colors.$teal-400;
     }
   }
 
