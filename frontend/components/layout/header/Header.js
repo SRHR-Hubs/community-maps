@@ -77,7 +77,23 @@ const Header = ({ show, ...props }) => {
         </button>
         <nav className={clsx("off-canvas-sidebar", { active: mobileNavOpen })}>
           <div className="off-canvas-content">
-            
+            <section>
+              <button className="btn btn-action" onClick={handleCloseNav}>
+                <i className="icon icon-cross"></i>
+              </button>
+            </section>
+            <section className="links">
+              <Link href="/map">Use the map</Link>
+              <Link href="/">Home</Link>
+              <Link href="/about">About us</Link>
+              {/* TODO */}
+              {/* <Link href='/contact'>Contact</Link> */}
+              <Link href={twitterInfo.site}>SRHR Hubs Twitter</Link>
+              <Link href={instagramInfo.site}>SRHR Hubs Instagram</Link>
+            </section>
+            <section>
+              <GetOutQuick />
+            </section>
           </div>
         </nav>
         <div className="off-canvas-overlay" onClick={handleCloseNav} />
