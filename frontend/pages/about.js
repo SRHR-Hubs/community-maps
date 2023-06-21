@@ -5,10 +5,9 @@ import useServerI18n from "../hooks/useServerI18n";
 import { SEO } from "../lib/seo";
 import PageService from "../services/PageService";
 
-import Link from "next/link";
+// import Link from "next/link";
 import { Markdown } from "../lib/mdx-remote";
-
-import { Users, Grab, FileHeart, HeartHandshake } from "lucide-react";
+import { UndrawIcon, useUndraw } from "../lib/undraw";
 
 const AboutPage = ({ slug, title, description, content }) => {
   const seoInfo = {
@@ -16,32 +15,8 @@ const AboutPage = ({ slug, title, description, content }) => {
     description,
     canonical: slug,
   };
-  // const valuesContent = [
-  //   {
-  //     key: "community-service",
-  //     icon: Users,
-  //     subtitle: "Community Service",
-  //     text: "Our map has been built by the community for the community.",
-  //   },
-  //   {
-  //     key: "youth-empowerment",
-  //     icon: Grab,
-  //     subtitle: "Youth Empowerment",
-  //     text: "Validating lived experiences and prioritizing autonomy of youth.",
-  //   },
-  //   {
-  //     key: "education-activism",
-  //     icon: FileHeart,
-  //     subtitle: "Commitment to Education & Activism",
-  //     text: "We're passionate about change, innovation and responding to community needs.",
-  //   },
-  //   {
-  //     key: "co-creation",
-  //     icon: HeartHandshake,
-  //     subtitle: "Co-creation with our Community",
-  //     text: "Working in tandem with our community to address barriers to SRH related care.",
-  //   },
-  // ];
+
+  useUndraw();
 
   return (
     <>

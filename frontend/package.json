@@ -57,6 +57,7 @@
     "cross-env": "^7.0.3",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.0",
-    "storybook": "^7.0.0-alpha.54"
+    "storybook": "^7.0.0-alpha.54",
+    "undraw-js": "^1.0.4"
   }
 }
