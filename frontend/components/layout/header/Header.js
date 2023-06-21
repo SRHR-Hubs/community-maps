@@ -21,7 +21,11 @@ const Header = ({ show, ...props }) => {
       <div className="container grid-lg hide-lg">
         <div className="columns">
           <section className="navbar-section column col-2 hide-md" aria-hidden>
-            <Link href="/" tabIndex={-1}>
+            <Link
+              href="/"
+              tabIndex={-1}
+              aria-label="The SRHR Maps logo. Links to homepage."
+            >
               <Logo className="logo" />
             </Link>
           </section>
@@ -69,16 +73,28 @@ const Header = ({ show, ...props }) => {
         </div>
       </div>
       <div className="off-canvas">
-        <Link href="/" tabIndex={-1}>
+        <Link
+          href="/"
+          tabIndex={-1}
+          aria-label="The SRHR Maps logo. Links to homepage."
+        >
           <Logo className="logo show-lg" />
         </Link>
-        <button className="btn btn-action show-lg" onClick={handleOpenNav}>
+        <button
+          className="btn btn-action show-lg"
+          onClick={handleOpenNav}
+          aria-label="Open navigation menu"
+        >
           <i className="icon icon-menu"></i>
         </button>
         <nav className={clsx("off-canvas-sidebar", { active: mobileNavOpen })}>
           <div className="off-canvas-content">
             <section>
-              <button className="btn btn-action" onClick={handleCloseNav}>
+              <button
+                className="btn btn-action"
+                onClick={handleCloseNav}
+                aria-label="Close navigation menu"
+              >
                 <i className="icon icon-cross"></i>
               </button>
             </section>
