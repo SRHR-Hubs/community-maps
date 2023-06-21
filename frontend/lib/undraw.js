@@ -20,7 +20,7 @@ export const useUndraw = (props = {}) => {
 export const UndrawIcon = ({ name, alt, color, fallback }) => (
   <Image
     unoptimized
-    alt={alt}
+    alt={alt || name}
     data-ujs-name={name}
     data-ujs-color={color}
     data-ujs-fall-img={fallback}

@@ -22,7 +22,44 @@ const AboutPage = ({ slug, title, description, content }) => {
     <>
       <SEO {...seoInfo} />
       <PageLayout id="about">
-        <section id="our-mission">
+        <section id="about-the-map">
+          <UndrawIcon name="Map dark" />
+          <Markdown {...content["about-the-map.content"]} />
+        </section>
+        <section id="why-a-map">
+          <h2>
+            <Trans i18nKey="pages.about.sections.why-a-map.title">
+              Why a map?
+            </Trans>
+          </h2>
+          {[
+            {
+              title: "simplicity",
+              icon: "Navigator",
+            },
+            {
+              title: "context",
+              icon: "Destination",
+            },
+            {
+              title: "community",
+              icon: "Community",
+            },
+          ].map(({ title, icon }) => {
+            const sectionContent = content[`why-a-map.${title}.content`];
+            return (
+              <div className="columns" key={title}>
+                <div className="text column col-7 col-lg-12">
+                  {sectionContent && <Markdown {...sectionContent} />}
+                </div>
+                <div className="icon-container column hide-lg">
+                  <UndrawIcon name={icon} />
+                </div>
+              </div>
+            );
+          })}
+        </section>
+        {/* <section id="our-mission">
           <h1>
             <Trans i18nKey="pages.about.sections.our-mission.title">
               About SRHR Hubs
@@ -40,8 +77,8 @@ const AboutPage = ({ slug, title, description, content }) => {
               and wellness.
             </Trans>
           </p>
-        </section>
-        <section id="our-vision">
+        </section> */}
+        {/* <section id="our-vision">
           <h2>
             <Trans i18nKey="pages.about.sections.our-vision.title">
               Our Vision
@@ -53,26 +90,8 @@ const AboutPage = ({ slug, title, description, content }) => {
               about their sexual and reproductive health and wellness.
             </Trans>
           </h3>
-          {/* <div className="columns">
-            {valuesContent.map(({ key, icon: Icon, subtitle, text }) => {
-              const i18nKeyPrefix = `pages.about.sections.our-values.${key}`;
-              const subtitleKey = `${i18nKeyPrefix}.subtitle`;
-              const textKey = `${i18nKeyPrefix}.text`;
-              return (
-                <div className="column col-auto col-sm-12" key={key}>
-                  <Icon />
-                  <h3 className="subtitle">
-                    <Trans i18nKey={subtitleKey}>{subtitle}</Trans>
-                  </h3>
-                  <p className="content">
-                    <Trans i18nKey={textKey}>{text}</Trans>
-                  </p>
-                </div>
-              );
-            })}
-          </div> */}
-        </section>
-        <section id="about-the-map">
+        </section> */}
+        {/* <section id="about-the-map">
           <h2>
             <Trans i18nKey="pages.about.sections.about-the-map.title">
               About the Map
@@ -81,7 +100,7 @@ const AboutPage = ({ slug, title, description, content }) => {
           <article>
             <Markdown {...content["about-the-map.content"]} />
           </article>
-        </section>
+        </section> */}
       </PageLayout>
     </>
   );
