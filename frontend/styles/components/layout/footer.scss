@@ -1,0 +1,45 @@
+@use "../../variables";
+@use "../../colors";
+@use "../../mixins";
+
+footer {
+  width: 100%;
+  border-top: 1px solid white;
+  background: colors.$teal-400;
+  padding: 3em 0;
+  color: colors.$white;
+
+  .border-top {
+    border-top: 1px solid colors.$white;
+    margin: 2em -2em;
+    align-items: start;
+    padding: 2em;
+    .column {
+      height: 100%;
+    }
+  }
+
+  .logo {
+    height: 10em;
+    width: auto;
+    margin: 0;
+  }
+  a {
+    text-decoration: underline;
+  }
+
+  ul.links {
+    list-style: none;
+    margin: unset;
+  }
+
+  [id^="storybook"] & {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  #land-acknowledgement {
+    text-align: center;
+  }
+}
