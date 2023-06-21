@@ -39,7 +39,8 @@ const Footer = (props) => {
                 <Link href="/about">About Us</Link>
               </li>
               <li>
-                <Link href="#contact">Contact</Link>
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                <a href="/contact/contact-us">Contact</a>
               </li>
             </ul>
           </div>

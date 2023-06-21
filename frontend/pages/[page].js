@@ -23,11 +23,11 @@ const GenericPage = ({ slug, title, description, content }) => {
 };
 
 export async function getStaticProps({ params, locale }) {
-  const { page: tokens } = params;
-  const slug = tokens.join("/");
+  const { page } = params;
+  // const slug = tokens.join("/");
   const fields = ["slug", "title", "description", "content", "updated_at"];
 
-  const pageProps = await PageService.getPageProps(slug, {
+  const pageProps = await PageService.getPageProps(page, {
     fields,
   });
 
@@ -42,17 +42,17 @@ export async function getStaticProps({ params, locale }) {
 
 export async function getStaticPaths() {
   const pages = await PageService.getAllPages({ published: true, size: 2 });
-  console.log(pages.length, 'pages')
 
   // this only took hours to solve.
   // https://github.com/vercel/next.js/issues/45692
   // current time: 1:39 am.
-  const existingSlugs = ["home", "blog", "services", "about", "service-detail"];
+  const existingSlugs = ["home", "blog", "services", "about", "service-detail", "contact-form"];
 
   const paths = pages
     .filter(({ slug }) => !existingSlugs.includes(slug))
     .map(({ slug, language }) => {
-      const page = slug.split("/");
+      console.log(slug)
+      const [page] = slug.split("/");
       return { params: { page /*locale: language*/ } };
     });
 
