@@ -24,10 +24,28 @@
       &#contact {
         background-color: colors.$lilac-400;
         color: colors.$white;
+        text-align: center;
 
         .button-list {
-          justify-content: flex-start;
-          gap: 1em;
+          justify-content: center;
+          color: black;
+          font-weight: 600;
+          
+          .btn {
+            display: block;
+            height: auto;
+            margin: .5rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-size: 1rem; 
+
+            &:focus {
+              color: unset;
+            }
+            &:target {
+              color: colors.$white;
+            }
+          }
         }
       }
 

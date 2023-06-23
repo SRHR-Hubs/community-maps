@@ -19,7 +19,7 @@ const ContactSection = () => (
     </p>
     <div className="columns button-list">
       {Object.keys(FORMS).map((key) => (
-        <div className="column col-auto" key={key}>
+        <div className="column col-6 col-xs-12" key={key}>
           {/* IMPORTANT!
             Using <Link> here causes the Cognito script
             to only load once, making the same form render
@@ -28,12 +28,12 @@ const ContactSection = () => (
             It's stupid, but a known issue:
             https://github.com/vercel/next.js/discussions/17919
           */}
-          <a href={`/contact/${key}`}>
-            <button className="btn btn-secondary">
+          <a href={`/contact/${key}`} className="btn btn-secondary">
+            {/* <button className="btn btn-secondary"> */}
               <Trans
                 i18nKey={`pages.common.sections.contact.form-button.${key}`}
               />
-            </button>
+            {/* </button> */}
           </a>
         </div>
       ))}
