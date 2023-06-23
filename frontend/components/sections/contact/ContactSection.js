@@ -19,7 +19,7 @@ const ContactSection = () => (
     </p>
     <div className="columns button-list">
       {Object.keys(FORMS).map((key) => (
-        <div className="column col-6 col-xs-12" key={key}>
+        <div className="column col-6 col-md-12" key={key}>
           {/* IMPORTANT!
             Using <Link> here causes the Cognito script
             to only load once, making the same form render

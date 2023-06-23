@@ -38,9 +38,9 @@ const IndexPage = ({
       <PageLayout id="home">
         <section id="hero">
           <div className="columns">
-            <div className="column col col-md-12">
+            <div className="column col-7 col-md-12">
               <span className="subtitle">Welcome to</span>
-              <h1>Sexual and Reproductive Health Rights (SRHR) Hubs</h1>
+              <h1>Sexual and Reproductive Health and Rights (SRHR) Hubs</h1>
               <p>
                 We provide a living, breathing, virtual map that details{" "}
                 <strong>
@@ -75,7 +75,9 @@ const IndexPage = ({
           <div className="columns">
             <div className="column col-5 col-md-12">
               <h2>About us</h2>
-              <UndrawIcon name="Team"/>
+              <div className="hide-md">
+                <UndrawIcon name="Team"/>
+              </div>
             </div>
             <div className="column col col-md-12 round-card">
               <h3>Our Vision</h3>
