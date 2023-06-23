@@ -9,89 +9,74 @@
     }
   }
 
-  #search-intro {
-    background-color: colors.$teal-400;
-    color: colors.$white;
-    text-align: center;
-    min-height: 20rem;
-    display: flex;
-    align-items: center;
+  .round-card {
+    border-radius: 12px;
+    padding: 2rem;
+  }
 
-    .image-background {
-      background: url("https://res.cloudinary.com/drk1rc6ld/image/upload/v1677440036/media/map_zoomed_ui.png");
-      background-size: cover;
-      position: absolute;
-      top: 0;
-      left: -40%;
-      height: 100%;
-      width: 180%;
-    }
-
-    &::after {
-      z-index: -1;
-    }
-
-    h1 {
-      font-weight: bold;
-      margin-top: 0.5em;
-      margin-bottom: 0;
-    }
-
-    h4 {
-      font-size: 1.4em;
-    }
-
-    .overlay {
-      position: relative;
-      background-color: colors.$teal-400;
-      border-radius: 32px;
-      margin: 0 auto;
-      min-width: 60%;
-      max-width: 80%;
-      padding: 2rem 2em;
-      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-      transition: transform 0.17s ease;
-
-      &:hover {
-        cursor: pointer;
-        @media not (prefers-reduced-motion) {
-          & {
-            transform: translateY(-5px);
-          }
-        }
+  section:not(#contact) {
+    .btn {
+      border: none;
+      padding: 0.25rem 2rem;
+      border-radius: 6px;
+      font-weight: 800;
+      color: colors.$white;
+      &.btn-primary {
+        background-color: colors.$teal-400;
       }
+      &.btn-secondary {
+        background-color: colors.$lilac-400;
+      }
+    }
+
+    h1, h2 {
+      font-weight: 800;
+    }
+    h3 {
+      font-weight: 600;
+    }
+
+    > .columns {
+      align-items: center;
     }
   }
 
-  #about {
-    background-color: colors.$darkblue-400;
+  #hero {
+    background-color: colors.$teal-200;
+    color: colors.$black;
+
+    .subtitle {
+      text-transform:uppercase;
+      font-weight: bold;
+      letter-spacing: .25rem;
+    }
+  }
+
+  #about-the-project {
+    background-color: colors.$teal-400;
     color: colors.$white;
     text-align: center;
 
     .columns {
+      background-color: colors.$teal-200;
+      color: colors.$black;
       gap: 2em;
-    }
-
-    h2 {
       text-align: left;
-      margin: 0;
+    }
+  }
+
+  #about-us {
+    background-color: colors.$teal-200;
+
+    .column:first-of-type {
+      padding: 0 2rem;
+      text-align: center;
     }
 
-    .image-container {
-      height: 200px;
-      margin: 1em 0;
-    }
-    img {
-      object-fit: cover;
-      border: 5px solid white;
-      border-radius: 10px;
-    }
-    .btn {
-      display: flex;
-      justify-content: center;
-      &,
-      &:hover {
-        color: inherit;
+    .round-card {
+      background-color: colors.$white;
+      h3 {
+        color: colors.$teal-400;
       }
     }
   }

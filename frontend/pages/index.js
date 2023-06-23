@@ -15,6 +15,7 @@ import isProduction from "../hooks/isProduction";
 import Image from "../components/image";
 import toImageProps from "../hooks/toImageProps";
 import { ChevronRight, HeartHandshake, MapPin } from "lucide-react";
+import { UndrawIcon, useUndraw } from "../lib/undraw";
 
 const IndexPage = ({
   slug,
@@ -29,72 +30,62 @@ const IndexPage = ({
     canonical: slug,
   };
 
+  useUndraw();
+
   return (
     <>
       <SEO {...seoInfo} />
       <PageLayout id="home">
-        <section id="search-intro">
-          <div className="image-background" />
-          <div className="overlay">
-            <Link href="/map">
-              <h4>
-                <Trans i18nKey="pages.home.sections.search-intro.subtitle">
-                  A virtual map of sexual and reproductive health services,
-                  organizations, and resources.
-                </Trans>
-              </h4>
-              <h1>
-                <Trans i18nKey="pages.home.sections.search-intro.title">
-                  What are you searching for?
-                </Trans>
-              </h1>
-            </Link>
-          </div>
-        </section>
-        <section id="about">
+        <section id="hero">
           <div className="columns">
-            <div className="column col-sm-12">
-              <h2>
-                <Trans i18nKey="pages.home.sections.about.about-the-team">
-                  About us
-                </Trans>
-              </h2>
-              <Link href="/about">
-                <Image {...otherImages.aboutTheTeam} />
-                <button className="btn btn-link">
-                  <Trans i18nKey="pages.home.sections.about.cta">
-                    Learn more
-                  </Trans>{" "}
-                  <ChevronRight />
-                </button>
-              </Link>
+            <div className="column col col-md-12">
+              <span className="subtitle">Welcome to</span>
+              <h1>Sexual and Reproductive Health Rights (SRHR) Hubs</h1>
+              <p>
+                We provide a living, breathing, virtual map that details{" "}
+                <strong>
+                  sexual and reproductive health services in Canada.
+                </strong>
+              </p>
+              <a className="btn btn-primary cta">Visit the map</a>
             </div>
-            <div className="column col-sm-12">
-              <h2>
-                <Trans i18nKey="pages.home.sections.about.about-the-map">
-                  About the Map
-                </Trans>
-              </h2>
-              <Link href="/about#about-the-map">
-                <Image {...otherImages.aboutTheMap} />
-                <button className="btn btn-link">
-                  <Trans i18nKey="pages.home.sections.about.cta">
-                    Learn more
-                  </Trans>{" "}
-                  <ChevronRight />
-                </button>
-              </Link>
+            <div className="column col hide-md">
+              <UndrawIcon name="Online test"/>
             </div>
           </div>
         </section>
-        {/* <section id="latest-from-our-blog">
-          <h2>
-            <Trans i18nKey="pages.home.sections.latest-from-our-blog.title">
-              Latest from our blog
-            </Trans>
-          </h2>
-          <BlogRoll />
-        </section> */}
+        <section id="about-the-project">
+          <div className="columns round-card">
+            <div className="column col-8 col-md-12">
+              <h2>About the project</h2>
+              <p>
+                SRHR Hubs was born out of the intense service shortages and
+                limited information available to those seeking Sexual and
+                Reproductive Health services during the height of the COVID-19
+                pandemic.
+              </p>
+              <a href="" className="btn btn-secondary">Learn more</a>
+            </div>
+            <div className="column col hide-md">
+              <UndrawIcon name="Map dark" />
+            </div>
+          </div>
+        </section>
+        <section id="about-us">
+          <div className="columns">
+            <div className="column col-5 col-md-12">
+              <h2>About us</h2>
+              <UndrawIcon name="Team"/>
+            </div>
+            <div className="column col col-md-12 round-card">
+              <h3>Our Vision</h3>
+              <p>For all people to have full control to make informed decisions about their sexual and reproductive health and wellness.</p>
+              <h3>Our Mission</h3>
+              <p>To advocate for and advance Sexual and Reproductive Health and Rights.</p>
+              <a href="" className="btn btn-primary">Learn more</a>
+            </div>
+          </div>
+        </section>
         <section id="latest-from-our-insta">
           <h2>
             <Trans i18nKey="pages.home.sections.latest-from-our-insta.title">

@@ -84,12 +84,12 @@ const Header = ({ show, ...props }) => {
             </div>
             <div className="columns" id="header-bottom-row">
               <div className="link-container columns">
-                <section className="navbar-section column col links">
+                <section className="navbar-section column col-6 links">
                   <Link href="/">Home</Link>
                   <Link href="/about">About Us</Link>
                   <Link href="#contact">Contact</Link>
                 </section>
-                <section className="navbar-section column col-4 col-md-12 links">
+                <section className="navbar-section column links">
                   <Link
                     href={instagramInfo.site}
                     className="tooltip tooltip-bottom hide-md"
@@ -106,6 +106,8 @@ const Header = ({ show, ...props }) => {
                   >
                     <Twitter />
                   </Link>
+                  </section>
+                  <section className="navbar-section column col links">
                   <Link href="/map" prefetch={false}>
                     <button className="btn btn-primary" tabIndex={-1}>
                       <Trans i18nKey={"layout.header.use-the-map"}>

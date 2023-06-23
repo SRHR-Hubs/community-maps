@@ -47,10 +47,6 @@ header {
     justify-content: space-around;
     align-items: center;
     a {
-      & + a {
-        margin-inline-start: 2em;
-      }
-
       &:hover,
       &:focus {
         svg {
@@ -58,6 +54,10 @@ header {
           fill: colors.$red-400;
         }
       }
+    }
+
+    &:last-of-type {
+      justify-content: flex-end;
     }
 
     .get-out-quick {
