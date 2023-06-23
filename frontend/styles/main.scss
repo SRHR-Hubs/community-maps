@@ -27,7 +27,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: fonts.$sans-serif;
+  font-family: fonts.$body;
   overflow-x: clip;
 }
 
@@ -37,7 +37,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: fonts.$serif;
+  font-family: fonts.$title;
 }
 
 a,

@@ -8,6 +8,7 @@ footer {
   background: colors.$teal-400;
   padding: 3em 0;
   color: colors.$white;
+  font-family: 'Nunito';
 
   .border-top {
     border-top: 1px solid colors.$white;
@@ -26,6 +27,7 @@ footer {
   }
   a {
     text-decoration: underline;
+    font-weight: bold;
   }
 
   ul.links {
