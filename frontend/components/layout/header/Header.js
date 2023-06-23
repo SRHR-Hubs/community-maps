@@ -10,12 +10,59 @@ import { clsx } from "clsx";
 
 const { twitter: twitterInfo, instagram: instagramInfo } = config;
 
+const MobileNav = () => {
+  const [open, toggle] = useState(false);
+
+  const handleOpenNav = (e) => toggle(true);
+  const handleCloseNav = (e) => toggle(false);
+
+  return (
+    <div className="off-canvas">
+      <Link
+        href="/"
+        tabIndex={-1}
+        aria-label="The SRHR Maps logo. Links to homepage."
+      >
+        <Logo className="logo show-lg" />
+      </Link>
+      <button
+        className="btn btn-action show-lg"
+        onClick={handleOpenNav}
+        aria-label="Open navigation menu"
+      >
+        <i className="icon icon-menu"></i>
+      </button>
+      <nav className={clsx("off-canvas-sidebar", { active: open })}>
+        <div className="off-canvas-content">
+          <section>
+            <button
+              className="btn btn-action close"
+              onClick={handleCloseNav}
+              aria-label="Close navigation menu"
+            >
+              <i className="icon icon-cross"></i>
+            </button>
+          </section>
+          <section className="links">
+            <Link href="/map">Use the map</Link>
+            <Link href="/">Home</Link>
+            <Link href="/about">About us</Link>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href="/contact/contact-us">Contact</a>
+            <Link href={twitterInfo.site}>SRHR Hubs Twitter</Link>
+            <Link href={instagramInfo.site}>SRHR Hubs Instagram</Link>
+          </section>
+          <section>
+            <GetOutQuick />
+          </section>
+        </div>
+      </nav>
+      <div className="off-canvas-overlay" onClick={handleCloseNav} />
+    </div>
+  );
+};
+
 const Header = ({ show, ...props }) => {
-  const [mobileNavOpen, toggleMobileNav] = useState(false);
-
-  const handleOpenNav = (e) => toggleMobileNav(true);
-  const handleCloseNav = (e) => toggleMobileNav(false);
-
   return (
     <header data-show={show} role="banner">
       <div className="container grid-lg hide-lg">
@@ -72,48 +119,7 @@ const Header = ({ show, ...props }) => {
           </div>
         </div>
       </div>
-      <div className="off-canvas">
-        <Link
-          href="/"
-          tabIndex={-1}
-          aria-label="The SRHR Maps logo. Links to homepage."
-        >
-          <Logo className="logo show-lg" />
-        </Link>
-        <button
-          className="btn btn-action show-lg"
-          onClick={handleOpenNav}
-          aria-label="Open navigation menu"
-        >
-          <i className="icon icon-menu"></i>
-        </button>
-        <nav className={clsx("off-canvas-sidebar", { active: mobileNavOpen })}>
-          <div className="off-canvas-content">
-            <section>
-              <button
-                className="btn btn-action"
-                onClick={handleCloseNav}
-                aria-label="Close navigation menu"
-              >
-                <i className="icon icon-cross"></i>
-              </button>
-            </section>
-            <section className="links">
-              <Link href="/map">Use the map</Link>
-              <Link href="/">Home</Link>
-              <Link href="/about">About us</Link>
-              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-              <a href="/contact/contact-us">Contact</a>
-              <Link href={twitterInfo.site}>SRHR Hubs Twitter</Link>
-              <Link href={instagramInfo.site}>SRHR Hubs Instagram</Link>
-            </section>
-            <section>
-              <GetOutQuick />
-            </section>
-          </div>
-        </nav>
-        <div className="off-canvas-overlay" onClick={handleCloseNav} />
-      </div>
+      <MobileNav />
     </header>
   );
 };

@@ -115,13 +115,37 @@ header {
       padding: unset;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-around;
+      padding: 0 1rem;
+
+      button {
+        background-color: colors.$white;
+        color: colors.$teal-400;
+        display: block;
+
+        border: 3px solid colors.$teal-400;
+        border-radius: 12px;
+        
+        &:hover {
+          color: colors.$white;
+          background-color: colors.$teal-400;
+        }
+
+        &.close {
+          float: right;
+
+        }
+
+        &.get-out-quick {
+          margin:  0 auto;
+        }
+      }
+
       section.links {
         flex-direction: column;
         align-items: baseline;
         gap: 1rem;
 
-        padding: 0 1rem;
 
         font-size: 1rem;
         font-weight: bold;
