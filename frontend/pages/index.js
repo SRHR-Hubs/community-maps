@@ -47,7 +47,7 @@ const IndexPage = ({
                   sexual and reproductive health services in Canada.
                 </strong>
               </p>
-              <a className="btn btn-primary cta">Visit the map</a>
+              <Link href="/map" className="btn btn-primary cta">Visit the map</Link>
             </div>
             <div className="column col hide-md">
               <UndrawIcon name="Online test"/>
@@ -64,7 +64,7 @@ const IndexPage = ({
                 Reproductive Health services during the height of the COVID-19
                 pandemic.
               </p>
-              <a href="" className="btn btn-secondary">Learn more</a>
+              <Link href="/about" className="btn btn-secondary">Learn more</Link>
             </div>
             <div className="column col hide-md">
               <UndrawIcon name="Map dark" />
@@ -84,7 +84,7 @@ const IndexPage = ({
               <p>For all people to have full control to make informed decisions about their sexual and reproductive health and wellness.</p>
               <h3>Our Mission</h3>
               <p>To advocate for and advance Sexual and Reproductive Health and Rights.</p>
-              <a href="" className="btn btn-primary">Learn more</a>
+              <Link href="/about" className="btn btn-primary">Learn more</Link>
             </div>
           </div>
         </section>
