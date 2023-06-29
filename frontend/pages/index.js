@@ -13,6 +13,7 @@ import InstagramFeed from "../components/layout/feed/InstagramFeed";
 import SponsorGrid from "../components/sections/about/SponsorGrid";
 import isProduction from "../hooks/isProduction";
 import Image from "../components/image";
+import NextImage from "next/image";
 import toImageProps from "../hooks/toImageProps";
 import { ChevronRight, HeartHandshake, MapPin } from "lucide-react";
 import { UndrawIcon, useUndraw } from "../lib/undraw";
@@ -47,10 +48,12 @@ const IndexPage = ({
                   sexual and reproductive health services in Canada.
                 </strong>
               </p>
-              <Link href="/map" className="btn btn-primary cta">Visit the map</Link>
+              <Link href="/map" className="btn btn-primary cta">
+                Visit the map
+              </Link>
             </div>
             <div className="column col hide-md">
-              <UndrawIcon name="Online test"/>
+              <UndrawIcon name="Online test" />
             </div>
           </div>
         </section>
@@ -64,7 +67,9 @@ const IndexPage = ({
                 Reproductive Health services during the height of the COVID-19
                 pandemic.
               </p>
-              <Link href="/about" className="btn btn-secondary">Learn more</Link>
+              <Link href="/about" className="btn btn-secondary">
+                Learn more
+              </Link>
             </div>
             <div className="column col hide-md">
               <UndrawIcon name="Map dark" />
@@ -76,15 +81,23 @@ const IndexPage = ({
             <div className="column col-5 col-md-12">
               <h2>About us</h2>
               <div className="hide-md">
-                <UndrawIcon name="Team"/>
+                <UndrawIcon name="Team" />
               </div>
             </div>
             <div className="column col col-md-12 round-card">
               <h3>Our Vision</h3>
-              <p>For all people to have full control to make informed decisions about their sexual and reproductive health and wellness.</p>
+              <p>
+                For all people to have full control to make informed decisions
+                about their sexual and reproductive health and wellness.
+              </p>
               <h3>Our Mission</h3>
-              <p>To advocate for and advance Sexual and Reproductive Health and Rights.</p>
-              <Link href="/about" className="btn btn-primary">Learn more</Link>
+              <p>
+                To advocate for and advance Sexual and Reproductive Health and
+                Rights.
+              </p>
+              <Link href="/about" className="btn btn-primary">
+                Learn more
+              </Link>
             </div>
           </div>
         </section>
@@ -96,14 +109,32 @@ const IndexPage = ({
           </h2>
           {isProduction() && <InstagramFeed />}
         </section>
-        <section id="our-sponsors">
+        <section id="mailing-list">
+          <div className="columns">
+            <div className="column col-6 col-md-12">
+              <h2>Join our mailing list</h2>
+              <p>
+                To stay in the loop regarding map improvements/updates, the
+                chance to participate in community consultation sessions, and
+                more!
+              </p>
+              <Link href="" className="btn btn-secondary cta">
+                Sign up
+              </Link>
+            </div>
+            <div className="column col hide-md">
+              <img src="/svg/MailingList.svg" />
+            </div>
+          </div>
+        </section>
+        {/* <section id="our-sponsors">
           <h2>
             <Trans i18nKey="pages.home.sections.our-sponsors.title">
               Funded by:
             </Trans>
           </h2>
           <SponsorGrid sponsorImages={sponsorImages} />
-        </section>
+        </section> */}
       </PageLayout>
     </>
   );
@@ -137,12 +168,8 @@ export async function getStaticProps({ params, locale }) {
 
   const otherImages = {
     aboutTheMap: toImageProps({
-      ...(await getBlurUrl("media/map_screenshot.png")),
+      ...(await getBlurUrl("media/Homepage_banner_rbzflv")),
       alt: "A screenshot of the Community Map in action, with dark green map markers dotting a map of Toronto.",
-    }),
-    aboutTheTeam: toImageProps({
-      ...(await getBlurUrl("branding/banner_torrk9")),
-      alt: "A banner that reads 'SRHR Hubs'.",
     }),
   };
 

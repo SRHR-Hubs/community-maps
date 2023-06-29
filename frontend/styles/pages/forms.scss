@@ -35,6 +35,13 @@
     min-height: 8em !important;
   }
 
+
+  fieldset.cog-choice--checkboxes {
+    // TODO: this is a fix to make every set of checkboxes
+    // behave like it has cog-col--24 set on it.
+    width: 100%;
+  }
+
   .el-checkbox-group {
     display: flex;
     gap: 10px;

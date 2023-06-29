@@ -106,6 +106,15 @@
     }
   }
 
+  #mailing-list {
+    background-color: colors.$teal-200;
+
+    img {
+      width: 100%;
+      padding: 0 10%;
+    }
+  }
+
   #our-sponsors {
     background-color: colors.$white;
     color: colors.$darkblue-400;
