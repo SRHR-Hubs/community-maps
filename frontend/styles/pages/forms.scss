@@ -1,0 +1,101 @@
+@use "../variables";
+@use "../colors";
+@use "../mixins";
+
+#contact-form {
+  form.cog-1 {
+    --form__margins: 2em;
+    position: relative;
+    z-index: 0;
+  }
+  header.cog-header {
+    background-color: colors.$white;
+    color: colors.$teal-400;
+    --header__padding-bottom: 2em;
+    border-bottom: 3px solid colors.$teal-400;
+
+    h1 {
+      font-weight: 800;
+    }
+  }
+
+  .cog-label {
+    font-weight: bold;
+    margin-bottom: 0rem;
+  }
+
+  input[type="text"],
+  label.el-checkbox,
+  textarea {
+    padding: 8px 12px;
+    border-radius: 6px;
+  }
+
+  textarea {
+    min-height: 8em !important;
+  }
+
+  .el-checkbox-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    font-size: 14px;
+  }
+
+  label.el-checkbox {
+    border: 3px solid colors.$teal-400;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    margin: 0;
+
+    font-weight: bold;
+    color: colors.$teal-400;
+
+    &:hover,
+    &:has(.is-focus) {
+      background-color: colors.$teal-400;
+      color: colors.$white;
+
+      .el-checkbox__inner {
+        background-color: colors.$white;
+      }
+    }
+
+    &.cog-checkable__allow-other {
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-right: 4px;
+    }
+
+    input[type="checkbox"] {
+      height: 0;
+      width: 0;
+    }
+    .el-checkbox__input {
+      .el-checkbox__inner {
+        border: 1px solid colors.$teal-400;
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        margin-right: 8px;
+        border-radius: 100%;
+
+        transition: background-color 0.2s;
+      }
+      &.is-checked {
+        .el-checkbox__inner {
+          background-color: colors.$teal-400;
+          border-color: colors.$white;
+        }
+      }
+    }
+
+    &:hover .el-checkbox__inner,
+    .is- {
+      .el-checkbox__inner {
+        background-color: colors.$teal-400;
+      }
+    }
+  }
+}
