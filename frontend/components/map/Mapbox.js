@@ -2,13 +2,11 @@ import mapboxGL from "mapbox-gl";
 import isServer from "../../hooks/isServer";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 
-export function makeMap({ ref, initSource, on }) {
-  if (isServer() || !ref.current) {
-    return;
-  }
+export function makeMap({ container, initSource }) {
   const map = new mapboxGL.Map({
-    container: ref.current,
+    container,
     accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN,
     style: "mapbox://styles/mapbox/streets-v11?optimize=true",
     // glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
@@ -54,8 +52,6 @@ export function makeMap({ ref, initSource, on }) {
         },
         "service-points"
       );
-
-      on?.load?.(map);
     });
   });
 
@@ -73,38 +69,29 @@ export function makeMap({ ref, initSource, on }) {
 
 const MapboxGLMap = ({ initSource, on = {}, instance: parentInstance }) => {
   const containerRef = useRef(null);
-  const [instance, setInstance] = useState(null);
+  const mapRef = useRef(null);
+
+  const unmount = () => {
+    console.log("Unmounting map");
+    mapRef.current.remove();
+  };
 
   useEffect(() => {
-    if (!instance) {
-      makeMap({
-        ref: containerRef,
-        initSource,
-        on: {
-          load: (instance) => {
-            setInstance(instance);
-            parentInstance.set(instance);
-          },
-          ...on,
-        },
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [instance]);
+    if (mapRef.current) return;
+    mapRef.current = makeMap({
+      container: containerRef.current,
+      initSource,
+    });
 
-  useEffect(() => {
+    window.addEventListener("beforeunload", unmount);
+
     return () => {
-      instance?.remove();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+      console.log("Map mounted");
+      window.removeEventListener("beforeunload", unmount);
+    };
+  }, []);
 
-  return (
-    <figure
-      className="mapboxgl-map"
-      ref={(el) => (containerRef.current = el)}
-    />
-  );
+  return <figure className="mapboxgl-map" ref={containerRef} />;
 };
 
 export default MapboxGLMap;

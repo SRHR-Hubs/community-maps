@@ -22,12 +22,70 @@ const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   ssr: false,
 });
 
-const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
+const toGeoJSON = (data) => {
+  return {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: data.map(({ _geo, ...properties }) => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [_geo.lng, _geo.lat],
+        },
+        properties,
+      })),
+    },
+  };
+};
+
+const MapHome = ({ slug, title, description, initQuery }) => {
+  const seoInfo = {
+    title,
+    description,
+    canonical: slug,
+  };
+
+  const { geodata: geodataIndex } = useSearch();
+
+  const [geodata, setGeodata] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      setGeodata((await geodataIndex.getDocuments({ limit: 999 })).results);
+    })();
+  }, []);
+
+  return (
+    <>
+      <SEO {...seoInfo} />
+      <PageLayout
+        renderHeader={false}
+        renderContactSection={false}
+        renderFooter={false}
+        id="community-map"
+      >
+        <div className="map-overlay">
+          <MapHeader />
+          <div className="map-viewport">
+            <MapboxGLMap initSource={toGeoJSON(geodata)} />
+            {/* <OmnisearchContainer /> */}
+            {/* <MapFilterContainer ready={tagsReady} /> */}
+          </div>
+        </div>
+        <GetOutQuick />
+      </PageLayout>
+    </>
+  );
+};
+
+const _MapHome = ({ slug, title, description, initQuery }) => {
   const { state, control } = useOmnisearch();
+  const geoJSON = {};
 
   const [mapInstance, setMapInstance] = useState(null);
   const [tagsReady, setTagsReady] = useState(false);
-  const { services: serviceIndex, tags: tagIndex } = useSearch();
+  const { services: serviceIndex, tags: tagIndex, geodata } = useSearch();
   const [filterExpr, setFilterExpr] = useState(null);
 
   const [selectedService, setSelectedService] = useState(
@@ -53,6 +111,8 @@ const MapHome = ({ geoJSON, slug, title, description, initQuery }) => {
 
     if (!tagsReady) {
       (async () => {
+        const data = await geodata.getDocuments({ limit: 999 });
+        console.log(toGeoJSON(data.results));
         if (initQuery?.tag) {
           const tags = [].concat(initQuery.tag);
           const { hits: hydratedTags } = await tagIndex.search("", {
@@ -224,15 +284,9 @@ export default MapHome;
 
 export async function getServerSideProps({ locale, query: initQuery }) {
   const pageProps = await PageService.getPageProps("map");
-  const query = {
-    published: true,
-  };
-
-  const geoJSON = await ServiceService.getGeoJSON({ query });
 
   return {
     props: {
-      geoJSON,
       ...pageProps,
       ...(await useServerI18n(locale)),
       initQuery,
