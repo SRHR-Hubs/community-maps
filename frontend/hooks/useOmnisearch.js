@@ -7,8 +7,11 @@ const useOmnisearch = () => useContext(OmnisearchContext);
 const _useOmnisearch = ({ init }) => {
   const { services, facets, tags } = useSearch();
 
-  const reducer = (state, action) => {
-
+  const reducer = (state, { type, ...payload }) => {
+    switch (type) {
+      case "set":
+        return { state, ...payload };
+    }
   };
 
   const load = (initArg) => ({

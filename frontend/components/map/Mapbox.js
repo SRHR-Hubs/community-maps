@@ -1,8 +1,6 @@
 import mapboxGL from "mapbox-gl";
-import isServer from "../../hooks/isServer";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
 
 export function makeMap({ container, initSource }) {
   const map = new mapboxGL.Map({
@@ -67,7 +65,7 @@ export function makeMap({ container, initSource }) {
   return map;
 }
 
-const MapboxGLMap = ({ initSource, on = {}, instance: parentInstance }) => {
+const MapboxGLMap = ({ initSource, on = {} }) => {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
 
@@ -86,10 +84,9 @@ const MapboxGLMap = ({ initSource, on = {}, instance: parentInstance }) => {
     window.addEventListener("beforeunload", unmount);
 
     return () => {
-      console.log("Map mounted");
       window.removeEventListener("beforeunload", unmount);
     };
-  }, []);
+  }, [initSource]);
 
   return <figure className="mapboxgl-map" ref={containerRef} />;
 };
