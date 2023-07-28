@@ -38,7 +38,9 @@ jobs:
   deploy_meilisearch:
     name: Deploy Meilisearch
     runs-on: ubuntu-latest
-    environment: staging
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
     needs: [setup_env]
     
     env:
@@ -57,7 +59,6 @@ jobs:
               --build-only \
               --copy-config \
               --now \
-              --no-deploy \
               --remote-only \
               --region $FLY_REGION \
               --org $FLY_ORG \
@@ -140,7 +141,9 @@ jobs:
   deploy_django:
     name: Deploy Django
     runs-on: ubuntu-latest
-    environment: staging
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
     needs: [setup_env, deploy_meilisearch, provision_postgres]
 
     env:
@@ -162,7 +165,6 @@ jobs:
             --build-only \
             --copy-config \
             --now \
-            --no-deploy \
             --remote-only \
             --region $FLY_REGION \
             --org $FLY_ORG \
@@ -202,7 +204,9 @@ jobs:
   deploy_next:
     name: Deploy Next
     runs-on: ubuntu-latest
-    environment: staging
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
     needs: [setup_env, deploy_meilisearch, deploy_django]
 
     env:
@@ -229,6 +233,7 @@ jobs:
           ENV_NEXT_PUBLIC_MAPBOX_TOKEN: ${{ vars.MAPBOX_TOKEN }}
           ENV_NEXT_PUBLIC_COGNITO_KEY: ${{ vars.COGNITO_KEY }}
       - name: Launch app
+        id: deploy
         working-directory: frontend
         run: |
           flyctl launch \
@@ -238,7 +243,12 @@ jobs:
             --remote-only \
             --region $FLY_REGION \
             --org $FLY_ORG \
-          ;
+          | while IFS= read -r line; do
+              if grep -q '^Visit your newly deployed app' <<< $line; then
+                echo ${line%/*} | awk '{print "url="$NF}' >> $GITHUB_OUTPUT
+              fi
+              echo $line
+              done
 
   teardown:
     name: Tear down all apps with this slug
