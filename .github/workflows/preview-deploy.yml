@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     name: Set up workflow environment
+    if: github.event.action != 'closed'
     steps:
       - name: Generate deploy slugs
         id: generate_slugs
@@ -255,6 +256,7 @@ jobs:
 
   teardown:
     name: Tear down all apps with this slug
+    if: ${{ failure() || github.event.action == 'closed' }}
     runs-on: ubuntu-latest
     if: ${{ failure() || github.event.action == 'closed' }}
     needs: [setup_env, deploy_meilisearch, deploy_django, deploy_next]
