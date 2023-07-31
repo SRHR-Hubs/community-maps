@@ -117,8 +117,8 @@ const Omnisearch = ({ on }) => {
 
   return (
     <div className="form-group" id="omnisearch">
-      <div className="form-autocomplete">
-        <div className="form-autocomplete-input form-input">
+      <div className="OLD__form-autocomplete">
+        <div className="form-input">
           <label htmlFor="omnisearch-input" className="text-assistive">
             <Trans i18nKey="assistive.omnisearch.label">
               Enter any search query for SRHR services here.

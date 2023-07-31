@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@cloudinary/url-gen": "^1.8.6",
+    "clsx": "^1.2.1",
     "i18next": "^22.4.9",
     "i18next-browser-languagedetector": "^7.0.1",
     "i18next-http-backend": "^2.1.1",
@@ -56,6 +57,7 @@
     "cross-env": "^7.0.3",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.0",
-    "storybook": "^7.0.0-alpha.54"
+    "storybook": "^7.0.0-alpha.54",
+    "undraw-js": "^1.0.4"
   }
 }
