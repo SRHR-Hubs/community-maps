@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     name: Set up workflow environment
-    if: github.event.action != 'closed'
     steps:
       - name: Generate deploy slugs
         id: generate_slugs
@@ -38,6 +37,7 @@ jobs:
   deploy_meilisearch:
     name: Deploy Meilisearch
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     environment:
       name: staging
       url: ${{ steps.deploy.outputs.url }}
@@ -106,6 +106,7 @@ jobs:
   provision_postgres:
     name: Provision Postgres cluster
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     environment: staging
     needs: [setup_env]
 
@@ -141,6 +142,7 @@ jobs:
   deploy_django:
     name: Deploy Django
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     environment:
       name: staging
       url: ${{ steps.deploy.outputs.url }}
@@ -204,6 +206,7 @@ jobs:
   deploy_next:
     name: Deploy Next
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     environment:
       name: staging
       url: ${{ steps.deploy.outputs.url }}
@@ -252,14 +255,15 @@ jobs:
 
   teardown:
     name: Tear down all apps with this slug
-    if: ${{ failure() || github.event.action == 'closed' }}
     runs-on: ubuntu-latest
+    if: ${{ failure() || github.event.action == 'closed' }}
     needs: [setup_env, deploy_meilisearch, deploy_django, deploy_next]
     env:
       slug: ${{ needs.setup_env.outputs.slug }}
     steps:
        - uses: superfly/flyctl-actions/setup-flyctl@master
        - run: |
+          if [ -n "$slug" ]; then exit 1
           flyctl apps list \
           | grep "${slug}" \
           | awk '{print $1}' \
