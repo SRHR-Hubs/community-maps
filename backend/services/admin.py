@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.forms import widgets
 from django.utils import timezone
 from django.db import models as m
@@ -7,6 +7,8 @@ from nonrelated_inlines.admin import NonrelatedTabularInline
 
 from . import models
 from pages.models import I18nSection
+from search import client
+from meilisearch import errors as meili_errors
 
 
 from jsoneditor.forms import JSONEditor
@@ -99,6 +101,70 @@ class ServiceAdmin(GeoModelAdmin):
     def unpublish_selected(self, request, queryset):
         queryset.update(published=False)
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        # Update relevant meilisearch indexes
+        published_services = models.Service.objects.filter(published=True)
+        subset_with_location = published_services.filter(
+            location__isnull=False)
+
+        # update documents
+        try:
+            settings = client.index('services').get_settings()
+
+            searchable_fields = settings.get('searchableAttributes', [])
+            if searchable_fields == ['*']:
+                raise NotImplemented
+
+            documents = []
+
+            for service in published_services:
+                flat_tags = [{
+                    'id': tag.id,
+                    tag.facet.translation_id: tag.value
+                } for tag in service.tags.all()]
+
+                fields = {
+                    field: getattr(service, field)
+                    for field in searchable_fields
+                }
+
+                documents.append({
+                    'id': service.id,
+                    **fields,
+                    'tags': flat_tags
+                })
+
+            client.refresh('services', documents)
+
+            self.message_user(
+                request, 'Updated Meilisearch services index successfully.',
+                messages.SUCCESS
+            )
+
+        except meili_errors.MeiliSearchApiError as e:
+            self.message_user(
+                request, f'Updating Meilisearch services index failed with error {e}',
+                messages.ERROR
+            )
+
+        # update geodata repo
+        try:
+            client.refresh('geodata', [
+                service.to_geodata() for service in subset_with_location
+            ], primary_key='slug')
+
+            self.message_user(
+                request, "Updated Meilisearch geodata index successfully.",
+                messages.SUCCESS
+            )
+        except meili_errors.MeiliSearchApiError as e:
+            self.message_user(
+                request, f'Updating Meilisearch geodata index failed with error {e}',
+                messages.ERROR
+            )
+
 
 class FacetTranslationInline(NonrelatedTabularInline):
     model = I18nSection
@@ -147,6 +213,7 @@ class FacetAdmin(admin.ModelAdmin):
     # formfield_overrides = {
     #     m.JSONField: {'widget': FlatJsonWidget},
     # }
+
 
 @admin.register(models.FacetTag)
 class FacetTagAdmin(admin.ModelAdmin):

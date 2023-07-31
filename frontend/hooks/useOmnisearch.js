@@ -1,6 +1,28 @@
-import { useContext } from "react";
+import { useContext, useReducer } from "react";
+import useSearch from "./useSearch";
 import { OmnisearchContext } from "../context/providers/OmnisearchProvider";
 
 const useOmnisearch = () => useContext(OmnisearchContext);
+
+const _useOmnisearch = ({ init }) => {
+  const { services, facets, tags } = useSearch();
+
+  const reducer = (state, { type, ...payload }) => {
+    switch (type) {
+      case "set":
+        return { state, ...payload };
+    }
+  };
+
+  const load = (initArg) => ({
+    searchTerm: "",
+    serviceHits: null,
+    tagHits: null,
+    selectedTags: [],
+    ...initArg,
+  });
+
+  return useReducer(reducer, init, load);
+};
 
 export default useOmnisearch;

@@ -55,8 +55,9 @@
     "@storybook/testing-library": "^0.0.13",
     "@svgr/webpack": "^6.5.1",
     "cross-env": "^7.0.3",
-    "eslint": "8.26.0",
+    "eslint": "^8.26.0",
     "eslint-config-next": "13.0.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
     "storybook": "^7.0.0-alpha.54",
     "undraw-js": "^1.0.4"
   }

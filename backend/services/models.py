@@ -6,7 +6,7 @@ from django_jsonform.models.fields import JSONField as SchemaJSONField
 
 from functools import partial
 from pages.models import I18nSection
-from search import client
+from django.utils.text import Truncator
 from . import schemas
 
 
@@ -110,6 +110,21 @@ class Service(models.Model, GeoItem):
     @classmethod
     def sentinel(cls):
         return cls.objects.get_or_create(**schemas.blank_service)
+
+    def to_geodata(self):
+        assert self.location is not None
+
+        blurb = Truncator(self.description).chars(60)
+
+        return {
+            "slug": self.slug,
+            "name": self.name,
+            "blurb": blurb,
+            "_geo": {
+                "lat": self.location.latitude,
+                "lng": self.location.longitude
+            }
+        }
 
     class Meta:
         ordering = ('id',)

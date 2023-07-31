@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from pages.models import I18nSection
 from . import models, serializers
 from django.db.models import Count, F
-from search import client, refresh_client
+from search import client
 
 # from search import client, searchable_fields
 
@@ -172,29 +172,29 @@ class FacetViewset(vs.ModelViewSet):
                 'value': list(values),
             })
 
-        if request.method == 'PUT':
-            if q_published != "1":
-                return Response({
-                    'error': 'Cannot upload facets from unpublished services to search index.',
-                }, status=400)
+        # if request.method == 'PUT':
+        #     if q_published != "1":
+        #         return Response({
+        #             'error': 'Cannot upload facets from unpublished services to search index.',
+        #         }, status=400)
 
-            new_index_job = client.create_index('facets_new')
+        #     new_index_job = client.create_index('facets_new')
 
-            new_index = client.index('facets_new')
-            new_index.update_settings(config)
-            new_index.add_documents(
-                documents, primary_key='id'
-            )
+        #     new_index = client.index('facets_new')
+        #     new_index.update_settings(config)
+        #     new_index.add_documents(
+        #         documents, primary_key='id'
+        #     )
 
-            response = {
-                'create_job': new_index_job,
-                'swap_job': client.swap_indexes([
-                    {'indexes': ['facets', 'facets_new']}
-                ]),
-                'delete_job': new_index.delete()
-            }
+        #     response = {
+        #         'create_job': new_index_job,
+        #         'swap_job': client.swap_indexes([
+        #             {'indexes': ['facets', 'facets_new']}
+        #         ]),
+        #         'delete_job': new_index.delete()
+        #     }
 
-            return Response(response)
+        #     return Response(response)
 
         assert request.method == 'GET'
         return Response({
@@ -254,9 +254,9 @@ class FacetTagViewSet(vs.ModelViewSet):
         #     # 'name': tag['name']
         # } for tag in distributions]
 
-        if request.method == 'PUT':
-            jobs = refresh_client('tags', documents)
-            return Response(jobs)
+        # if request.method == 'PUT':
+        #     jobs = refresh_client('tags', documents)
+        #     return Response(jobs)
 
         assert request.method == 'GET'
         return Response(documents)

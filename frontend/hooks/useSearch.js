@@ -5,6 +5,7 @@ const useSearch = () => {
         services: client.index('services'),
         facets: client.index('facets'),
         tags: client.index('tags'),
+        geodata: client.index('geodata'),
     }
 }
 

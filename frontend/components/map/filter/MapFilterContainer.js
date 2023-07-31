@@ -1,13 +1,12 @@
-import { useState, useEffect, useContext } from "react";
+import clsx from "clsx";
+import { useMemo, useState } from "react";
 import { Trans } from "react-i18next";
-import { OmnisearchContext } from "../../../context/providers/OmnisearchProvider";
 import syncStateToQuery from "../../../hooks/syncStatetoQuery";
 import useOmnisearch from "../../../hooks/useOmnisearch";
-import useSearch from "../../../hooks/useSearch";
 
 const MapFilterChip = ({ filter: { name }, ...props }) => (
   <span
-    className={"filter-chip chip " + (props["data-badge"] && "badge")}
+    className={clsx("filter-chip chip", { badge: props["data-badge"] })}
     role="menuitem"
     tabIndex={0}
     {...props}
@@ -16,28 +15,25 @@ const MapFilterChip = ({ filter: { name }, ...props }) => (
   </span>
 );
 
-const MapFilterModal = ({ filter, onSelect, handleClose, selectedTags }) => {
-  const { tags: tagIndex } = useSearch();
-  const [tagValues, setTagValues] = useState(null);
-  useEffect(() => {
-    if (filter) {
-      (async () => {
-        const { hits } = await tagIndex.search("", {
-          filter: `facet.translation_id = ${filter.id}`,
-          limit: 999,
-          sort: ["value:asc"],
-        });
-        setTagValues(hits);
-      })();
-    } else {
-      setTagValues(null);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+const MapFilterModal = ({ facet, handleClose }) => {
+  const {
+    state: { selectedTags },
+    control: { setSelectedTags },
+    data: { tags },
+  } = useOmnisearch();
 
-  if (!filter) return null;
+  if (facet === null) return null;
 
-  const { name } = filter;
+  const handleChange =
+    (tag) =>
+    ({ target }) =>
+      target.checked
+        ? setSelectedTags(selectedTags.concat(tag))
+        : setSelectedTags(selectedTags.filter(({ id }) => id !== tag.id));
+
+  const tagValues = tags
+    .filter((tag) => tag.facet.translation_id === facet.id)
+    .sort((a, b) => a.value.localeCompare(b.value));
 
   return (
     <div className="modal active" id="filter-modal">
@@ -49,20 +45,17 @@ const MapFilterModal = ({ filter, onSelect, handleClose, selectedTags }) => {
             aria-label="Close"
             onClick={handleClose}
           ></a>
-          <div className="modal-title h3">{name}</div>
+          <div className="modal-title h3">{facet.name}</div>
         </div>
         <div className="modal-body">
           <div className="content">
             <div className="form-group form-horizontal d-flex">
-              {tagValues?.map((tag) => (
-                <div
-                  key={tag.value}
-                  className="col-6 col-sm-12 d-flex d-centered"
-                >
+              {tagValues.map((tag) => (
+                <div key={tag.id} className="col-6 col-sm-12 d-flex d-centered">
                   <label className="form-checkbox form-inline">
                     <input
                       type="checkbox"
-                      onChange={onSelect(tag)}
+                      onChange={handleChange(tag)}
                       checked={selectedTags.some(
                         (selected) => selected.id === tag.id
                       )}
@@ -80,25 +73,17 @@ const MapFilterModal = ({ filter, onSelect, handleClose, selectedTags }) => {
   );
 };
 
-const MapFilterContainer = ({ ready }) => {
+const MapFilterContainer = ({ selectedTagIDs, selectedServiceID }) => {
   const [show, setShow] = useState(true);
-  const [selectedFilter, setSelectedFilter] = useState(null);
-  const [facets, setFacets] = useState([]);
+  const [selectedFacet, setSelectedFacet] = useState(null);
   const {
     state: { selectedTags },
     control,
+    data: { tags, facets },
   } = useOmnisearch();
 
-  useEffect(() => {
-    (async () => {
-      const { facets: facetIndex } = useSearch();
-      const { results } = await facetIndex.getDocuments();
-      setFacets(results);
-    })();
-  }, []);
-
   syncStateToQuery({
-    "filter-modal": selectedFilter?.id,
+    "filter-modal": selectedFacet?.id,
   });
 
   const handleToggleShow = (e) => {
@@ -106,11 +91,11 @@ const MapFilterContainer = ({ ready }) => {
   };
 
   const handleCloseModal = () => {
-    setSelectedFilter(null);
+    setSelectedFacet(null);
   };
 
-  const handleFilterSelect = (filter) => () => {
-    setSelectedFilter(filter);
+  const handleFacetSelect = (facet) => () => {
+    setSelectedFacet(facet);
   };
 
   const handleFilterValueSelect =
@@ -125,13 +110,23 @@ const MapFilterContainer = ({ ready }) => {
 
   const facetsFiltered = new Set(selectedTags.map((tag) => tag.id)).size;
 
+  const facetedTags = useMemo(
+    () =>
+      tags.reduce(
+        (acc, { facet, ...tag }) => ({
+          ...acc,
+          [facet.translation_id]: (acc[facet.translation_id] ?? []).concat(tag),
+        }),
+        {}
+      ),
+    [tags]
+  );
+
   return (
     <>
       <MapFilterModal
-        filter={selectedFilter}
+        facet={selectedFacet}
         handleClose={handleCloseModal}
-        onSelect={handleFilterValueSelect}
-        selectedTags={selectedTags}
       />
       <div id="filter-container" role="menu" data-show={show}>
         <div
@@ -147,9 +142,8 @@ const MapFilterContainer = ({ ready }) => {
             <MapFilterChip
               key={filter.id}
               filter={filter}
-              onClick={handleFilterSelect(filter)}
+              onClick={handleFacetSelect(filter)}
               data-badge={
-                ready &&
                 selectedTags.filter(
                   (tag) => tag.facet.translation_id === filter.id
                 ).length
