@@ -83,7 +83,7 @@ const ServiceDetailPage = ({
               </label>
               <div className="accordion-body">
                 <ul>
-                  {Object.entries(hours).map(([k, v]) => (
+                  {hours.map(([k, v]) => (
                     <li key={k}>
                       <strong>{k}</strong> {v}
                     </li>

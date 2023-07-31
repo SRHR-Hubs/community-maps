@@ -57,9 +57,15 @@ class LocationSerializer(Base):
 
 
 class ServiceSerializer(Base):
-
+    hours = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
     location = LocationSerializer(many=False, read_only=True)
+
+    def get_hours(self, obj):
+        return [
+            (item['key'], item['value'])
+            for item in obj.hours
+        ]
 
     def get_tags(self, obj):
         ret = {}
