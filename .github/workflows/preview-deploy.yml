@@ -79,23 +79,35 @@ jobs:
               fi
               echo $line
               done
-      - name: Install and cache jq
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: jq
-          version: 1.0
+      # - name: Install and cache jq
+      #   uses: awalsh128/cache-apt-pkgs-action@latest
+      #   with:
+      #     packages: jq
+      #     version: 1.0
       - name: Obtain keys
         id: keys
         run: |
-          output=$(\
-            flyctl ssh console \
-              --app $app_name \
-              --quiet \
-              --command 'sh -c "curl -s -X GET $MEILI_HTTP_ADDR/keys -H \"Authorization: Bearer $MEILI_MASTER_KEY\""')
+        
+          curl -s \
+            -X POST $url/keys \
+            -H "Authorization: Bearer $MEILI_MASTER_KEY" \
+            -H "Content-Type: application/json" \
+            --data-binary '{
+              "description": "Frontend key",
+              "actions": ["search", "documents.get"],
+              "indexes": ["*"],
+              "expiresAt": null
+            }'
+
+          output=$(curl -s \
+            -X POST $url/keys \
+            -H "Authorization: Bearer $MEILI_MASTER_KEY"\
+          )
           
           admin_key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
-          public_key=$(echo $output | jq -r '.results[] | select(.name == "Default Search API Key") | .key')
+          public_key=$(echo $output | jq -r '.results[] | select(.name == "Frontend key") | .key')
 
+          echo ":::add-mask:::$admin_key"
           echo "admin_key=$admin_key" >> $GITHUB_OUTPUT
           echo "public_key=$public_key" >> $GITHUB_OUTPUT
     outputs:
