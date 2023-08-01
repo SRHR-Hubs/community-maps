@@ -42,11 +42,11 @@ jobs:
       name: staging
       url: ${{ steps.deploy.outputs.url }}
     needs: [setup_env]
-    
+
     env:
       app_name: ${{ needs.setup_env.outputs.slug }}-meilisearch
       master_key: ${{ needs.setup_env.outputs.slug }}-staging-meili-key
-    
+
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
@@ -87,8 +87,7 @@ jobs:
       - name: Obtain keys
         id: keys
         run: |
-          url=https://$app_name.fly.dev
-        
+          echo "$url"
           curl -s \
             -X POST $url/keys \
             -H "Authorization: Bearer $MEILI_MASTER_KEY" \
@@ -104,7 +103,7 @@ jobs:
             -X POST $url/keys \
             -H "Authorization: Bearer $MEILI_MASTER_KEY"\
           )
-          
+
           admin_key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
           public_key=$(echo $output | jq -r '.results[] | select(.name == "Frontend key") | .key')
 
@@ -115,7 +114,7 @@ jobs:
       url: ${{ steps.deploy.outputs.url }}
       admin_key: ${{ steps.keys.outputs.admin_key }}
       public_key: ${{ steps.keys.outputs.public_key }}
-  
+
   provision_postgres:
     name: Provision Postgres cluster
     runs-on: ubuntu-latest
@@ -151,7 +150,6 @@ jobs:
     outputs:
       app_name: ${{ steps.launch.outputs.app_name }}
 
-  
   deploy_django:
     name: Deploy Django
     runs-on: ubuntu-latest
@@ -214,7 +212,6 @@ jobs:
               done
     outputs:
       url: ${{ steps.deploy.outputs.url }}
-  
 
   deploy_next:
     name: Deploy Next
@@ -238,7 +235,7 @@ jobs:
         uses: skiddph/actions-env@v1.0.3
         with:
           file: frontend/.env
-          prefix: 'ENV_'
+          prefix: "ENV_"
         env:
           ENV_API_HOST: ${{ env.api_host }}
           ENV_CLOUDINARY_CLOUD_NAME: ${{ vars.CLOUDINARY_CLOUD_NAME }}
@@ -274,9 +271,9 @@ jobs:
     env:
       slug: ${{ needs.setup_env.outputs.slug }}
     steps:
-       - uses: superfly/flyctl-actions/setup-flyctl@master
-       - run: |
-          if [ -n "$slug" ]; then exit 1; fi
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: |
+          if [ -z "$slug" ]; then exit 1; fi
           flyctl apps list \
           | grep "${slug}" \
           | awk '{print $1}' \
