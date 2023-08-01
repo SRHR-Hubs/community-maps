@@ -87,6 +87,7 @@ jobs:
       - name: Obtain keys
         id: keys
         run: |
+          url=https://$app_name.fly.dev
         
           curl -s \
             -X POST $url/keys \
@@ -275,7 +276,7 @@ jobs:
     steps:
        - uses: superfly/flyctl-actions/setup-flyctl@master
        - run: |
-          if [ -n "$slug" ]; then exit 1
+          if [ -n "$slug" ]; then exit 1; fi
           flyctl apps list \
           | grep "${slug}" \
           | awk '{print $1}' \
