@@ -87,20 +87,25 @@ jobs:
       - name: Obtain keys
         id: keys
         run: |
+          cat << 'EOF' |
           curl -s \
-            -X POST ${url/https/http}/keys \
+            -X POST $MEILI_HTTP_ADDR/keys \
             -H "Authorization: Bearer $MEILI_MASTER_KEY" \
             -H "Content-Type: application/json" \
-            --data-binary '{
+            --data-binary '\''{
               "description": "Frontend key",
               "actions": ["search", "documents.get"],
               "indexes": ["*"],
               "expiresAt": null
-            }'
+            }'\''
+          EOF
+          xargs -0 -I {} fly ssh console -a $app_name -C "sh -c '{}'" \
+          | jq
 
-          output=$(curl -s \
-            -X POST ${url/https/http}/keys \
-            -H "Authorization: Bearer $MEILI_MASTER_KEY"\
+          output=$(cat << 'EOF' |
+            curl -s \
+            -X POST $MEILI_HTTP_ADDR/keys \
+            -H "Authorization: Bearer $MEILI_MASTER_KEY"
           )
 
           admin_key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
@@ -195,7 +200,7 @@ jobs:
         run: |
           flyctl deploy \
             --app $app_name \
-            --config fly.toml \
+            --config fl20-ci-actions-29abd15d-meilisearchy.toml \
             --remote-only \
             --region $FLY_REGION \
             --env DJANGO_SETTINGS_MODULE=api.settings.staging \
