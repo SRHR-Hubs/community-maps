@@ -88,7 +88,7 @@ jobs:
         id: keys
         run: |
           cat << 'EOF' |
-          curl --verbose \
+          curl -Ss \
             -X POST $MEILI_HTTP_ADDR/keys \
             -H "Authorization: Bearer $MEILI_MASTER_KEY" \
             -H "Content-Type: application/json" \
@@ -101,17 +101,15 @@ jobs:
           EOF
           xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'"
 
-          echo "Hello!"
-
           cat << 'EOF' |
-          curl --verbose \
+          curl -Ss \
             -X GET $MEILI_HTTP_ADDR/keys \
             -H "Authorization: Bearer $MEILI_MASTER_KEY"
           EOF
           xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'" \
           | read output
 
-          echo $output | jq
+          echo $output
 
           admin_key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
           public_key=$(echo $output | jq -r '.results[] | select(.name == "Frontend key") | .key')
