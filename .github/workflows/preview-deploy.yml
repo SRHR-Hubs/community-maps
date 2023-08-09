@@ -93,20 +93,23 @@ jobs:
             -H "Authorization: Bearer $MEILI_MASTER_KEY" \
             -H "Content-Type: application/json" \
             --data-binary '\''{
-              "description": "Frontend key",
+              "name": "Frontend key",
               "actions": ["search", "documents.get"],
               "indexes": ["*"],
               "expiresAt": null
             }'\''
           EOF
-          xargs -0 -I {} fly ssh console -a $app_name -C "sh -c '{}'" \
-          | jq
+          xargs -0 -I {} fly ssh console -a $app_name -C "sh -c '{}'"
 
-          output=$(cat << 'EOF' |
-            curl -s \
-            -X POST $MEILI_HTTP_ADDR/keys \
+          cat << 'EOF' |
+          curl -s \
+            -X GET $MEILI_HTTP_ADDR/keys \
             -H "Authorization: Bearer $MEILI_MASTER_KEY"
-          )
+          EOF
+          xargs -0 -I {} fly ssh console -a $app_name -C "sh -c '{}'" \
+          | read output
+
+          echo $output | jq
 
           admin_key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
           public_key=$(echo $output | jq -r '.results[] | select(.name == "Frontend key") | .key')
