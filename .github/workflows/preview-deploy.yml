@@ -87,9 +87,8 @@ jobs:
       - name: Obtain keys
         id: keys
         run: |
-          echo "$url"
           curl -s \
-            -X POST $url/keys \
+            -X POST ${url/https/http}/keys \
             -H "Authorization: Bearer $MEILI_MASTER_KEY" \
             -H "Content-Type: application/json" \
             --data-binary '{
@@ -100,7 +99,7 @@ jobs:
             }'
 
           output=$(curl -s \
-            -X POST $url/keys \
+            -X POST ${url/https/http}/keys \
             -H "Authorization: Bearer $MEILI_MASTER_KEY"\
           )
 
