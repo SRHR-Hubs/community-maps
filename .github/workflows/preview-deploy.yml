@@ -99,14 +99,14 @@ jobs:
               "expiresAt": null
             }'\''
           EOF
-          xargs -0 -I {} fly ssh console -a $app_name -C "sh -c '{}'"
+          xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'"
 
           cat << 'EOF' |
           curl -s \
             -X GET $MEILI_HTTP_ADDR/keys \
             -H "Authorization: Bearer $MEILI_MASTER_KEY"
           EOF
-          xargs -0 -I {} fly ssh console -a $app_name -C "sh -c '{}'" \
+          xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'" \
           | read output
 
           echo $output | jq
