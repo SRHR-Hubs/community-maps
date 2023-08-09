@@ -101,13 +101,12 @@ jobs:
           EOF
           xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'"
 
-          cat << 'EOF' |
+          output=$(cat << 'EOF' |
           curl -Ss \
             -X GET $MEILI_HTTP_ADDR/keys \
             -H "Authorization: Bearer $MEILI_MASTER_KEY"
           EOF
-          xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'" \
-          | read output
+          xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'")
 
           echo $output
 
