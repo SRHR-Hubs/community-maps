@@ -101,6 +101,8 @@ jobs:
           EOF
           xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'"
 
+          echo "Hello!"
+
           cat << 'EOF' |
           curl -s \
             -X GET $MEILI_HTTP_ADDR/keys \
