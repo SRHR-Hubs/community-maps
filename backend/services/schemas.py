@@ -1,9 +1,41 @@
+def _ordered_key_value_list_schema(
+        key_placeholder,
+        value_placeholder):
+    return {
+        'type': 'array',
+        'items': {
+            'type': 'dict',
+            'keys': {
+                'key': {
+                    'type': 'string',
+                    'placeholder': key_placeholder
+                },
+                'value': {
+                    'type': 'string',
+                    'placeholder': value_placeholder
+                }
+            },
+        }
+    }
+
+PHONE_NUMBERS_SCHEMA = _ordered_key_value_list_schema(
+    'Primary', '(xxx)-xxx-xxxx'
+)
+SOCIALS_ADMIN_SCHEMA = _ordered_key_value_list_schema(
+    'Twitter', '@srhrhubs'
+)
+HOURS_ADMIN_SCHEMA = _ordered_key_value_list_schema(
+    'Monday', '10am-3pm'
+)
+
 phone_numbers = {
     'default': {
         'primary': None
     },
     'help_text': "Example keys: 'primary', 'emergency', etc.",
 }
+
+
 
 socials = {
     'default': {
@@ -13,17 +45,16 @@ socials = {
     'help_text': "Example keys: 'twitter', 'instagram', etc."
 }
 
+
 hours = {
     'default': {
-        key: None for key in [
-            'Sunday', 'Monday',
-            'Tuesday', 'Wednesday',
-            'Thursday', 'Friday',
-            'Saturday', 'extra'
+        'hours': [
+            [key, "test"] for key in
+            ['Monday', 'Tuesday',]
         ]
     },
     'verbose_name': 'Opening hours',
-    'help_text': "Example keys: 'monday', 'tuesday', 'note', 'alert', etc.",
+    'help_text': "Example keys: 'Monday', 'Tuesday', 'Weekdays'...",
 }
 
 extra = {

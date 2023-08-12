@@ -83,7 +83,7 @@ const ServiceDetailPage = ({
               </label>
               <div className="accordion-body">
                 <ul>
-                  {Object.entries(hours).map(([k, v]) => (
+                  {hours.map(([k, v]) => (
                     <li key={k}>
                       <strong>{k}</strong> {v}
                     </li>
@@ -154,6 +154,8 @@ export async function getStaticProps({ params, locale }) {
   const pageProps = await PageService.getPageProps("service-detail");
 
   service.description = await serialize(service.description);
+
+  console.log(service.hours, process.env.API_HOST)
 
   return {
     props: {

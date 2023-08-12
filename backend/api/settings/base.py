@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'cloudinary',
     'mdeditor',
+    'django_jsonform',
     'flat_json_widget',
     'jsoneditor',
     'django_admin_geomap',
