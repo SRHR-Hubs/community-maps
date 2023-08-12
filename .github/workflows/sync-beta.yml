@@ -99,6 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event.pull_request.merged == true
     environment: beta
+    needs: [provision_if_not_exists]
     # outputs:
     #   admin_key: ${{ steps.fetch_keys.outputs.admin_key }}
     #   public_key: ${{ steps.fetch_keys.outputs.public_key }}
