@@ -3,8 +3,6 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from .base import *
-
 print(f"Loading settings: {__file__}")
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -14,3 +12,5 @@ load_dotenv(
     verbose=True,
     override=False
 )
+
+from .base import *

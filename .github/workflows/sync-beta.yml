@@ -1,0 +1,200 @@
+name: Deploy beta branch
+on:
+  push:
+    branches:
+      - beta
+  pull_request:
+    types: [closed]
+    branches:
+      - beta
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  FLY_REGION: yyz
+  FLY_ORG: personal
+  prefix: community-maps-beta
+  meili_key: ${{ secrets.MEILI_MASTER_KEY }}
+
+jobs:
+  provision_if_not_exists:
+    name: Provision all apps if they don't currently exist
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    environment: beta
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Provision Postgres
+        run: |
+          app_name=$prefix-db
+          if ! flyctl status --app $app_name &> /dev/null; then
+            flyctl postgres create \
+              --name $app_name \
+              --fork-from community-maps-db \
+              --vm-size shared-cpu-1x \
+              --volume-size 1 \
+              --initial-cluster-size 1 \
+              --region $FLY_REGION \
+              --org $FLY_ORG \
+              ;
+          else
+            echo "App $app_name already exists."
+          fi
+      - name: Provision Meilisearch
+        working-directory: search
+        run: |
+          app_name=$prefix-meilisearch
+          if ! flyctl status --app $app_name &> /dev/null; then
+            flyctl launch \
+            --name $app_name \
+            --no-deploy \
+            --build-only \
+            --copy-config \
+            --now \
+            --remote-only \
+            --region $FLY_REGION \
+            --org $FLY_ORG \
+            ;
+          else
+            echo "App $app_name already exists."
+          fi
+      - name: Provision Django
+        working-directory: backend
+        run: |
+          app_name=$prefix-django
+          if ! flyctl status --app $app_name &> /dev/null; then
+            flyctl launch \
+            --name $app_name \
+            --no-deploy \
+            --build-only \
+            --copy-config \
+            --now \
+            --remote-only \
+            --region $FLY_REGION \
+            --org $FLY_ORG \
+            ;
+          else
+            echo "App $app_name already exists."
+          fi
+      - name: Provision Next
+        working-directory: frontend
+        run: | 
+          app_name=$prefix
+          if ! flyctl status --app $app_name &> /dev/null; then
+            flyctl launch \
+            --name $app_name \
+            --no-deploy \
+            --build-only \
+            --copy-config \
+            --now \
+            --remote-only \
+            --region $FLY_REGION \
+            --org $FLY_ORG \
+            ;
+          else
+            echo "App $app_name already exists."
+          fi
+  deploy_apps:
+    name: Deploy beta apps
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    environment: beta
+    needs: [provision_if_not_exists]
+    # outputs:
+    #   admin_key: ${{ steps.fetch_keys.outputs.admin_key }}
+    #   public_key: ${{ steps.fetch_keys.outputs.public_key }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy Meilisearch
+        working-directory: search
+        run: |
+          app_name=$prefix-meilisearch
+          flyctl deploy \
+            --app $app_name \
+            --config fly.toml \
+            --remote-only \
+            --region $FLY_REGION \
+            --env MEILI_MASTER_KEY=$meili_key \
+            ;
+      - name: Fetch Meilisearch keys
+        id: fetch_keys
+        run: |
+          app_name=$prefix-meilisearch
+          cat << 'EOF' |
+          curl -Ss \
+            -X POST $MEILI_HTTP_ADDR/keys \
+            -H "Authorization: Bearer $MEILI_MASTER_KEY" \
+            -H "Content-Type: application/json" \
+            --data-binary '\''{
+              "name": "Frontend key",
+              "actions": ["search", "documents.get"],
+              "indexes": ["*"],
+              "expiresAt": null
+            }'\''
+          EOF
+          xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'"
+
+          output=$(cat << 'EOF' |
+          curl -Ss \
+            -X GET $MEILI_HTTP_ADDR/keys \
+            -H "Authorization: Bearer $MEILI_MASTER_KEY"
+          EOF
+          xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'")
+
+          admin_key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
+          public_key=$(echo $output | jq -r '.results[] | select(.name == "Frontend key") | .key')
+
+          echo ":::add-mask:::$admin_key"
+          echo "admin_key=$admin_key" >> $GITHUB_OUTPUT
+          echo "public_key=$public_key" >> $GITHUB_OUTPUT
+      - name: Deploy Django
+        working-directory: backend
+        env:
+          meili_admin_key: ${{ steps.fetch_keys.outputs.admin_key }}
+          meili_host: https://${{ env.prefix }}-meilisearch.fly.dev
+        run: |
+          app_name=$prefix-django
+          postgres_app=$prefix-db
+          
+          flyctl postgres attach $postgres_app \
+            --app $app_name \
+            --database-user beta \
+            --database-name "community_maps_django" \
+            --yes \
+            ;
+          
+          flyctl deploy \
+            --app $app_name \
+            --config fly.toml \
+            --remote-only \
+            --region $FLY_REGION \
+            --env DJANGO_SETTINGS_MODULE=api.settings.staging \
+            --env ALLOWED_HOSTS=${app_name}.fly.dev \
+            --env CSRF_TRUSTED_ORIGINS=https://${app_name}.fly.dev \
+            --env MEILISEARCH_HOST=$meili_host \
+            --env MEILISEARCH_KEY=$meili_admin_key \
+            ;
+      - name: Mount Next env file
+        uses: skiddph/actions-env@v1.0.3
+        with:
+          file: frontend/.env
+          prefix: "ENV_"
+        env:
+          ENV_CLOUDINARY_CLOUD_NAME: ${{ vars.CLOUDINARY_CLOUD_NAME }}
+          ENV_CLOUDINARY_API_KEY: ${{ vars.CLOUDINARY_API_KEY }}
+          ENV_API_HOST: https://${{ env.prefix }}-django-fly.dev
+          ENV_NEXT_PUBLIC_HOST: https://${{ env.prefix }}.fly.dev
+          ENV_NEXT_PUBLIC_MEILISEARCH_HOST: https://${{ env.prefix }}-meilisearch.fly.dev
+          ENV_NEXT_PUBLIC_MEILISEARCH_KEY: ${{ steps.fetch_keys.outputs.public_key }}
+          ENV_NEXT_PUBLIC_MAPBOX_TOKEN: ${{ vars.MAPBOX_TOKEN }}
+          ENV_NEXT_PUBLIC_COGNITO_KEY: ${{ vars.COGNITO_KEY }}
+      - name: Deploy Next
+        working-directory: frontend
+        run: |
+          flyctl deploy \
+            --app $app_name \
+            --config fly.toml \
+            --remote-only \
+            --region $FLY_REGION \
+          ;
