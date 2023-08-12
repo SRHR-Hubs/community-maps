@@ -111,11 +111,12 @@ jobs:
         run: |
           app_name=$prefix-meilisearch
           flyctl deploy \
-            --app $app_name
+            --app $app_name \
             --config fly.toml \
             --remote-only \
             --region $FLY_REGION \
-            --env MEILI_MASTER_KEY=$meili_key
+            --env MEILI_MASTER_KEY=$meili_key \
+            ;
       - name: Fetch Meilisearch keys
         id: fetch_keys
         run: |
@@ -157,8 +158,8 @@ jobs:
           postgres_app=$prefix-db
           
           flyctl postgres attach $postgres_app \
-            --app $app_name
-            --database-user beta
+            --app $app_name \
+            --database-user beta \
             --database-name "community_maps_django" \
             --yes \
             ;
@@ -192,7 +193,7 @@ jobs:
         working-directory: frontend
         run: |
           flyctl deploy \
-            --app $app_name
+            --app $app_name \
             --config fly.toml \
             --remote-only \
             --region $FLY_REGION \
