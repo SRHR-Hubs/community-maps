@@ -1,7 +1,7 @@
 name: Dump database data
 on:
   schedule:
-    - cron: '0 17 * * FRI'
+    - cron: '0 17 * * *'
   push:
     branches:
       - 'ci/actions' # test, deleteme
@@ -30,9 +30,10 @@ jobs:
           --natural-primary
         EOF
         xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'" \
+        | tail -n 1 \
         > ${{ steps.date.outputs.date }}.json
     - name: Upload dump as artifact
       uses: actions/upload-artifact@v3
       with:
-        name: weekly-dump
+        name: daily-dump
         path: ${{ steps.date.outputs.date }}.json
