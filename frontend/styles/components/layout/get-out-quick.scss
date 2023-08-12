@@ -1,0 +1,9 @@
+@use "../../colors";
+
+.btn.get-out-quick {
+  color: colors.$darkblue-400;
+  border: none;
+  &:hover {
+    background-color: colors.$red-400;
+  }
+}

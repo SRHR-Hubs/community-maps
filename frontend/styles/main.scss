@@ -6,13 +6,15 @@
 @use "pages/home";
 @use "pages/blog";
 @use "pages/about";
+@use "pages/forms";
 @use "pages/services/detail";
 
 // components
 @use "components/image";
-@use "components/layout";
+@use "components/layout/index";
 @use "components/mapbox";
 @use "components/autocomplete";
+@use "components/undraw";
 
 // spectre overrides
 $primary-color: colors.$lilac-400;
@@ -26,7 +28,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: fonts.$sans-serif;
+  font-family: fonts.$body;
   overflow-x: clip;
 }
 
@@ -36,7 +38,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: fonts.$serif;
+  font-family: fonts.$title;
 }
 
 a,
