@@ -2,9 +2,6 @@ name: Dump database data
 on:
   schedule:
     - cron: '0 17 * * *'
-  push:
-    branches:
-      - 'ci/actions' # test, deleteme
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
