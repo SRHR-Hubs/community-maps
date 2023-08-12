@@ -1,0 +1,36 @@
+name: Dump database data
+on:
+  schedule:
+    - cron: '0 17 * * *'
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+jobs:
+  create_dump:
+    name: Generate Django data dump
+    runs-on: ubuntu-latest
+    steps:
+    - uses: superfly/flyctl-actions/setup-flyctl@master
+    - name: Get current date
+      id: date
+      run: |
+        echo "date=$(date +%F)" >> $GITHUB_OUTPUT
+    - name: Create dump
+      env:
+        app_name: community-maps-django
+      run: |
+        cat << 'EOF' |
+        python manage.py dumpdata \
+          -e admin -e auth -e sessions -e contenttypes \
+          --natural-foreign \
+          --natural-primary
+        EOF
+        xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'" \
+        | tail -n 1 \
+        > ${{ steps.date.outputs.date }}.json
+    - name: Upload dump as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: daily-dump
+        path: ${{ steps.date.outputs.date }}.json
