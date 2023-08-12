@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     name: Set up workflow environment
-    if: github.event.action != 'closed'
     steps:
       - name: Generate deploy slugs
         id: generate_slugs
@@ -38,15 +37,16 @@ jobs:
   deploy_meilisearch:
     name: Deploy Meilisearch
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     environment:
       name: staging
       url: ${{ steps.deploy.outputs.url }}
     needs: [setup_env]
-    
+
     env:
       app_name: ${{ needs.setup_env.outputs.slug }}-meilisearch
       master_key: ${{ needs.setup_env.outputs.slug }}-staging-meili-key
-    
+
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
@@ -79,33 +79,45 @@ jobs:
               fi
               echo $line
               done
-      - name: Install and cache jq
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: jq
-          version: 1.0
       - name: Obtain keys
         id: keys
         run: |
-          output=$(\
-            flyctl ssh console \
-              --app $app_name \
-              --quiet \
-              --command 'sh -c "curl -s -X GET $MEILI_HTTP_ADDR/keys -H \"Authorization: Bearer $MEILI_MASTER_KEY\""')
-          
-          admin_key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
-          public_key=$(echo $output | jq -r '.results[] | select(.name == "Default Search API Key") | .key')
+          cat << 'EOF' |
+          curl -Ss \
+            -X POST $MEILI_HTTP_ADDR/keys \
+            -H "Authorization: Bearer $MEILI_MASTER_KEY" \
+            -H "Content-Type: application/json" \
+            --data-binary '\''{
+              "name": "Frontend key",
+              "actions": ["search", "documents.get"],
+              "indexes": ["*"],
+              "expiresAt": null
+            }'\''
+          EOF
+          xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'"
 
+          output=$(cat << 'EOF' |
+          curl -Ss \
+            -X GET $MEILI_HTTP_ADDR/keys \
+            -H "Authorization: Bearer $MEILI_MASTER_KEY"
+          EOF
+          xargs -0 -I {} flyctl ssh console -a $app_name -C "sh -c '{}'")
+
+          admin_key=$(echo $output | jq -r '.results[] | select(.name == "Default Admin API Key") | .key')
+          public_key=$(echo $output | jq -r '.results[] | select(.name == "Frontend key") | .key')
+
+          echo ":::add-mask:::$admin_key"
           echo "admin_key=$admin_key" >> $GITHUB_OUTPUT
           echo "public_key=$public_key" >> $GITHUB_OUTPUT
     outputs:
       url: ${{ steps.deploy.outputs.url }}
       admin_key: ${{ steps.keys.outputs.admin_key }}
       public_key: ${{ steps.keys.outputs.public_key }}
-  
+
   provision_postgres:
     name: Provision Postgres cluster
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     environment: staging
     needs: [setup_env]
 
@@ -137,10 +149,10 @@ jobs:
     outputs:
       app_name: ${{ steps.launch.outputs.app_name }}
 
-  
   deploy_django:
     name: Deploy Django
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     environment:
       name: staging
       url: ${{ steps.deploy.outputs.url }}
@@ -199,11 +211,11 @@ jobs:
               done
     outputs:
       url: ${{ steps.deploy.outputs.url }}
-  
 
   deploy_next:
     name: Deploy Next
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     environment:
       name: staging
       url: ${{ steps.deploy.outputs.url }}
@@ -222,7 +234,7 @@ jobs:
         uses: skiddph/actions-env@v1.0.3
         with:
           file: frontend/.env
-          prefix: 'ENV_'
+          prefix: "ENV_"
         env:
           ENV_API_HOST: ${{ env.api_host }}
           ENV_CLOUDINARY_CLOUD_NAME: ${{ vars.CLOUDINARY_CLOUD_NAME }}
@@ -252,14 +264,15 @@ jobs:
 
   teardown:
     name: Tear down all apps with this slug
-    if: ${{ failure() || github.event.action == 'closed' }}
     runs-on: ubuntu-latest
+    if: ${{ failure() || github.event.action == 'closed' }}
     needs: [setup_env, deploy_meilisearch, deploy_django, deploy_next]
     env:
       slug: ${{ needs.setup_env.outputs.slug }}
     steps:
-       - uses: superfly/flyctl-actions/setup-flyctl@master
-       - run: |
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: |
+          if [ -z "$slug" ]; then exit 1; fi
           flyctl apps list \
           | grep "${slug}" \
           | awk '{print $1}' \
