@@ -16,16 +16,18 @@ admin/keystone.db
 **/package-lock.json
 ./package.json
 
-# Next
-.next
-
 # other dev stuff
 .env*
+.github/.local
+
+# Next
+.next
 
 # backend
 backend/db*
 **/*.sqlite3
 **/__pycache__
 **/*.pyc
-backend/_notebooks/**/_*
-backend/_scripts/**/_*
+backend/data/staticfiles/**/*
+backend/_*/**/_*
+backend/fixtures/
