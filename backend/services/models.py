@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django_admin_geomap import GeoItem
 from mdeditor.fields import MDTextField
+from django_jsonform.models.fields import JSONField as SchemaJSONField
 
 from functools import partial
 from pages.models import I18nSection
@@ -55,12 +56,12 @@ class Service(models.Model, GeoItem):
     description = MDTextField(blank=True)
 
     # complex/formatted content
-    phone_numbers = models.JSONField(
-        blank=True, **load_schema(schemas.phone_numbers))
-    socials = models.JSONField(
-        blank=True, **load_schema(schemas.socials))
-    hours = models.JSONField(
-        blank=True, **load_schema(schemas.hours))
+    phone_numbers = SchemaJSONField(
+        blank=True, schema=schemas.PHONE_NUMBERS_SCHEMA)
+    socials = SchemaJSONField(
+        blank=True, schema=schemas.SOCIALS_ADMIN_SCHEMA)
+    hours = SchemaJSONField(
+        blank=True, schema=schemas.HOURS_ADMIN_SCHEMA)
 
     # extra, 'floppy' attributes
     extra = models.JSONField(blank=True, default=default(schemas.extra))

@@ -4,12 +4,13 @@ from django.utils import timezone
 from django.db import models as m
 from django.template.loader import render_to_string
 from nonrelated_inlines.admin import NonrelatedTabularInline
+
 from . import models
 from pages.models import I18nSection
 from search import client
 from meilisearch import errors as meili_errors
 
-from flat_json_widget.widgets import FlatJsonWidget
+
 from jsoneditor.forms import JSONEditor
 from django_admin_geomap import ModelAdmin as GeoModelAdmin
 
@@ -85,10 +86,6 @@ class ServiceAdmin(GeoModelAdmin):
 
     prepopulated_fields = {
         "slug": ("name",),
-    }
-
-    formfield_overrides = {
-        m.JSONField: {'widget': FlatJsonWidget},
     }
 
     def get_changeform_initial_data(self, request):
