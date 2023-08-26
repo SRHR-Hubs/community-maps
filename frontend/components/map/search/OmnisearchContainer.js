@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Trans } from "next-i18next";
 import Omnisearch from "../../search/Omnisearch";
 
 const OmnisearchContainer = () => {

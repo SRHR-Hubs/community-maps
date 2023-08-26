@@ -2,7 +2,7 @@ import mapboxGL from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef } from "react";
 
-export function makeMap({ container, initSource }) {
+export function makeMap({ container, initSource, on }) {
   const map = new mapboxGL.Map({
     container,
     accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN,
@@ -57,17 +57,15 @@ export function makeMap({ container, initSource }) {
     const [feature] = map.queryRenderedFeatures(event.point, {
       layers: ["service-points"],
     });
-    on?.click?.(feature, map);
-    // if (feature && on?.click) {
-    //   on.click(feature, map);
-    // }
+    if (feature) {
+      on?.click?.(feature, map);
+    }
   });
   return map;
 }
 
-const MapboxGLMap = ({ initSource, on = {} }) => {
+const MapboxGLMap = ({ initSource, mapRef, on = {} }) => {
   const containerRef = useRef(null);
-  const mapRef = useRef(null);
 
   const unmount = () => {
     console.log("Unmounting map");
@@ -75,10 +73,12 @@ const MapboxGLMap = ({ initSource, on = {} }) => {
   };
 
   useEffect(() => {
-    if (mapRef.current) return;
+    if (mapRef.current !== null || initSource.data.features.length === 0)
+      return;
     mapRef.current = makeMap({
       container: containerRef.current,
       initSource,
+      on,
     });
 
     window.addEventListener("beforeunload", unmount);
@@ -86,7 +86,7 @@ const MapboxGLMap = ({ initSource, on = {} }) => {
     return () => {
       window.removeEventListener("beforeunload", unmount);
     };
-  }, [initSource]);
+  }, [initSource, mapRef]);
 
   return <figure className="mapboxgl-map" ref={containerRef} />;
 };
