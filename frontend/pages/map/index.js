@@ -14,6 +14,7 @@ import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
 import useOmnisearch from "../../hooks/useOmnisearch";
 import useFilterExpr from "../../hooks/useFilterExpr";
+import isProduction from "../../hooks/isProduction";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
@@ -81,13 +82,17 @@ const MapHome = ({ slug, title, description, initQuery }) => {
       // console.log("map isn't ready");
       return;
     }
-    const layers = mapRef.current
-      .getStyle()
-      .layers.filter((layer) => layer.source === "services");
+    try {
+      const layers = mapRef.current
+        .getStyle()
+        .layers.filter((layer) => layer.source === "services");
 
-      //
-
-    layers.forEach((layer) => mapRef.current.setFilter(layer.id, filterExpr || undefined));
+      layers.forEach((layer) => mapRef.current.setFilter(layer.id, filterExpr));
+    } catch (e) {
+      if (!isProduction()) {
+        console.log("Expected error caused by", filterExpr)
+      }
+    }
   }, [filterExpr, serviceHits]);
 
   return (
