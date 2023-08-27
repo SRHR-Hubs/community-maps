@@ -81,32 +81,14 @@ const MapHome = ({ slug, title, description, initQuery }) => {
       // console.log("map isn't ready");
       return;
     }
-    // const layers = mapRef.current
-    //   .getStyle()
-    //   .layers.filter((layer) => layer.source === "services");
+    const layers = mapRef.current
+      .getStyle()
+      .layers.filter((layer) => layer.source === "services");
 
-    // layers.forEach((layer) => mapRef.current.setFilter(layer.id, filterExpr));
+      //
+
+    layers.forEach((layer) => mapRef.current.setFilter(layer.id, filterExpr || undefined));
   }, [filterExpr, serviceHits]);
-
-  // useEffect(() => {
-  //   if (selectedFeature !== null && !slugSet.has(selectedFeature?.properties.slug)) {
-  //     // console.log("selected feature missing; clearing");
-  //     setSelectedFeature(null);
-  //     return;
-  //   } else if (mapRef.current === null) {
-  //     console.log("map isn't ready");
-  //     return;
-  //   }
-
-  //   // console.log(mapRef.current.version)
-  //   return;
-
-  //   const layers = mapRef.current
-  //     .getStyle()
-  //     .layers.filter((layer) => layer.source === "services");
-
-  //   layers.forEach((layer) => mapRef.current.setFilter(layer.id, filterExpr));
-  // }, [selectedFeature, slugSet, filterExpr]);
 
   return (
     <>

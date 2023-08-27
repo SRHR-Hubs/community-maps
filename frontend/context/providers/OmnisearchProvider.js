@@ -16,7 +16,7 @@ const OmnisearchProvider = ({ init, children }) => {
     services: [],
     facets: [],
     tags: [],
-    geodata: { data: { features: [] } },
+    geodata: toGeoJSON([]),
   });
 
   const tagGroups = useMemo(

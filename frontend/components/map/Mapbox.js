@@ -19,11 +19,13 @@ export function makeMap({ container, initSource, on }) {
       if (error) throw error;
       map.addImage("marker", image);
     });
+
     map.addSource("services", {
       ...initSource,
       promoteId: "slug",
       //   cluster: true,
     });
+
     map.addLayer({
       id: "service-points",
       source: "services",
@@ -36,6 +38,7 @@ export function makeMap({ container, initSource, on }) {
         "icon-ignore-placement": true,
       },
     });
+
     map.addLayer(
       {
         id: "service-text",
@@ -52,7 +55,6 @@ export function makeMap({ container, initSource, on }) {
       "service-points"
     );
   });
-  // });
 
   map.on("click", (event) => {
     const [feature] = map.queryRenderedFeatures(event.point, {
