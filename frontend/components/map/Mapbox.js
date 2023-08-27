@@ -73,8 +73,6 @@ const MapboxGLMap = ({ initSource, mapRef, on = {} }) => {
   };
 
   useEffect(() => {
-    if (mapRef.current !== null || initSource.data.features.length === 0)
-      return;
     mapRef.current = makeMap({
       container: containerRef.current,
       initSource,

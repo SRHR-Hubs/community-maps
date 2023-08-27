@@ -4,7 +4,6 @@ import { Popup } from "mapbox-gl";
 
 const PopupContainer = ({ feature, mapRef }) => {
   const popupRef = useRef();
-  console.log(popupRef.current);
 
   useEffect(() => {
     if (!mapRef.current || !feature) {

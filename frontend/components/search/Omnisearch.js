@@ -9,7 +9,7 @@ import useOmnisearch from "../../hooks/useOmnisearch";
 const TagHit = ({ _formatted: hit }, { onSelect, onDeselect, ...props }) => (
   <div className="columns">
     <div className="col col-2">
-      <Chip tabIndex={0} onClick={onSelect(hit)} handleClose={onDeselect(hit)}>
+      <Chip tabIndex={0} handleClose={onDeselect(hit)}>
         {hit.value}
       </Chip>
     </div>
@@ -140,21 +140,18 @@ const Omnisearch = ({ on }) => {
             ))}
           </div>
         </div>
-        {true ? (
-          <SuggestionList
-            id="tag-hits"
-            hits={displayedTagHits}
-            display={TagHit}
-            onSelect={handleTagSelect}
-            onDeselect={handleTagDeselect}
-          />
-        ) : (
-          <div>loading</div>
-        )}
+        <SuggestionList
+          id="tag-hits"
+          hits={displayedTagHits}
+          display={TagHit}
+          onSelect={handleTagSelect}
+          onDeselect={handleTagDeselect}
+        />
         <SuggestionList
           id="service-hits"
           hits={localServiceHits}
           display={ServiceHit}
+          onSelect={on.serviceSelect}
         />
       </div>
     </div>

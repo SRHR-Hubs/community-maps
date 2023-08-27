@@ -18,23 +18,6 @@ const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   ssr: false,
 });
 
-const toGeoJSON = (data) => {
-  return {
-    type: "geojson",
-    data: {
-      type: "FeatureCollection",
-      features: data.map(({ _geo, ...properties }) => ({
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: [_geo.lng, _geo.lat],
-        },
-        properties,
-      })),
-    },
-  };
-};
-
 const MapHome = ({ slug, title, description, initQuery }) => {
   const seoInfo = {
     title,
@@ -52,26 +35,37 @@ const MapHome = ({ slug, title, description, initQuery }) => {
 
   syncStateToQuery(
     {
-      selected: selectedFeature?.id,
+      selected: selectedFeature,
       tag: selectedTags,
     },
     {
+      selected: (feature) => feature?.properties?.slug,
       tag: (tags) => tags.map((tag) => tag.id),
     }
   );
 
-  const handleMapClick = (feature) => {
-    console.log(feature)
+  const selectFeature = (feature) => {
     if (!feature) {
       setSelectedFeature(null);
+      return;
+    }
+    // not all hits have the same shape,
+    // so to make life easier, search
+    // for the associated function from
+    // data.geodata
+    else if (!feature.geometry) {
+      const geoFeature = data.geodata.data.features.find(
+        (item) => item.properties.slug === feature.slug
+      );
+      setSelectedFeature(geoFeature);
       return;
     }
     setSelectedFeature(feature);
   };
 
-  const handlers = {
-    click: handleMapClick,
-  };
+  // TODO:
+  // Hook filters, etc. back up to markers,
+  // probably using FilterExpr
 
   return (
     <>
@@ -86,11 +80,15 @@ const MapHome = ({ slug, title, description, initQuery }) => {
           <MapHeader />
           <div className="map-viewport">
             <MapboxGLMap
-              initSource={toGeoJSON(data.geodata)}
-              on={handlers}
+              initSource={data.geodata}
+              on={{ click: selectFeature }}
               mapRef={mapRef}
             />
-            {/* <OmnisearchContainer /> */}
+            <OmnisearchContainer
+              on={{
+                serviceSelect: (feat) => () => selectFeature(feat),
+              }}
+            />
             <MapFilterContainer />
             <PopupContainer mapRef={mapRef} feature={selectedFeature} />
           </div>
