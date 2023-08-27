@@ -9,10 +9,11 @@ import OmnisearchContainer from "../../components/map/search/OmnisearchContainer
 import PopupContainer from "../../components/map/popup/PopupContainer";
 
 import dynamic from "next/dynamic";
-import { useMemo, useReducer, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
 import useOmnisearch from "../../hooks/useOmnisearch";
+import useFilterExpr from "../../hooks/useFilterExpr";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
@@ -30,7 +31,7 @@ const MapHome = ({ slug, title, description, initQuery }) => {
 
   const {
     data,
-    state: { selectedTags },
+    state: { selectedTags, serviceHits },
   } = useOmnisearch();
 
   syncStateToQuery(
@@ -66,6 +67,46 @@ const MapHome = ({ slug, title, description, initQuery }) => {
   // TODO:
   // Hook filters, etc. back up to markers,
   // probably using FilterExpr
+  const [filterExpr, slugSet] = useFilterExpr(mapRef);
+
+  useEffect(() => {
+    if (
+      selectedFeature !== null &&
+      !slugSet.has(selectedFeature?.properties.slug)
+    ) {
+      // console.log("selected feature missing; clearing");
+      setSelectedFeature(null);
+      return;
+    } else if (mapRef.current === null) {
+      // console.log("map isn't ready");
+      return;
+    }
+    // const layers = mapRef.current
+    //   .getStyle()
+    //   .layers.filter((layer) => layer.source === "services");
+
+    // layers.forEach((layer) => mapRef.current.setFilter(layer.id, filterExpr));
+  }, [filterExpr, serviceHits]);
+
+  // useEffect(() => {
+  //   if (selectedFeature !== null && !slugSet.has(selectedFeature?.properties.slug)) {
+  //     // console.log("selected feature missing; clearing");
+  //     setSelectedFeature(null);
+  //     return;
+  //   } else if (mapRef.current === null) {
+  //     console.log("map isn't ready");
+  //     return;
+  //   }
+
+  //   // console.log(mapRef.current.version)
+  //   return;
+
+  //   const layers = mapRef.current
+  //     .getStyle()
+  //     .layers.filter((layer) => layer.source === "services");
+
+  //   layers.forEach((layer) => mapRef.current.setFilter(layer.id, filterExpr));
+  // }, [selectedFeature, slugSet, filterExpr]);
 
   return (
     <>
