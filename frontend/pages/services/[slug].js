@@ -170,10 +170,11 @@ export async function getStaticPaths() {
   const services = await ServiceService.getAllServices({
     fields,
     published: true,
+    limit: 10,
   });
   const paths = services.map(({ slug }) => ({
     params: { slug },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: 'blocking' };
 }
