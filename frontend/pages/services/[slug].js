@@ -170,9 +170,8 @@ export async function getStaticPaths() {
   const services = await ServiceService.getAllServices({
     fields,
     published: true,
-    size: 10,
   });
-  const paths = services.map(({ slug }) => ({
+  const paths = services.slice(0, 10).map(({ slug }) => ({
     params: { slug },
   }));
 
