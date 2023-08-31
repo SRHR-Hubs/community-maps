@@ -167,7 +167,6 @@ export async function getStaticProps({ params, locale }) {
 
 export async function getStaticPaths() {
   const fields = ["name", "slug"];
-  console.log(process.env.API_HOST)
   const services = await ServiceService.getAllServices({
     fields,
     published: true,
