@@ -171,9 +171,9 @@ export async function getStaticPaths() {
     fields,
     published: true,
   });
-  const paths = services.map(({ slug }) => ({
+  const paths = services.slice(0, 10).map(({ slug }) => ({
     params: { slug },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: 'blocking' };
 }

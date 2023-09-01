@@ -1,5 +1,6 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import useSearch from "../../hooks/useSearch";
+import toGeoJSON from "../../hooks/toGeoJson";
 
 export const OmnisearchContext = createContext({});
 
@@ -15,7 +16,7 @@ const OmnisearchProvider = ({ init, children }) => {
     services: [],
     facets: [],
     tags: [],
-    geodata: [],
+    geodata: toGeoJSON([]),
   });
 
   const tagGroups = useMemo(
@@ -40,7 +41,9 @@ const OmnisearchProvider = ({ init, children }) => {
           .results,
         facets: (await search.facets.getDocuments({ ...commonArgs })).results,
         tags: (await search.tags.getDocuments({ ...commonArgs })).results,
-        geodata: (await search.geodata.getDocuments({ ...commonArgs })).results,
+        geodata: toGeoJSON(
+          (await search.geodata.getDocuments({ ...commonArgs })).results
+        ),
       });
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps

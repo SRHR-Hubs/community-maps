@@ -5,33 +5,20 @@ import PageService from "../../services/PageService";
 
 import GetOutQuick from "../../components/layout/get-out-quick/GetOutQuick";
 import MapHeader from "../../components/map/layout/MapHeader";
+import OmnisearchContainer from "../../components/map/search/OmnisearchContainer";
+import PopupContainer from "../../components/map/popup/PopupContainer";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import MapFilterContainer from "../../components/map/filter/MapFilterContainer";
 import syncStateToQuery from "../../hooks/syncStatetoQuery";
 import useOmnisearch from "../../hooks/useOmnisearch";
+import useFilterExpr from "../../hooks/useFilterExpr";
+import isProduction from "../../hooks/isProduction";
 const MapboxGLMap = dynamic(() => import("../../components/map/Mapbox"), {
   loading: () => <div className="loading loading-lg"></div>,
   ssr: false,
 });
-
-const toGeoJSON = (data) => {
-  return {
-    type: "geojson",
-    data: {
-      type: "FeatureCollection",
-      features: data.map(({ _geo, ...properties }) => ({
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: [_geo.lng, _geo.lat],
-        },
-        properties,
-      })),
-    },
-  };
-};
 
 const MapHome = ({ slug, title, description, initQuery }) => {
   const seoInfo = {
@@ -40,22 +27,73 @@ const MapHome = ({ slug, title, description, initQuery }) => {
     canonical: slug,
   };
 
-  const [selectedServiceID, setSelectedServiceID] = useState();
+  const mapRef = useRef(null);
+  const [selectedFeature, setSelectedFeature] = useState();
 
   const {
     data,
-    state: { selectedService, selectedTags },
+    state: { selectedTags, serviceHits },
   } = useOmnisearch();
 
   syncStateToQuery(
     {
-      selected: selectedServiceID,
+      selected: selectedFeature,
       tag: selectedTags,
     },
     {
+      selected: (feature) => feature?.properties?.slug,
       tag: (tags) => tags.map((tag) => tag.id),
     }
   );
+
+  const selectFeature = (feature) => {
+    if (!feature) {
+      setSelectedFeature(null);
+      return;
+    }
+    // not all hits have the same shape,
+    // so to make life easier, search
+    // for the associated function from
+    // data.geodata
+    else if (!feature.geometry) {
+      const geoFeature = data.geodata.data.features.find(
+        (item) => item.properties.slug === feature.slug
+      );
+      setSelectedFeature(geoFeature);
+      return;
+    }
+    setSelectedFeature(feature);
+  };
+
+  // TODO:
+  // Hook filters, etc. back up to markers,
+  // probably using FilterExpr
+  const [filterExpr, slugSet] = useFilterExpr(mapRef);
+
+  useEffect(() => {
+    if (
+      selectedFeature !== null &&
+      !slugSet.has(selectedFeature?.properties.slug)
+    ) {
+      // console.log("selected feature missing; clearing");
+      setSelectedFeature(null);
+      return;
+    } else if (mapRef.current === null) {
+      // console.log("map isn't ready");
+      return;
+    }
+    try {
+      const layers = mapRef.current
+        .getStyle()
+        .layers.filter((layer) => layer.source === "services");
+
+      layers.forEach((layer) => mapRef.current.setFilter(layer.id, filterExpr));
+    } catch (e) {
+      if (!isProduction()) {
+        console.log("Expected error caused by", filterExpr)
+      }
+    }
+  }, [filterExpr, serviceHits]);
 
   return (
     <>
@@ -69,9 +107,18 @@ const MapHome = ({ slug, title, description, initQuery }) => {
         <div className="map-overlay">
           <MapHeader />
           <div className="map-viewport">
-            <MapboxGLMap initSource={toGeoJSON(data.geodata)} />
-            {/* <OmnisearchContainer /> */}
+            <MapboxGLMap
+              initSource={data.geodata}
+              on={{ click: selectFeature }}
+              mapRef={mapRef}
+            />
+            <OmnisearchContainer
+              on={{
+                serviceSelect: (feat) => () => selectFeature(feat),
+              }}
+            />
             <MapFilterContainer />
+            <PopupContainer mapRef={mapRef} feature={selectedFeature} />
           </div>
         </div>
         <GetOutQuick />

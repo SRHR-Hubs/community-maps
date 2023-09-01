@@ -26,6 +26,18 @@ class I18nSectionViewset(vs.ModelViewSet):
     lookup_field = 'language'
     filter_fields = '__all__'
 
+    def update(self, request, language=None):
+        resp, created = models.I18nSection.objects.update_or_create(
+            language=request.data['language'],
+            translation_id=request.data['translation_id'],
+            defaults={'text': request.data['text']}
+        )
+
+        return Response({
+            **serializers.I18nSectionSerializer(resp).data,
+            'created': created
+        })
+
     def retrieve(self, request, language=None):
         def nested_dict(): return defaultdict(nested_dict)
         response = nested_dict()
