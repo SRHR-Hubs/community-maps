@@ -3,6 +3,14 @@
 from django.db import migrations
 
 
+def set_meili(apps, schema_editor):
+    meili_config = apps.get_model("search", "MeilisearchConfig").objects.get()
+    from search import client
+    indexes = meili_config.indexes.all()
+    for index in indexes:
+        client.index(index.index_name).update_settings(index.config)
+
+
 def populate_meili(apps, schema_editor):
     cls = apps.get_model("services", "Service")
     from search import client
@@ -59,5 +67,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(set_meili),
         migrations.RunPython(populate_meili)
     ]
