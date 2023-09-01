@@ -105,38 +105,8 @@ class ServiceAdmin(GeoModelAdmin):
         super().save_model(request, obj, form, change)
 
         # Update relevant meilisearch indexes
-        published_services = models.Service.objects.filter(published=True)
-        subset_with_location = published_services.filter(
-            location__isnull=False)
-
-        # update documents
         try:
-            settings = client.index('services').get_settings()
-
-            searchable_fields = settings.get('searchableAttributes', [])
-            if searchable_fields == ['*']:
-                raise NotImplemented
-
-            documents = []
-
-            for service in published_services:
-                flat_tags = [{
-                    'id': tag.id,
-                    tag.facet.translation_id: tag.value
-                } for tag in service.tags.all()]
-
-                fields = {
-                    field: getattr(service, field)
-                    for field in searchable_fields
-                }
-
-                documents.append({
-                    'id': service.id,
-                    **fields,
-                    'tags': flat_tags
-                })
-
-            client.refresh('services', documents)
+            models.Service.update_meili_documents()
 
             self.message_user(
                 request, 'Updated Meilisearch services index successfully.',
@@ -151,9 +121,7 @@ class ServiceAdmin(GeoModelAdmin):
 
         # update geodata repo
         try:
-            client.refresh('geodata', [
-                service.to_geodata() for service in subset_with_location
-            ], primary_key='slug')
+            models.Service.update_meili_geodata()
 
             self.message_user(
                 request, "Updated Meilisearch geodata index successfully.",
