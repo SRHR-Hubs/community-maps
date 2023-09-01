@@ -1,0 +1,25 @@
+#skip-to-content {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    width: inherit;
+    box-sizing: border-box;
+  
+    transform: translateY(-100%);
+  
+    &,
+    &:visited {
+      color: initial;
+    }
+  
+    &:focus {
+      transform: translateY(0);
+    }
+  
+    @media print {
+      & {
+        display: none;
+      }
+    }
+  }

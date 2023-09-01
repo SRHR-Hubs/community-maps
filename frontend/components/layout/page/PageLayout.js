@@ -28,7 +28,7 @@ const PageLayout = ({
   return (
     <>
       <SkipToContent />
-      <div className="page off-canvas" {...props}>
+      <div className="page" {...props}>
         {renderHeader && <Header show={showHeader && scrollDirection === UP} />}
         <main
           className="container grid-lg"
