@@ -86,7 +86,7 @@ def populate_meili(apps, schema_editor):
 
     documents = []
 
-    qs = tags.objects.values_list('facet__translation_id', 'value')
+    qs = set(tags.objects.values_list('facet__translation_id', 'value'))
 
     for translation_id, value in qs:
         
@@ -99,7 +99,8 @@ def populate_meili(apps, schema_editor):
             "facet": {
                 "translation_id": translation_id,
                 "name": names[translation_id]
-            }
+            },
+            "value": value
         })
 
     client.refresh('tags', documents)
