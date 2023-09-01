@@ -18,7 +18,7 @@ const nextConfig = {
   },
   staticPageGenerationTimeout: 1000,
 
-  i18n,
+  // i18n,
 
   // experimental: {
   //   enableUndici: true

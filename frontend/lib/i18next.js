@@ -5,7 +5,7 @@ import fetcher from "../hooks/fetch";
 import i18n from "../config/i18n.config.json";
 
 const i18next = {
-  debug: false && !isProduction(),
+  debug: !isProduction(),
   i18n,
   load: "languageOnly",
   preload: ["en"],
@@ -21,7 +21,6 @@ const i18next = {
 
   backend: {
     crossDomain: true,
-    loadPath: process.env.API_HOST + "/api/i18n/{{lng}}/",
     addPath: process.env.API_HOST + "/api/i18n/",
   },
 
@@ -31,11 +30,11 @@ const i18next = {
   },
 
   // appendNamespaceToMissingKey: false,
-  saveMissing: true, //!isProduction(),
-  // saveMissingTo: "current",
+  saveMissing: !isProduction(),
+  saveMissingTo: "current",
 
   missingKeyHandler: async (
-    lngs,
+    [lngs],
     ns,
     key,
     fallbackValue,
@@ -44,7 +43,7 @@ const i18next = {
   ) => {
     if (!isServer()) {
       // Don't try to handle missing keys from the client
-      // console.warn("From client");
+      console.warn("From client");
       return;
     }
     if (updateMissing) {
@@ -57,15 +56,15 @@ const i18next = {
       text: fallbackValue,
     });
 
-    const result = await fetch(process.env.API_HOST + "/api/i18n/", {
-      method: "POST",
+    const result = await fetcher(`/api/i18n/${lngs}/`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body,
     });
 
-    if (result.ok)
+    if (result.created)
       console.log(
         "Missing key",
         key,
