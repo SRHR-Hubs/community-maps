@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Trans } from "next-i18next";
 import Omnisearch from "../../search/Omnisearch";
 
-const OmnisearchContainer = () => {
-  const [show, toggleShow] = useState(true);
+const OmnisearchContainer = ({ on }) => {
+  const [show, toggleShow] = useState(false);
 
   const handleToggleShow = (e) => {
     toggleShow(!show);
@@ -16,7 +15,7 @@ const OmnisearchContainer = () => {
       <div className="show-toggle" onClick={handleToggleShow}>
         <i className={"icon " + icon} />
       </div>
-      <Omnisearch />
+      <Omnisearch on={on} />
     </div>
   );
 };

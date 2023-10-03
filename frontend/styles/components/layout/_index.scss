@@ -1,0 +1,62 @@
+@use "../../variables";
+@use "../../colors";
+@use "../../mixins";
+
+@forward "./footer";
+@forward "./header";
+@forward "./skip-to-content";
+@forward "./get-out-quick";
+
+.page {
+  main {
+    &:focus {
+      outline: none;
+    }
+
+    > .container {
+      max-width: 90vw;
+    }
+
+    > section {
+      @include mixins.full-width;
+      position: relative;
+      padding: 4em 1rem;
+      &#contact {
+        background-color: colors.$lilac-400;
+        color: colors.$white;
+        text-align: center;
+
+        h2 {
+          font-weight: 800;
+        }
+
+        .button-list {
+          justify-content: center;
+          color: black;
+          font-weight: 600;
+          
+          .btn {
+            display: block;
+            height: auto;
+            margin: .5rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-size: 1rem; 
+
+            &:focus {
+              color: unset;
+            }
+            &:target {
+              color: colors.$white;
+            }
+          }
+        }
+      }
+
+      &.hero {
+        background-color: colors.$darkblue-400;
+        color: colors.$white;
+      }
+    }
+  }
+}

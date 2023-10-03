@@ -9,6 +9,25 @@
     color: colors.$white;
   }
 
+  // get rid of the section trick
+  main > section:not(#contact, #about-the-map) {
+    &::before, &::after {
+      all: unset;
+    }
+    border-radius: 28px;
+    padding: 2rem;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  h1, h2 {
+    font-weight: 800;
+  }
+
   /**NOT IN USE*/
   /*************/
   #our-values {
@@ -23,7 +42,7 @@
       gap: 45px;
 
       h3 {
-        font-family: fonts.$sans-serif;
+        font-family: fonts.$body;
       }
 
       > .column {
@@ -53,7 +72,8 @@
     background-color: colors.$teal-400;
     color: colors.$white;
 
-    h2, h3 {
+    h2,
+    h3 {
       text-align: center;
     }
 
@@ -61,44 +81,68 @@
       font-size: 1.8rem;
     }
     h3 {
-      font-family: fonts.$sans-serif;
+      font-family: fonts.$body;
       font-size: 1.4rem;
     }
   }
 
   #about-the-map {
-    background-color: colors.$darkblue-400;
-    color: colors.$white;
+    background-color: colors.$teal-200;
+    
+    // color: colors.$white;
 
-    article {
-      max-width: 80ch;
+    p:first-of-type {
+     font-weight: bold;
+     font-size: 1.25rem;
     }
 
-    p + h3 {
-      margin-top: 2em;
-      padding-top: 2em;
-      border-top: 1px solid colors.$white;
-      position: relative;
-      &::after {
-        $diameter: 6px;
-        content: "";
-        background-color: colors.$white;
-        width: $diameter;
-        height: $diameter;
-        position: absolute;
-        top: calc(-#{$diameter} / 2 - 0.5px);
-        right: 0;
-        border-radius: 100%;
+    img {
+      height: 7rem;
+      width: unset;
+      float: right;
+    }
+
+  }
+
+  #why-a-map {
+    background-color: colors.$teal-400;
+
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    h2 {
+      text-align: center;
+      color: white;
+    }
+
+    h3 {
+      font-weight: 600;
+      color: colors.$teal-400;
+    }
+
+    > .columns {
+      justify-content: center;
+      gap: 30px;
+
+      > * {
+        border-radius: 19px;
+        padding: 1rem;
       }
-    }
+      
+      > .text {
+        background-color: colors.$teal-200;
+        color: colors.$black;
+        margin: unset;
+      }
 
-    strong {
-      font-weight: normal;
-      text-decoration: underline;
-    }
+      > .icon-container {
+        background-color: colors.$white;
+      }
 
-    a {
-      text-decoration: underline;
+      &:nth-child(even) {
+        flex-direction: row-reverse;
+      }
     }
   }
 }

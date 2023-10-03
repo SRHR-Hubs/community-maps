@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.forms import widgets
 from django.utils import timezone
 from django.db import models as m
@@ -7,6 +7,8 @@ from nonrelated_inlines.admin import NonrelatedTabularInline
 
 from . import models
 from pages.models import I18nSection
+from search import client
+from meilisearch import errors as meili_errors
 
 
 from jsoneditor.forms import JSONEditor
@@ -99,6 +101,38 @@ class ServiceAdmin(GeoModelAdmin):
     def unpublish_selected(self, request, queryset):
         queryset.update(published=False)
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        # Update relevant meilisearch indexes
+        try:
+            models.Service.update_meili_documents()
+
+            self.message_user(
+                request, 'Updated Meilisearch services index successfully.',
+                messages.SUCCESS
+            )
+
+        except meili_errors.MeiliSearchApiError as e:
+            self.message_user(
+                request, f'Updating Meilisearch services index failed with error {e}',
+                messages.ERROR
+            )
+
+        # update geodata repo
+        try:
+            models.Service.update_meili_geodata()
+
+            self.message_user(
+                request, "Updated Meilisearch geodata index successfully.",
+                messages.SUCCESS
+            )
+        except meili_errors.MeiliSearchApiError as e:
+            self.message_user(
+                request, f'Updating Meilisearch geodata index failed with error {e}',
+                messages.ERROR
+            )
+
 
 class FacetTranslationInline(NonrelatedTabularInline):
     model = I18nSection
@@ -147,6 +181,7 @@ class FacetAdmin(admin.ModelAdmin):
     # formfield_overrides = {
     #     m.JSONField: {'widget': FlatJsonWidget},
     # }
+
 
 @admin.register(models.FacetTag)
 class FacetTagAdmin(admin.ModelAdmin):

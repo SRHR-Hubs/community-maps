@@ -155,8 +155,6 @@ export async function getStaticProps({ params, locale }) {
 
   service.description = await serialize(service.description);
 
-  console.log(service.hours, process.env.API_HOST)
-
   return {
     props: {
       service,
@@ -173,9 +171,9 @@ export async function getStaticPaths() {
     fields,
     published: true,
   });
-  const paths = services.map(({ slug }) => ({
+  const paths = services.slice(0, 10).map(({ slug }) => ({
     params: { slug },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: 'blocking' };
 }

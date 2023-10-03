@@ -9,7 +9,7 @@ import useOmnisearch from "../../hooks/useOmnisearch";
 const TagHit = ({ _formatted: hit }, { onSelect, onDeselect, ...props }) => (
   <div className="columns">
     <div className="col col-2">
-      <Chip tabIndex={0} onClick={onSelect(hit)} handleClose={onDeselect(hit)}>
+      <Chip tabIndex={0} handleClose={onDeselect(hit)}>
         {hit.value}
       </Chip>
     </div>
@@ -117,8 +117,8 @@ const Omnisearch = ({ on }) => {
 
   return (
     <div className="form-group" id="omnisearch">
-      <div className="form-autocomplete">
-        <div className="form-autocomplete-input form-input">
+      <div className="OLD__form-autocomplete">
+        <div className="form-input">
           <label htmlFor="omnisearch-input" className="text-assistive">
             <Trans i18nKey="assistive.omnisearch.label">
               Enter any search query for SRHR services here.
@@ -140,21 +140,18 @@ const Omnisearch = ({ on }) => {
             ))}
           </div>
         </div>
-        {true ? (
-          <SuggestionList
-            id="tag-hits"
-            hits={displayedTagHits}
-            display={TagHit}
-            onSelect={handleTagSelect}
-            onDeselect={handleTagDeselect}
-          />
-        ) : (
-          <div>loading</div>
-        )}
+        <SuggestionList
+          id="tag-hits"
+          hits={displayedTagHits}
+          display={TagHit}
+          onSelect={handleTagSelect}
+          onDeselect={handleTagDeselect}
+        />
         <SuggestionList
           id="service-hits"
           hits={localServiceHits}
           display={ServiceHit}
+          onSelect={on.serviceSelect}
         />
       </div>
     </div>
